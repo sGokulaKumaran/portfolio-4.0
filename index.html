@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Gokula Kumaran — Game & Full-Stack Developer</title>
-<meta name="description" content="Gokula Kumaran — Game & Full-Stack Developer. Interactive scroll-story portfolio." />
+<meta name="description" content="Gokula Kumaran — Game & Full-Stack Developer. Interactive scroll-story portfolio with infinite scroll, space ambient audio, command palette, and devtools protection." />
 <meta name="theme-color" content="#0A0B0F" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230A0B0F'/%3E%3Cpolygon points='50,12 88,32 88,68 50,88 12,68 12,32' fill='none' stroke='%236C63FF' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='10' fill='%23FFB454'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,17 +35,13 @@
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   *, *::before, *::after { box-sizing: border-box; }
-
-  /* Hide scrollbar everywhere but keep functional */
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
   html { scroll-behavior: auto; scrollbar-width: none; -ms-overflow-style: none; }
   html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
   *::-webkit-scrollbar { display: none; width: 0; height: 0; }
-
   body {
     font-family: var(--font-body); font-size: 16px; line-height: 1.65;
     -webkit-font-smoothing: antialiased; overflow-x: hidden;
-    /* SLOW SCROLL — smooth + momentum control */
     overscroll-behavior-y: contain;
   }
   a { color: inherit; text-decoration: none; }
@@ -55,9 +51,6 @@
   p { margin: 0; }
   img, canvas, svg, video { display: block; max-width: 100%; }
   a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
-  /* Disable text selection on UI chrome (keep it on body content) */
-  .no-select { user-select: none; -webkit-user-select: none; }
-  /* Disable native context menu globally (we block right-click) */
   * { -webkit-touch-callout: none; }
 
   @media (hover: hover) and (pointer: fine) {
@@ -96,7 +89,7 @@
   .wordmark:hover { border-color: var(--accent); transform: rotate(-3deg) scale(1.05); }
   .wordmark .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); box-shadow: 0 0 8px var(--accent-2); animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 50% { box-shadow: 0 0 14px var(--accent-2); } }
-  .main-nav { display: flex; gap: 2rem; margin-left: auto; margin-right: 1.5rem; }
+  .main-nav { display: flex; gap: 2rem; margin-left: auto; margin-right: 1rem; }
   .main-nav a { font-size: 0.88rem; color: var(--text-muted); font-weight: 500; position: relative; padding: 0.25rem 0; transition: color 0.2s; }
   .main-nav a::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.4s var(--ease-out); }
   .main-nav a:hover { color: var(--text); }
@@ -117,15 +110,16 @@
   .nav-mobile a:hover { color: var(--accent); transform: translateX(8px); }
   @media (max-width: 760px) { .main-nav, .nav-cta { display: none; } .nav-toggle { display: flex; } }
 
-  .story-progress { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.5rem; z-index: 50; }
-  .story-progress button { width: 4px; height: 24px; background: rgba(255, 255, 255, 0.15); border: none; padding: 0; border-radius: 2px; transition: all 0.4s var(--ease); position: relative; }
-  .story-progress button::after { content: attr(data-label); position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0; transition: opacity 0.3s; white-space: nowrap; pointer-events: none; }
-  .story-progress button:hover::after { opacity: 1; }
-  .story-progress button.active { background: var(--accent); height: 48px; box-shadow: 0 0 12px var(--accent); }
+  /* Story progress — STICKY VERTICAL LINE on the right */
+  .story-progress { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.5rem; z-index: 50; padding: 0.5rem 0; }
+  .story-progress button { width: 4px; height: 28px; background: rgba(255, 255, 255, 0.12); border: none; padding: 0; border-radius: 2px; transition: all 0.4s var(--ease); position: relative; cursor: none; }
+  .story-progress button::after { content: attr(data-label); position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0; transition: opacity 0.3s, transform 0.3s; white-space: nowrap; pointer-events: none; }
+  .story-progress button:hover::after { opacity: 1; transform: translateY(-50%) translateX(-4px); }
+  .story-progress button.active { background: var(--accent); height: 56px; box-shadow: 0 0 12px var(--accent); }
   .story-progress button:hover { background: var(--accent-2); }
   @media (max-width: 760px) { .story-progress { display: none; } }
 
-  .panel { min-height: 100vh; min-height: 100svh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 4rem); overflow: hidden; }
+  .panel { min-height: 100vh; min-height: 100svh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 4rem); overflow: hidden; scroll-margin-top: 60px; }
   .panel-inner { width: 100%; max-width: var(--max-width); margin: 0 auto; }
   .panel-side { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
   @media (max-width: 880px) { .panel-side { grid-template-columns: 1fr; gap: 2rem; } }
@@ -136,7 +130,6 @@
   .panel[data-from="scale"] .panel-inner { transform: scale(0.7); opacity: 0; transition: transform 1.1s var(--ease-spring), opacity 1.1s; }
   .panel.in-view .panel-inner { transform: none; opacity: 1; }
 
-  /* HERO */
   .panel-hero { text-align: center; padding-top: calc(var(--header-h) + 4rem); }
   .hero-eyebrow { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 100px; background: rgba(20, 22, 27, 0.4); backdrop-filter: blur(8px); }
   .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--status); box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.15); animation: pulse 2s ease-in-out infinite; }
@@ -312,7 +305,6 @@
   .modal-close { position: absolute; top: 1rem; right: 1rem; z-index: 10; background: rgba(10, 11, 15, 0.85); backdrop-filter: blur(8px); border: 1px solid var(--border-strong); color: var(--text); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease-spring); }
   .modal-close:hover { border-color: var(--accent); transform: rotate(90deg); }
 
-  /* COMMAND PALETTE */
   .command-palette { position: fixed; top: 0; left: 0; right: 0; z-index: 10001; display: flex; justify-content: center; padding-top: 12vh; pointer-events: none; opacity: 0; transition: opacity 0.25s; }
   .command-palette.open { pointer-events: auto; opacity: 1; }
   .command-backdrop { position: fixed; inset: 0; background: rgba(10, 11, 15, 0.7); backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.25s; }
@@ -326,13 +318,12 @@
   .command-kbd { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.15rem 0.4rem; border: 1px solid var(--border); border-radius: 3px; color: var(--text-faint); }
   .command-list { max-height: 360px; overflow-y: auto; padding: 0.5rem; scrollbar-width: none; }
   .command-list::-webkit-scrollbar { display: none; }
-  .command-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.85rem; border-radius: 6px; transition: background 0.15s, color 0.15s; color: var(--text-muted); }
+  .command-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.85rem; border-radius: 6px; transition: background 0.15s, color 0.15s; color: var(--text-muted); cursor: pointer; }
   .command-item:hover, .command-item.active { background: rgba(108, 99, 255, 0.1); color: var(--text); }
   .command-item .ci-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
   .command-item .ci-body { flex: 1; }
-  .command-item .ci-title { font-size: 0.92rem; font-weight: 500; }
-  .command-item .ci-sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); margin-top: 0.15rem; }
-  .command-item .ci-kbd { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint); }
+  .command-item .ci-title { font-size: 0.92rem; font-weight: 500; pointer-events: none; }
+  .command-item .ci-sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); margin-top: 0.15rem; pointer-events: none; }
   .command-empty { padding: 2rem; text-align: center; color: var(--text-faint); font-family: var(--font-mono); font-size: 0.85rem; }
   .command-footer { display: flex; justify-content: space-between; padding: 0.6rem 1.25rem; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint); }
   .command-footer span { display: inline-flex; align-items: center; gap: 0.35rem; }
@@ -341,11 +332,8 @@
   .sound-toggle { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s var(--ease-spring); margin-right: 0.5rem; font-size: 0.95rem; }
   .sound-toggle:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
   .sound-toggle.muted { opacity: 0.5; }
+  .sound-toggle.active { border-color: var(--accent-2); color: var(--accent-2); }
 
-  /* In-page anchor offset for fixed header (smooth scroll lands below header) */
-  [id^="p"] { scroll-margin-top: 60px; }
-
-  /* DevTools block overlay (shown briefly when devtools detected) */
   .devtools-warning { position: fixed; inset: 0; z-index: 999999; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
   .devtools-warning.show { display: flex; }
   .devtools-warning h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--accent-2); }
@@ -354,10 +342,7 @@
     .panel[data-from] .panel-inner { transform: none; opacity: 1; }
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
-  @media (max-width: 760px) {
-    .nav-cta kbd { display: none; }
-    .command-palette { padding-top: 5vh; }
-  }
+  @media (max-width: 760px) { .nav-cta kbd { display: none; } .command-palette { padding-top: 5vh; } }
 </style>
 </head>
 <body>
@@ -371,15 +356,15 @@
 <div class="vignette"></div>
 <div class="grain"></div>
 
+<div class="cursor-glow" id="cursorGlow"></div>
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<!-- DevTools warning (only shown when DevTools is open) -->
 <div class="devtools-warning" id="devtoolsWarning">
   <h2>⚠ Developer Tools Detected</h2>
   <p style="color: var(--text-muted);">This site is protected. Please close the developer tools to continue.</p>
-  <button onclick="location.reload()" style="background: var(--accent); color: #08090C; padding: 0.75rem 1.5rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem; border: none;">Reload Page</button>
+  <button onclick="location.reload()" style="background: var(--accent); color: #08090C; padding: 0.75rem 1.5rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem; border: none; cursor: pointer;">Reload Page</button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -401,7 +386,7 @@
   <div class="command-box">
     <div class="command-input-wrap">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input type="text" class="command-input" id="commandInput" placeholder="Type a command or search…" autocomplete="off" />
+      <input type="text" class="command-input" id="commandInput" placeholder="Type a command, search, or jump anywhere…" autocomplete="off" />
       <span class="command-kbd">ESC</span>
     </div>
     <div class="command-list" id="commandList"></div>
@@ -424,8 +409,8 @@
       <a href="#p5">Certs</a>
       <a href="#p6">Contact</a>
     </nav>
-    <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound" title="Toggle sound">🔊</button>
-    <button class="sound-toggle" id="bgmToggle" aria-label="Toggle music" title="Toggle background music">🎵</button>
+    <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound" title="Toggle UI sounds">🔊</button>
+    <button class="sound-toggle" id="bgmToggle" aria-label="Toggle music" title="Toggle space ambient music">🎵</button>
     <a href="#p6" class="nav-cta">Hire me <kbd>⌘K</kbd></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
@@ -457,10 +442,10 @@
       </h1>
       <p class="hero-sub">Building <b>immersive digital experiences</b>, interactive applications, and high-fidelity game worlds — from a single idea to a deployed product.</p>
       <div class="hero-ctas">
-        <a href="#p3" class="btn btn-primary magnetic">View work <span class="arrow">→</span></a>
+        <a href="#p3" class="btn btn-primary magnetic">View work <span class="arrow">↓</span></a>
         <a href="#p6" class="btn btn-ghost magnetic">Get in touch <span class="arrow">→</span></a>
       </div>
-      <p class="hero-hint">Press <kbd>⌘</kbd><kbd>K</kbd> · <kbd>Ctrl</kbd><kbd>K</kbd> · <kbd>ESC</kbd> to close DevTools</p>
+      <p class="hero-hint">Press <kbd>⌘</kbd><kbd>K</kbd> to command · <kbd>⌘</kbd><kbd>M</kbd> to toggle space music</p>
     </div>
     <div class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></div>
   </section>
@@ -612,7 +597,7 @@
           </div>
           <div class="cert-open">↗</div>
         </div>
-        <div class="cert-card" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment."}'>
+        <div class="cert-card" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment."'>
           <span class="cert-icon">🌐</span>
           <div class="cert-info">
             <div class="cert-name">Full-Stack Dev</div>
@@ -620,7 +605,7 @@
           </div>
           <div class="cert-open">↗</div>
         </div>
-        <div class="cert-card" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on."}'>
+        <div class="cert-card" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on."'>
           <span class="cert-icon">📱</span>
           <div class="cert-info">
             <div class="cert-name">Responsive Design</div>
@@ -651,17 +636,16 @@
           </div>
         </div>
         <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
-          <div class="form-group"><label>Your name</label><input type="text" placeholder="Alex Johnson" required></div>
-          <div class="form-group"><label>Email</label><input type="email" placeholder="alex@company.com" required></div>
-          <div class="form-group"><label>Service</label><select><option value="">Select a service</option><option>Game Development</option><option>Full-Stack Web</option><option>AI Integration</option><option>Other</option></select></div>
-          <div class="form-group"><label>Message</label><textarea placeholder="Tell me about your project..." required></textarea></div>
+          <div class="form-group"><label>Your name</label><input type="text" name="name" placeholder="Alex Johnson" required></div>
+          <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="alex@company.com" required></div>
+          <div class="form-group"><label>Service</label><select name="service"><option value="">Select a service</option><option>Game Development</option><option>Full-Stack Web</option><option>AI Integration</option><option>Other</option></select></div>
+          <div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell me about your project..." required></textarea></div>
           <button type="submit" class="submit-btn magnetic" id="submitBtn">Send message →</button>
         </form>
       </div>
     </div>
   </section>
 
-  <!-- Infinite scroll sentinel (a tiny element that triggers more content) -->
   <div id="infiniteSentinel" style="height: 1px; width: 100%;"></div>
 
 </main>
@@ -675,7 +659,7 @@
 </footer>
 
 <script>
-/* ═══ SHADER: raymarched SDF ═══ */
+/* ═══ SHADER BG — raymarched SDF ═══ */
 (function () {
   const canvas = document.getElementById('shader-bg');
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -685,10 +669,7 @@
   gl.compileShader(vs);
   const fsSrc = `
     precision highp float;
-    uniform float uTime;
-    uniform vec2 uRes;
-    uniform vec2 uMouse;
-    uniform float uScroll;
+    uniform float uTime; uniform vec2 uRes; uniform vec2 uMouse; uniform float uScroll;
     float sdSphere(vec3 p, float r){ return length(p)-r; }
     float sdTorus(vec3 p, vec2 t){ vec2 q=vec2(length(p.xz)-t.x,p.y); return length(q)-t.y; }
     float sdBox(vec3 p, vec3 b){ vec3 q=abs(p)-b; return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.); }
@@ -697,28 +678,19 @@
     float map(vec3 p){
       float t=uTime*0.3 + uScroll*3.0;
       p.xz *= mat2(cos(t*0.15),-sin(t*0.15),sin(t*0.15),cos(t*0.15));
-      vec3 q1 = p;
-      q1 = vec3(q1.x*cos(t)-q1.z*sin(t), q1.y, q1.x*sin(t)+q1.z*cos(t));
+      vec3 q1 = p; q1 = vec3(q1.x*cos(t)-q1.z*sin(t), q1.y, q1.x*sin(t)+q1.z*cos(t));
       float d1 = sdOctahedron(q1, 1.3);
-      vec3 q2 = p - vec3(sin(t*1.2)*2.8, cos(t*0.9)*1.5, cos(t*1.2)*2.8);
-      float d2 = sdSphere(q2, 0.55);
-      vec3 q3 = p - vec3(cos(t*0.6)*3.5, sin(t*0.4)*1.8, sin(t*0.6)*3.5);
-      float d3 = sdSphere(q3, 0.4);
+      vec3 q2 = p - vec3(sin(t*1.2)*2.8, cos(t*0.9)*1.5, cos(t*1.2)*2.8); float d2 = sdSphere(q2, 0.55);
+      vec3 q3 = p - vec3(cos(t*0.6)*3.5, sin(t*0.4)*1.8, sin(t*0.6)*3.5); float d3 = sdSphere(q3, 0.4);
       vec3 q4 = p - vec3(cos(t*0.7)*2.5, sin(t*0.5)*0.6, sin(t*0.7)*2.5);
-      q4.xy *= mat2(cos(t),-sin(t),sin(t),cos(t));
-      float d4 = sdTorus(q4, vec2(0.7, 0.12));
+      q4.xy *= mat2(cos(t),-sin(t),sin(t),cos(t)); float d4 = sdTorus(q4, vec2(0.7, 0.12));
       vec3 q5 = p - vec3(sin(t*0.8)*-3.0, cos(t*0.6)*-1.2, cos(t*0.8)*-3.0);
-      q5 = vec3(q5.x*cos(t*0.5),q5.y,q5.z*sin(t*0.5));
-      float d5 = sdBox(q5, vec3(0.5));
-      vec3 mouse = vec3(uMouse.x*5.0, uMouse.y*3.0, 0.);
-      float dm = sdSphere(p - mouse, 1.1);
+      q5 = vec3(q5.x*cos(t*0.5),q5.y,q5.z*sin(t*0.5)); float d5 = sdBox(q5, vec3(0.5));
+      vec3 mouse = vec3(uMouse.x*5.0, uMouse.y*3.0, 0.); float dm = sdSphere(p - mouse, 1.1);
       float d = smin(d1, d2, 0.6); d = smin(d, d3, 0.6); d = smin(d, d4, 0.5); d = smin(d, d5, 0.5); d = smin(d, dm, 1.0);
       return d;
     }
-    vec3 calcNormal(vec3 p){
-      vec2 e=vec2(0.001,0.);
-      return normalize(vec3(map(p+e.xyy)-map(p-e.xyy), map(p+e.yxy)-map(p-e.yxy), map(p+e.yyx)-map(p-e.yyx)));
-    }
+    vec3 calcNormal(vec3 p){ vec2 e=vec2(0.001,0.); return normalize(vec3(map(p+e.xyy)-map(p-e.xyy), map(p+e.yxy)-map(p-e.yxy), map(p+e.yyx)-map(p-e.yyx))); }
     void main(){
       vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
       vec3 ro = vec3(0.,0.,-7.); vec3 rd = normalize(vec3(uv, 1.3));
@@ -786,9 +758,8 @@
   frame();
   setTimeout(()=>canvas.classList.add('ready'), 300);
 })();
-</script>
 
-<script>
+/* ═══ ROLE 3D CUBE ═══ */
 (function(){
   const canvas = document.getElementById('roleCanvas');
   if (!canvas) return;
@@ -809,43 +780,29 @@
   function buf(d, a){ const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); const loc=gl.getAttribLocation(prog, a); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0); }
   buf(v, 'a'); buf(n, 'n');
   const ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
-  const uMVP = gl.getUniformLocation(prog, 'mvp');
-  const uM = gl.getUniformLocation(prog, 'm');
-  const uT = gl.getUniformLocation(prog, 't');
-  const uMouse = gl.getUniformLocation(prog, 'm');
-  function resize(){
-    const r=canvas.getBoundingClientRect();
-    const dpr=Math.min(window.devicePixelRatio||1,1.5);
-    canvas.width=r.width*dpr; canvas.height=r.height*dpr;
-    gl.viewport(0,0,canvas.width,canvas.height);
-  }
+  const uMVP = gl.getUniformLocation(prog, 'mvp'); const uM = gl.getUniformLocation(prog, 'm'); const uT = gl.getUniformLocation(prog, 't'); const uMouse = gl.getUniformLocation(prog, 'm');
+  function resize(){ const r=canvas.getBoundingClientRect(); const dpr=Math.min(window.devicePixelRatio||1,1.5); canvas.width=r.width*dpr; canvas.height=r.height*dpr; gl.viewport(0,0,canvas.width,canvas.height); }
   resize(); window.addEventListener('resize', resize);
   const m={x:0,y:0,tx:0,ty:0};
   canvas.addEventListener('mousemove', e=>{ const r=canvas.getBoundingClientRect(); m.tx=(e.clientX-r.left)/r.width*2-1; m.ty=-((e.clientY-r.top)/r.height*2-1); });
   const t0=performance.now();
   function frame(){
-    const t=(performance.now()-t0)/1000;
-    m.x+=(m.tx-m.x)*0.08; m.y+=(m.ty-m.y)*0.08;
+    const t=(performance.now()-t0)/1000; m.x+=(m.tx-m.x)*0.08; m.y+=(m.ty-m.y)*0.08;
     const ang=t*0.5; const c=Math.cos(ang), s=Math.sin(ang);
-    const rot = [c,0,s, 0,1,0, -s,0,c];
-    const perspMat = [1.2,0,0,0, 0,1.2,0,0, 0,0,1,0, 0,0,-2.5,1];
+    const rot = [c,0,s, 0,1,0, -s,0,c]; const perspMat = [1.2,0,0,0, 0,1.2,0,0, 0,0,1,0, 0,0,-2.5,1];
     function mul(a,b){ const o=[]; for(let i=0;i<4;i++) for(let j=0;j<4;j++){ o[i*4+j]=0; for(let k=0;k<4;k++) o[i*4+j]+=a[k*4+j]*b[i*4+k]; } return o; }
     const mvp = mul(perspMat, rot);
-    gl.uniformMatrix4fv(uMVP, false, mvp);
-    gl.uniformMatrix4fv(uM, false, rot);
-    gl.uniform1f(uT, t);
-    gl.uniform2f(uMouse, m.x, m.y);
-    gl.clearColor(0,0,0,0);
-    gl.enable(gl.DEPTH_TEST);
+    gl.uniformMatrix4fv(uMVP, false, mvp); gl.uniformMatrix4fv(uM, false, rot);
+    gl.uniform1f(uT, t); gl.uniform2f(uMouse, m.x, m.y);
+    gl.clearColor(0,0,0,0); gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
     requestAnimationFrame(frame);
   }
   frame();
 })();
-</script>
 
-<script>
+/* ═══ CERTS CANVAS — particle constellation ═══ */
 (function(){
   const canvas = document.getElementById('certsCanvas');
   if (!canvas) return;
@@ -905,11 +862,9 @@
       ctx.strokeStyle = 'rgba(108,99,255,0.8)';
       ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(c.px,c.py,radius,0,Math.PI*2); ctx.fill(); ctx.stroke();
-      ctx.font = `${radius}px sans-serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = `${radius}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(c.icon, c.px, c.py);
-      ctx.font = '600 12px "Bricolage Grotesque", sans-serif';
-      ctx.fillStyle = '#F3F1EA';
+      ctx.font = '600 12px "Bricolage Grotesque", sans-serif'; ctx.fillStyle = '#F3F1EA';
       ctx.fillText(c.name, c.px, c.py + radius + 14);
     });
     requestAnimationFrame(frame);
@@ -919,7 +874,7 @@
 </script>
 
 <script>
-/* ═══ HERO NAME split + mouse-reactive letters ═══ */
+/* ═══ HERO NAME — split into spans ═══ */
 (function(){
   const row1 = document.getElementById('row1');
   const row2 = document.getElementById('row2');
@@ -927,7 +882,7 @@
   if (row2) row2.innerHTML = 'Kumaran'.split('').map(c => `<span>${c}</span>`).join('');
 })();
 
-/* ═══ TYPING ═══ */
+/* ═══ TYPING EFFECT ═══ */
 (function(){
   const el = document.getElementById('roleTyped');
   if (!el) return;
@@ -942,36 +897,6 @@
   setTimeout(tick, 600);
 })();
 
-/* ═══ SMOOTH + SLOW SCROLL ═══ */
-/* Decelerates scroll velocity so user can't fly through the page */
-let scrollVelocity = 0;
-let targetVelocity = 0;
-const SCROLL_FRICTION = 0.85;
-const SCROLL_MAX = 50;
-
-window.addEventListener('wheel', (e) => {
-  // Limit scroll velocity
-  targetVelocity += e.deltaY * 0.3;
-  targetVelocity = Math.max(-SCROLL_MAX, Math.min(SCROLL_MAX, targetVelocity));
-  e.preventDefault();
-  // Apply velocity to scroll
-  scrollVelocity = targetVelocity;
-  window.scrollBy({ top: scrollVelocity, behavior: 'auto' });
-  targetVelocity *= SCROLL_FRICTION;
-  if (Math.abs(targetVelocity) < 0.5) targetVelocity = 0;
-}, { passive: false });
-
-/* Touch scroll: smooth and slightly dampened */
-let lastTouchY = 0;
-window.addEventListener('touchstart', (e) => { lastTouchY = e.touches[0].clientY; }, { passive: true });
-window.addEventListener('touchmove', (e) => {
-  const y = e.touches[0].clientY;
-  const dy = (lastTouchY - y) * 0.85; // dampen
-  lastTouchY = y;
-  window.scrollBy({ top: dy, behavior: 'auto' });
-  e.preventDefault();
-}, { passive: false });
-
 /* ═══ HEADER + SCROLL PROGRESS ═══ */
 const header = document.getElementById('siteHeader');
 const progressBar = document.getElementById('scrollProgress');
@@ -982,17 +907,28 @@ function onScroll(){
 }
 onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-/* ═══ PANEL IN-VIEW (IntersectionObserver) ═══ */
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
+/* ═══ PANEL IN-VIEW — fixed: works for original AND cloned panels ═══ */
+const storyEl = document.getElementById('story');
+const progressDots = document.querySelectorAll('.story-progress button');
+const PANEL_IDS = ['p0','p1','p2','p3','p3-5','p4','p5','p6'];
+const dotByPanel = {};
+PANEL_IDS.forEach((id, i) => { dotByPanel[id] = progressDots[i]; });
+
+const panelIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
       e.target.classList.add('in-view');
-      const id = e.target.id;
-      document.querySelectorAll('.story-progress button').forEach(d=>d.classList.toggle('active', d.dataset.target === id));
+      /* Use the data-base attribute (set when cloning) to find the right dot */
+      const baseId = e.target.dataset.base || e.target.id;
+      const dot = dotByPanel[baseId];
+      if (dot) {
+        progressDots.forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+      }
     }
   });
-}, {threshold: 0.25});
-document.querySelectorAll('.panel').forEach(p=>io.observe(p));
+}, { threshold: 0.25 });
+document.querySelectorAll('.panel').forEach(p => panelIO.observe(p));
 
 /* ═══ NAV TOGGLE ═══ */
 const navToggle=document.getElementById('navToggle'), navMobile=document.getElementById('navMobile');
@@ -1002,17 +938,22 @@ navMobile.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>{ nav
 /* ═══ CURSOR ═══ */
 const dot = document.getElementById('cursorDot');
 const ring = document.getElementById('cursorRing');
+const cursorGlow = document.getElementById('cursorGlow');
 let mx = window.innerWidth/2, my = window.innerHeight/2;
 let rx = mx, ry = my;
 const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
 if (isFinePointer) {
   dot.style.left = mx + 'px'; dot.style.top = my + 'px'; dot.style.opacity = '1';
   ring.style.left = mx + 'px'; ring.style.top = my + 'px'; ring.style.opacity = '1';
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px'; });
+  cursorGlow.style.left = mx + 'px'; cursorGlow.style.top = my + 'px'; cursorGlow.style.opacity = '1';
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    cursorGlow.style.left = mx + 'px'; cursorGlow.style.top = my + 'px';
+  });
   function ringLoop(){ rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(ringLoop); }
   ringLoop();
-  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .certs-legend .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual');
+  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .certs-legend .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual, .command-item');
   hoverables.forEach(el => {
     el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
     el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
@@ -1078,45 +1019,68 @@ function closeModal() {
 }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-document.querySelectorAll('.work-row[data-project]').forEach(row => {
-  row.addEventListener('click', () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} });
-});
-document.querySelectorAll('.certs-legend .cert-card[data-cert]').forEach(item => {
-  item.addEventListener('click', () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} });
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
+function attachCardListeners() {
+  document.querySelectorAll('.work-row[data-project]').forEach(row => {
+    row.onclick = () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} };
+  });
+  document.querySelectorAll('.certs-legend .cert-card[data-cert]').forEach(item => {
+    item.onclick = () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} };
+  });
+}
+attachCardListeners();
 
-/* ═══ COMMAND PALETTE (Cmd+K) — fixed ═══ */
+/* ═══ COMMAND PALETTE (Cmd+K) — fully fixed ═══ */
 const commandPalette = document.getElementById('commandPalette');
 const commandInput = document.getElementById('commandInput');
 const commandList = document.getElementById('commandList');
 const commandBackdrop = document.getElementById('commandBackdrop');
+
+/* The first 7 items are navigation; the rest are actions */
 const commands = [
-  { id: 'p0', title: 'Hero', sub: 'Gokula Kumaran', icon: '👋', action: () => document.getElementById('p0').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p1', title: 'Role', sub: 'What I do', icon: '💼', action: () => document.getElementById('p1').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p2', title: 'About', sub: 'About me', icon: '👤', action: () => document.getElementById('p2').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p3', title: 'Work', sub: 'Selected projects', icon: '💻', action: () => document.getElementById('p3').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p4', title: 'Stack', sub: 'Technical skills', icon: '🛠', action: () => document.getElementById('p4').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p5', title: 'Certifications', sub: '06 credentials', icon: '🎓', action: () => document.getElementById('p5').scrollIntoView({behavior:'smooth'}) },
-  { id: 'p6', title: 'Contact', sub: 'Get in touch', icon: '✉️', action: () => document.getElementById('p6').scrollIntoView({behavior:'smooth'}) },
-  { id: 'sound', title: 'Toggle Sound', sub: 'UI sound effects', icon: '🔊', action: () => toggleSound() },
-  { id: 'music', title: 'Toggle Music', sub: 'Background music', icon: '🎵', action: () => toggleMusic() },
-  { id: 'top', title: 'Back to top', sub: 'Scroll to hero', icon: '↑', action: () => document.getElementById('p0').scrollIntoView({behavior:'smooth'}) },
-  { id: 'email', title: 'Email', sub: 'gokulakumaran2007@gmail.com', icon: '✉️', action: () => window.location.href = 'mailto:gokulakumaran2007@gmail.com' },
-  { id: 'github', title: 'GitHub', sub: 'github.com/sGokulaKumaran', icon: '⌨️', action: () => window.open('https://github.com/sGokulaKumaran','_blank') },
-  { id: 'linkedin', title: 'LinkedIn', sub: 'gokula-kumaran-s', icon: '💼', action: () => window.open('https://www.linkedin.com/in/gokula-kumaran-s/','_blank') },
+  { id: 'p0', title: 'Go to Hero', sub: 'Gokula Kumaran', icon: '👋', action: () => goTo('p0') },
+  { id: 'p1', title: 'Go to Role', sub: 'What I do', icon: '💼', action: () => goTo('p1') },
+  { id: 'p2', title: 'Go to About', sub: 'About me', icon: '👤', action: () => goTo('p2') },
+  { id: 'p3', title: 'Go to Work', sub: 'Selected projects (6)', icon: '💻', action: () => goTo('p3') },
+  { id: 'p4', title: 'Go to Stack', sub: 'Technical skills', icon: '🛠', action: () => goTo('p4') },
+  { id: 'p5', title: 'Go to Certifications', sub: '06 credentials', icon: '🎓', action: () => goTo('p5') },
+  { id: 'p6', title: 'Go to Contact', sub: 'Get in touch', icon: '✉️', action: () => goTo('p6') },
+  { id: 'top', title: 'Back to top', sub: 'Scroll to hero', icon: '↑', action: () => goTo('p0') },
+  { id: 'sound', title: 'Toggle UI Sound', sub: 'On / Off', icon: '🔊', action: () => toggleSound() },
+  { id: 'music', title: 'Toggle Space Music', sub: 'On / Off', icon: '🎵', action: () => toggleMusic() },
+  { id: 'email', title: 'Send Email', sub: 'gokulakumaran2007@gmail.com', icon: '✉️', action: () => window.location.href = 'mailto:gokulakumaran2007@gmail.com' },
+  { id: 'github', title: 'Open GitHub', sub: '@sGokulaKumaran', icon: '⌨️', action: () => window.open('https://github.com/sGokulaKumaran','_blank') },
+  { id: 'linkedin', title: 'Open LinkedIn', sub: 'gokula-kumaran-s', icon: '💼', action: () => window.open('https://www.linkedin.com/in/gokula-kumaran-s/','_blank') },
+  { id: 'play-zyqra', title: 'Open Project: Zyqra', sub: 'AI Learning Ecosystem', icon: '◈', action: () => openProjectByTitle('Zyqra') },
+  { id: 'play-back', title: 'Open Project: The Back Exit', sub: 'Horror Game', icon: '👁', action: () => openProjectByTitle('The Back Exit') },
+  { id: 'play-csharp', title: 'Open Cert: C# Programming', sub: 'Advanced Certification', icon: '⚙️', action: () => openCertByTitle('C# Programming') },
 ];
+
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+function openProjectByTitle(title) {
+  const row = document.querySelector(`.work-row[data-project*="${title}"]`);
+  if (row) row.click();
+}
+function openCertByTitle(title) {
+  const card = Array.from(document.querySelectorAll('.certs-legend .cert-card[data-cert]')).find(c => c.dataset.cert.includes(title));
+  if (card) card.click();
+}
+
 let activeCmdIdx = 0;
-function renderCommands(filter='') {
-  const f = filter.toLowerCase().trim();
-  const filtered = f ? commands.filter(c => (c.title + c.sub).toLowerCase().includes(f)) : commands;
-  if (!filtered.length) {
-    commandList.innerHTML = '<div class="command-empty">No commands found</div>';
+let currentFiltered = commands.slice();
+
+function renderCommands() {
+  const f = commandInput.value.toLowerCase().trim();
+  currentFiltered = f ? commands.filter(c => (c.title + ' ' + c.sub).toLowerCase().includes(f)) : commands.slice();
+  if (!currentFiltered.length) {
+    commandList.innerHTML = '<div class="command-empty">No commands found. Try "hero", "work", "sound", "music".</div>';
     return;
   }
-  activeCmdIdx = Math.min(activeCmdIdx, filtered.length - 1);
-  if (activeCmdIdx < 0) activeCmdIdx = 0;
-  commandList.innerHTML = filtered.map((c, i) => `
+  activeCmdIdx = Math.min(Math.max(activeCmdIdx, 0), currentFiltered.length - 1);
+  commandList.innerHTML = currentFiltered.map((c, i) => `
     <div class="command-item ${i === activeCmdIdx ? 'active' : ''}" data-idx="${i}">
       <div class="ci-icon">${c.icon}</div>
       <div class="ci-body">
@@ -1125,259 +1089,405 @@ function renderCommands(filter='') {
       </div>
     </div>
   `).join('');
+  /* Use event delegation on the list so re-renders don't lose listeners */
   commandList.querySelectorAll('.command-item').forEach((el, i) => {
-    el.addEventListener('click', () => { filtered[i].action(); closeCommand(); });
-    el.addEventListener('mouseenter', () => { activeCmdIdx = i; renderCommands(commandInput.value); });
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      currentFiltered[i].action();
+      closeCommand();
+    });
   });
 }
+
 function openCommand() {
   commandPalette.classList.add('open');
   commandInput.value = '';
   activeCmdIdx = 0;
+  currentFiltered = commands.slice();
   renderCommands();
   setTimeout(() => commandInput.focus(), 60);
 }
 function closeCommand() { commandPalette.classList.remove('open'); }
 commandBackdrop.addEventListener('click', closeCommand);
-commandInput.addEventListener('input', e => { activeCmdIdx = 0; renderCommands(e.target.value); });
+commandInput.addEventListener('input', () => { activeCmdIdx = 0; renderCommands(); });
 commandInput.addEventListener('keydown', e => {
-  const f = commandInput.value.toLowerCase().trim();
-  const filtered = f ? commands.filter(c => (c.title + c.sub).toLowerCase().includes(f)) : commands;
-  if (e.key === 'ArrowDown') { e.preventDefault(); activeCmdIdx = Math.min(activeCmdIdx + 1, filtered.length - 1); renderCommands(commandInput.value); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); activeCmdIdx = Math.max(activeCmdIdx - 1, 0); renderCommands(commandInput.value); }
-  else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (filtered[activeCmdIdx]) { filtered[activeCmdIdx].action(); closeCommand(); }
-  }
-  else if (e.key === 'Escape') { closeCommand(); }
+  if (e.key === 'ArrowDown') { e.preventDefault(); activeCmdIdx = Math.min(activeCmdIdx + 1, currentFiltered.length - 1); renderCommands(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); activeCmdIdx = Math.max(activeCmdIdx - 1, 0); renderCommands(); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (currentFiltered[activeCmdIdx]) { currentFiltered[activeCmdIdx].action(); closeCommand(); } }
+  else if (e.key === 'Escape') { e.preventDefault(); closeCommand(); }
 });
-/* GLOBAL key handler — works on both inputs and body */
+
+/* Global key handler for Cmd+K / Ctrl+K and Cmd+M / Ctrl+M (toggle music) */
 document.addEventListener('keydown', e => {
-  // Cmd+K / Ctrl+K — open command palette
-  if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+  const isMod = e.metaKey || e.ctrlKey;
+  if (isMod && e.key.toLowerCase() === 'k') {
     e.preventDefault();
     if (commandPalette.classList.contains('open')) closeCommand();
     else openCommand();
+    return;
   }
-  // Escape to close command palette (only when not in another input)
+  if (isMod && e.key.toLowerCase() === 'm') {
+    e.preventDefault();
+    toggleMusic();
+    return;
+  }
   if (e.key === 'Escape' && commandPalette.classList.contains('open')) {
+    e.preventDefault();
     closeCommand();
   }
 });
 
-/* ═══ INFINITE SCROLL (true append-on-scroll) ═══ */
-const story = document.getElementById('story');
+/* Story progress dot click */
+progressDots.forEach(d => d.addEventListener('click', () => {
+  const t = document.getElementById(d.dataset.target);
+  if (t) t.scrollIntoView({ behavior: 'smooth' });
+}));
+
+/* ═══ INFINITE SCROLL — true append ═══ */
 const sentinel = document.getElementById('infiniteSentinel');
 let appending = false;
 let cloneCounter = 0;
 
 function clonePanels(suffix) {
-  /* Get all panels (but exclude sentinel/footer) */
-  const panels = story.querySelectorAll('.panel:not(.cloned)');
-  panels.forEach(panel => {
+  const originalPanels = document.querySelectorAll('.panel:not(.cloned)');
+  originalPanels.forEach(panel => {
     const clone = panel.cloneNode(true);
     clone.classList.add('cloned');
     clone.id = panel.id + '-' + suffix;
-    /* Update progress dot targets to new IDs (if any) */
-    /* Re-trigger in-view animation */
+    /* CRITICAL: Set data-base so the IntersectionObserver can match it to the original dot */
+    clone.dataset.base = panel.id;
     clone.classList.remove('in-view');
-    /* Re-attach event listeners to work rows and cert cards */
+    /* Re-attach event listeners */
     const workRows = clone.querySelectorAll('.work-row[data-project]');
     workRows.forEach(row => {
       row.addEventListener('click', () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} });
-      row.addEventListener('click', () => play('click'));
     });
     const certCards = clone.querySelectorAll('.cert-card[data-cert]');
     certCards.forEach(card => {
       card.addEventListener('click', () => { try { openModal(JSON.parse(card.dataset.cert)); } catch(e){} });
-      card.addEventListener('click', () => play('click'));
     });
-    const closeBtn = clone.querySelector('.modal-close');
-    /* Modal close button isn't in panels, so skip */
-    /* Insert before sentinel */
-    story.insertBefore(clone, sentinel);
-    /* Re-observe for in-view animation */
-    io.observe(clone);
+    storyEl.insertBefore(clone, sentinel);
+    panelIO.observe(clone);
   });
-  /* Pre-load next batch of clones (always keep 1 extra at the bottom) */
   cloneCounter++;
+  /* Re-attach card listeners to the new (cloned) rows */
+  setTimeout(attachCardListeners, 0);
 }
-
-/* IntersectionObserver on the sentinel */
-const sentinelObs = new IntersectionObserver((entries) => {
+const sentinelObs = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting && !appending) {
       appending = true;
-      const beforeHeight = story.offsetHeight;
       clonePanels(cloneCounter);
-      const afterHeight = story.offsetHeight;
-      /* Don't reset scroll - let the new content appear below current position */
       appending = false;
     }
   });
-}, { rootMargin: '500px 0px 500px 0px' });
+}, { rootMargin: '800px 0px 800px 0px' });
 sentinelObs.observe(sentinel);
-
-/* Also handle scroll up: when near top, prepend content (in reverse) */
-/* For simplicity, we only append on scroll down. To go back up, user scrolls up normally. */
 
 /* ═══ SOUND ENGINE — Web Audio API ═══ */
 let audioCtx = null;
 let masterGain = null;
+let musicGain = null;
+let sfxGain = null;
 let soundEnabled = true;
 let musicEnabled = false;
-let musicNodes = []; // Track active music oscillators
+let musicNodes = [];
+let firstUserGesture = false;
 
 function ensureAudio() {
   if (!audioCtx) {
     try {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.4;
+      masterGain.gain.value = 0.5;
       masterGain.connect(audioCtx.destination);
+      musicGain = audioCtx.createGain();
+      musicGain.gain.value = 0.3;
+      musicGain.connect(masterGain);
+      sfxGain = audioCtx.createGain();
+      sfxGain.gain.value = 0.5;
+      sfxGain.connect(masterGain);
     } catch(e) { return null; }
   }
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
 
+/* Unlock audio on first user interaction (browser policy) */
+function unlockAudio() {
+  if (firstUserGesture) return;
+  firstUserGesture = true;
+  ensureAudio();
+  /* Auto-enable BGM after first interaction if user hasn't manually toggled it */
+  if (!musicEnabled && audioCtx) {
+    /* Wait a moment so it's not jarring */
+    setTimeout(() => { startMusic(); musicEnabled = true; updateBgmToggle(); }, 800);
+  }
+}
+['click', 'keydown', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, unlockAudio, { once: true, passive: true });
+});
+
+/* ═══ SPACE AMBIENT MUSIC — procedural, no external files ═══ */
+function createSpaceImpulseResponse(ctx, duration = 4, decay = 3) {
+  /* Procedural impulse response: exponentially decaying white noise */
+  /* This creates the "vast space" reverb effect when convolved with audio */
+  const sampleRate = ctx.sampleRate;
+  const length = sampleRate * duration;
+  const impulse = ctx.createBuffer(2, length, sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    for (let i = 0; i < length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+    }
+  }
+  return impulse;
+}
+
+function startMusic() {
+  if (musicNodes.length || !audioCtx) return;
+  const ctx = audioCtx;
+  const dest = musicGain;
+
+  /* ConvolverNode for the "vast space" reverb */
+  const convolver = ctx.createConvolver();
+  convolver.buffer = createSpaceImpulseResponse(ctx, 5, 2.5);
+  const convGain = ctx.createGain();
+  convGain.gain.value = 0.6;
+  convolver.connect(convGain);
+  convGain.connect(dest);
+  musicNodes.push(convolver, convGain);
+
+  /* 1) Filtered noise layer (the "shhh" of space) */
+  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+  const noiseData = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < noiseData.length; i++) noiseData[i] = Math.random() * 2 - 1;
+  const noiseSrc = ctx.createBufferSource();
+  noiseSrc.buffer = noiseBuffer;
+  noiseSrc.loop = true;
+  const noiseFilter = ctx.createBiquadFilter();
+  noiseFilter.type = 'bandpass';
+  noiseFilter.frequency.value = 400;
+  noiseFilter.Q.value = 1.2;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.value = 0;
+  noiseGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2);
+  noiseSrc.connect(noiseFilter);
+  noiseFilter.connect(noiseGain);
+  noiseGain.connect(dest);
+  noiseGain.connect(convolver);
+  noiseSrc.start();
+  musicNodes.push(noiseSrc, noiseFilter, noiseGain);
+
+  /* Slow LFO modulating the noise filter cutoff (creates the "drifting" feel) */
+  const noiseLFO = ctx.createOscillator();
+  noiseLFO.frequency.value = 0.07;
+  const noiseLFOGain = ctx.createGain();
+  noiseLFOGain.gain.value = 300;
+  noiseLFO.connect(noiseLFOGain);
+  noiseLFOGain.connect(noiseFilter.frequency);
+  noiseLFO.start();
+  musicNodes.push(noiseLFO, noiseLFOGain);
+
+  /* 2) Deep drone (rooted, evolving) — 3 detuned oscillators */
+  const droneFreqs = [55, 82.41, 110]; /* A1, E2, A2 */
+  droneFreqs.forEach((freq, i) => {
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    osc1.type = 'sine'; osc1.frequency.value = freq;
+    osc2.type = 'sine'; osc2.frequency.value = freq * 1.0035; /* detune */
+    const g = ctx.createGain();
+    g.gain.value = 0;
+    g.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 2);
+    /* Slow vibrato */
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = 0.15 + i * 0.07;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0.4;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc1.frequency);
+    /* Lowpass for warmth */
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 800;
+    lp.Q.value = 0.7;
+    osc1.connect(lp);
+    osc2.connect(lp);
+    lp.connect(g);
+    g.connect(dest);
+    g.connect(convolver);
+    osc1.start(); osc2.start(); lfo.start();
+    musicNodes.push(osc1, osc2, g, lfo, lfoGain, lp);
+  });
+
+  /* 3) Shimmer pad — high frequency, very quiet, slow attack */
+  const padFreqs = [440, 660, 880];
+  padFreqs.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = freq * (1 + (Math.random() - 0.5) * 0.01);
+    const g = ctx.createGain();
+    g.gain.value = 0;
+    g.gain.linearRampToValueAtTime(0.008, ctx.currentTime + 4);
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 400;
+    osc.connect(hp);
+    hp.connect(g);
+    g.connect(dest);
+    g.connect(convolver);
+    osc.start();
+    musicNodes.push(osc, g, hp);
+  });
+}
+
+function stopMusic() {
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  musicNodes.forEach(n => {
+    if (n.gain) {
+      try { n.gain.cancelScheduledValues(now); n.gain.setValueAtTime(n.gain.value, now); n.gain.linearRampToValueAtTime(0, now + 0.8); } catch(e){}
+    }
+  });
+  setTimeout(() => {
+    musicNodes.forEach(n => { try { n.stop && n.stop(); } catch(e){} });
+    musicNodes = [];
+  }, 900);
+}
+
+/* ═══ SFX PRESETS — with TYPE sound ═══ */
 const SOUND_PRESETS = {
-  click: { type: 'sine', freq: 800, dur: 0.04, vol: 0.06 },
-  pop:   { type: 'sine', freq: 600, dur: 0.06, vol: 0.08, sweep: 1.5 },
-  hover: { type: 'sine', freq: 1200, dur: 0.018, vol: 0.025 },
-  success: { type: 'triangle', freq: 523, dur: 0.15, vol: 0.08, sweep: 1.5 },
-  error: { type: 'sawtooth', freq: 200, dur: 0.15, vol: 0.06, sweep: 0.5 },
+  click:  { type: 'sine', freq: 800, dur: 0.04, vol: 0.06 },
+  pop:    { type: 'sine', freq: 600, dur: 0.06, vol: 0.08, sweep: 1.5 },
+  hover:  { type: 'sine', freq: 1200, dur: 0.015, vol: 0.02 },
+  type:   { type: 'square', freq: 1800, dur: 0.012, vol: 0.025, lp: 3500 }, /* typewriter */
+  success:{ type: 'triangle', freq: 523, dur: 0.15, vol: 0.08, sweep: 1.5 },
+  error:  { type: 'sawtooth', freq: 200, dur: 0.15, vol: 0.06, sweep: 0.5 },
   swoosh: { type: 'triangle', freq: 400, dur: 0.12, vol: 0.05, sweep: 2 },
-  open:  { type: 'sine', freq: 400, dur: 0.18, vol: 0.07, sweep: 1.4 },
-  close: { type: 'sine', freq: 400, dur: 0.12, vol: 0.05, sweep: 0.6 },
+  open:   { type: 'sine', freq: 400, dur: 0.18, vol: 0.07, sweep: 1.4 },
+  close:  { type: 'sine', freq: 400, dur: 0.12, vol: 0.05, sweep: 0.6 },
   whoosh: { type: 'sine', freq: 200, dur: 0.3, vol: 0.04, sweep: 3 },
-  ambient: { type: 'sine', freq: 220, dur: 0.5, vol: 0.02 },
+  click_soft: { type: 'sine', freq: 1000, dur: 0.03, vol: 0.04 },
 };
 
 function play(type = 'click') {
   if (!soundEnabled) return;
   const ctx = ensureAudio();
-  if (!ctx || !masterGain) return;
+  if (!ctx || !sfxGain) return;
   const p = SOUND_PRESETS[type] || SOUND_PRESETS.click;
   try {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
+    let lastNode = osc;
     osc.type = p.type;
     osc.frequency.setValueAtTime(p.freq, ctx.currentTime);
     if (p.sweep) osc.frequency.exponentialRampToValueAtTime(p.freq * p.sweep, ctx.currentTime + p.dur);
+    /* Optional lowpass for type sound (softer edge) */
+    if (p.lp) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = p.lp;
+      osc.disconnect();
+      osc.connect(lp);
+      lastNode = lp;
+    }
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(p.vol, ctx.currentTime + 0.005);
+    gain.gain.linearRampToValueAtTime(p.vol, ctx.currentTime + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + p.dur);
-    osc.connect(gain);
-    gain.connect(masterGain);
+    lastNode.connect(gain);
+    gain.connect(sfxGain);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + p.dur + 0.02);
   } catch(e) {}
 }
 
-/* ═══ CUSTOM SOUNDS — User-uploaded ═══ */
+/* ═══ CUSTOM SOUNDS (user-uploaded) ═══ */
 const customSounds = {};
-function loadCustomSound(name, url) {
+async function loadCustomSound(name, url) {
   return new Promise((resolve, reject) => {
     const audio = new Audio(url);
     audio.preload = 'auto';
-    audio.addEventListener('canplaythrough', () => {
-      customSounds[name] = audio;
-      resolve(audio);
-    });
+    audio.addEventListener('canplaythrough', () => { customSounds[name] = audio; resolve(audio); });
     audio.addEventListener('error', reject);
   });
 }
-
 function playCustom(name) {
   if (customSounds[name]) {
     customSounds[name].currentTime = 0;
     customSounds[name].play().catch(()=>{});
   }
 }
+window.SoundFX = {
+  play, loadCustomSound, playCustom,
+  presets: Object.keys(SOUND_PRESETS),
+  sounds: customSounds,
+  startMusic, stopMusic, toggleMusic, toggleSound,
+  isSoundEnabled: () => soundEnabled,
+  isMusicEnabled: () => musicEnabled,
+};
 
-/* Expose for user use */
-window.SoundFX = { play, loadCustomSound, playCustom, presets: Object.keys(SOUND_PRESETS), sounds: customSounds };
-
-/* ═══ BACKGROUND MUSIC — ambient generative ═══ */
-function startMusic() {
-  if (musicNodes.length) return;
-  const ctx = ensureAudio();
-  if (!ctx || !masterGain) return;
-  /* Generate a slow ambient pad: 3 detuned sine oscillators with slow LFO */
-  const baseFreqs = [110, 164.81, 220]; // A2, E3, A3
-  baseFreqs.forEach((freq, i) => {
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    osc1.type = 'sine'; osc1.frequency.value = freq;
-    osc2.type = 'sine'; osc2.frequency.value = freq * 1.005; // detune
-    lfo.type = 'sine'; lfo.frequency.value = 0.1 + i * 0.05;
-    lfoGain.gain.value = 0.02;
-    gain.gain.value = 0;
-    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 1.5);
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
-    osc1.connect(gain);
-    osc2.connect(gain);
-    gain.connect(masterGain);
-    osc1.start(); osc2.start(); lfo.start();
-    musicNodes.push(osc1, osc2, lfo, gain);
-  });
-}
-function stopMusic() {
-  musicNodes.forEach(n => { try { n.stop && n.stop(); } catch(e){} });
-  musicNodes = [];
-}
-
-/* ═══ CURSOR MOVEMENT SOUND (subtle ambient) ═══ */
-let lastCursorSound = 0;
-const CURSOR_SOUND_THROTTLE = 200; // ms
-document.addEventListener('mousemove', (e) => {
+/* ═══ TYPE SOUND — on input/textarea keydown ═══ */
+let lastTypeTime = 0;
+const TYPE_THROTTLE = 50; /* ms */
+function handleType(e) {
   if (!soundEnabled) return;
+  /* Only play on actual character keys, not ctrl/meta/etc */
+  if (e.key.length !== 1) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
   const now = performance.now();
-  if (now - lastCursorSound < CURSOR_SOUND_THROTTLE) return;
-  lastCursorSound = now;
-  // Only play cursor sound if moving significantly
-  // (very subtle, low volume)
-  if (Math.random() > 0.7) play('hover');
+  if (now - lastTypeTime < TYPE_THROTTLE) return;
+  lastTypeTime = now;
+  /* Vary pitch slightly so it doesn't sound mechanical */
+  const variant = Math.random() > 0.5 ? 'type' : 'click_soft';
+  play(variant);
+}
+document.addEventListener('keydown', e => {
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') handleType(e);
 });
 
 /* ═══ SOUND TOGGLES ═══ */
 const soundToggle = document.getElementById('soundToggle');
 const bgmToggle = document.getElementById('bgmToggle');
-
-function toggleSound() {
-  soundEnabled = !soundEnabled;
+function updateSoundToggle() {
   soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+  soundToggle.classList.toggle('active', soundEnabled);
   soundToggle.classList.toggle('muted', !soundEnabled);
+}
+function updateBgmToggle() {
+  bgmToggle.textContent = musicEnabled ? '🎶' : '🎵';
+  bgmToggle.classList.toggle('active', musicEnabled);
+  bgmToggle.classList.toggle('muted', !musicEnabled);
+}
+function toggleSound() {
+  ensureAudio();
+  soundEnabled = !soundEnabled;
+  updateSoundToggle();
   if (soundEnabled) play('pop');
 }
 function toggleMusic() {
+  ensureAudio();
+  if (!firstUserGesture) unlockAudio();
   musicEnabled = !musicEnabled;
-  bgmToggle.textContent = musicEnabled ? '🎶' : '🎵';
-  bgmToggle.classList.toggle('muted', !musicEnabled);
   if (musicEnabled) { startMusic(); play('open'); }
   else { stopMusic(); play('close'); }
+  updateBgmToggle();
 }
-
 soundToggle.addEventListener('click', toggleSound);
 bgmToggle.addEventListener('click', toggleMusic);
+updateSoundToggle(); updateBgmToggle();
 
-/* Click sounds on interactive elements */
+/* Click sound on all interactive elements (delegation) */
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('a, button, .work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button, .form-group input, .form-group textarea, .form-group select');
+  const t = e.target.closest('a, button, .work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button');
   if (t) play('click');
 }, true);
-
-/* Modal close sound */
 document.getElementById('modalClose').addEventListener('click', () => play('close'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) play('close'); });
 
 /* ═══ COUNTERS ═══ */
-const counters = document.querySelectorAll('.metric-num[data-count]');
+const counters = document.querySelectorAll('.metric-num[data-count], .hero-stat-num[data-count]');
 const cObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (!e.isIntersecting) return;
@@ -1396,14 +1506,12 @@ const cObs = new IntersectionObserver(entries => {
 }, { threshold: 0.5 });
 counters.forEach(el => cObs.observe(el));
 
-/* ═══ FOOTER YEAR ═══ */
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* ═══ FORM ═══ */
 function handleSubmit(e) {
   e.preventDefault();
   const b = document.getElementById('submitBtn');
-  const o = b.textContent;
+  const original = b.textContent;
   b.textContent = 'Sending...';
   b.disabled = true;
   play('swoosh');
@@ -1411,47 +1519,45 @@ function handleSubmit(e) {
     b.textContent = 'Message sent ✓';
     b.style.background = 'var(--status)';
     play('success');
-    setTimeout(() => { b.textContent = o; b.style.background = ''; b.disabled = false; document.getElementById('contactForm').reset(); }, 2000);
+    setTimeout(() => { b.textContent = original; b.style.background = ''; b.disabled = false; document.getElementById('contactForm').reset(); }, 2000);
   }, 1000);
 }
 
-/* ═══ ANTI-INSPECT / DEVTOOLS PROTECTION ═══ */
-/* Block right-click context menu */
-document.addEventListener('contextmenu', (e) => {
+/* ═══ SLOW SCROLL — wheel damping ═══ */
+let scrollVel = 0, scrollTarget = 0;
+const SCROLL_FRICTION = 0.82, SCROLL_MAX = 35;
+window.addEventListener('wheel', e => {
+  scrollTarget = Math.max(-SCROLL_MAX, Math.min(SCROLL_MAX, scrollTarget + e.deltaY * 0.25));
   e.preventDefault();
-  return false;
-});
+  scrollVel = scrollTarget;
+  window.scrollBy({ top: scrollVel });
+  scrollTarget *= SCROLL_FRICTION;
+  if (Math.abs(scrollTarget) < 0.4) scrollTarget = 0;
+}, { passive: false });
+let lastTouchY = 0;
+window.addEventListener('touchstart', e => { lastTouchY = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchmove', e => {
+  const y = e.touches[0].clientY;
+  const dy = (lastTouchY - y) * 0.85;
+  lastTouchY = y;
+  window.scrollBy({ top: dy });
+  e.preventDefault();
+}, { passive: false });
 
-/* Block keyboard shortcuts for DevTools / View Source / Save */
-document.addEventListener('keydown', (e) => {
-  // F12
+/* ═══ ANTI-DEVTOOLS ═══ */
+document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
+document.addEventListener('keydown', e => {
   if (e.key === 'F12') { e.preventDefault(); play('error'); return false; }
-  // Ctrl+Shift+I (DevTools)
-  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); play('error'); return false; }
-  // Ctrl+Shift+J (Console)
-  if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); play('error'); return false; }
-  // Ctrl+Shift+C (Inspect element)
-  if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); play('error'); return false; }
-  // Ctrl+U (View source)
-  if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); play('error'); return false; }
-  // Ctrl+S (Save page)
-  if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); play('error'); return false; }
-  // Ctrl+P (Print)
-  if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) { e.preventDefault(); play('error'); return false; }
-  // Cmd+Opt+I (Mac DevTools)
-  if (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); play('error'); return false; }
-  return true;
+  if (e.ctrlKey && e.shiftKey && /^[ijc]$/i.test(e.key)) { e.preventDefault(); play('error'); return false; }
+  if (e.ctrlKey && /^[usp]$/i.test(e.key)) { e.preventDefault(); play('error'); return false; }
+  if (e.metaKey && e.altKey && e.key.toLowerCase() === 'i') { e.preventDefault(); play('error'); return false; }
 });
-
-/* Detect DevTools opening — uses window size comparison */
 const devtoolsWarning = document.getElementById('devtoolsWarning');
-let devToolsThreshold = 160;
 let devToolsDetected = false;
-
 function detectDevTools() {
-  const widthDiff = window.outerWidth - window.innerWidth;
-  const heightDiff = window.outerHeight - window.innerHeight;
-  if ((widthDiff > devToolsThreshold || heightDiff > devToolsThreshold) && !devToolsDetected) {
+  const wd = window.outerWidth - window.innerWidth;
+  const hd = window.outerHeight - window.innerHeight;
+  if ((wd > 160 || hd > 160) && !devToolsDetected) {
     devToolsDetected = true;
     devtoolsWarning.classList.add('show');
     play('error');
@@ -1459,20 +1565,17 @@ function detectDevTools() {
   }
 }
 setInterval(detectDevTools, 1000);
-
-/* Block text selection on UI chrome (to prevent accidental highlight when inspecting) */
-document.addEventListener('selectstart', (e) => {
+document.addEventListener('selectstart', e => {
   if (e.target.closest('input, textarea, .selectable')) return;
   if (e.target.closest('.work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header')) {
     e.preventDefault();
   }
 });
 
-/* Console warning */
 console.log('%c👋 Hey there!', 'color: #6C63FF; font-size: 24px; font-weight: bold;');
 console.log('%cThis site is protected. DevTools detection is active.', 'color: #FFB454; font-size: 14px;');
-console.log('%cSound FX: window.SoundFX.play("click") | window.SoundFX.play("pop") | window.SoundFX.play("success")', 'color: #9195A0; font-size: 12px;');
 console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.keys(SOUND_PRESETS));
+console.log('%cTry:', 'color: #6C63FF;', 'SoundFX.play("type") | SoundFX.startMusic() | SoundFX.loadCustomSound("name", "url.mp3")');
 
 /* ═══ LOADER ═══ */
 window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600));
