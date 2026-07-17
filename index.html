@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gokula Kumaran S — Portfolio</title>
+<meta name="description" content="Portfolio of Gokula Kumaran S — Computer Science Engineering student building procedural systems in Unity and full-stack web applications with Python & Django.">
+<meta name="theme-color" content="#05070a">
+<meta property="og:title" content="Gokula Kumaran S — Portfolio">
+<meta property="og:description" content="Game systems in Unity. Full-stack platforms in Django. One CS engineer, two disciplines.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,6 92,50 50,94 8,50' fill='%230d1319' stroke='%236fe0ff' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ==========================================================================
+   1. RESET & BASE
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+ul, ol { list-style: none; }
+button { font: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+
+/* ==========================================================================
+   2. DESIGN TOKENS
+   ========================================================================== */
+:root {
+  --void:      #05070a;
+  --charcoal:  #0d1319;
+  --charcoal-2:#121a22;
+  --slate:     #2e3f4f;
+  --slate-2:   #445a6e;
+  --ice:       #a9c9e6;
+  --ice-dim:   #7e97ab;
+  --frost:     #f2f8fc;
+  --cyan:      #6fe0ff;
+  --cyan-dim:  rgba(111, 224, 255, 0.5);
+  --magenta:   #ff7ad1;
+
+  --line:         rgba(255,255,255,0.09);
+  --glass-bg:      rgba(169, 201, 230, 0.055);
+  --glass-bg-2:    rgba(169, 201, 230, 0.09);
+  --glass-border:  rgba(255,255,255,0.14);
+
+  --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --radius:    20px;
+  --radius-sm: 12px;
+  --container: 1220px;
+  --ease-snap: cubic-bezier(.16,1,.3,1);
+}
+
+/* ==========================================================================
+   3. BASE TYPOGRAPHY & LAYOUT
+   ========================================================================== */
+body {
+  background: var(--void);
+  color: var(--ice);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body.is-loading { overflow: hidden; height: 100vh; }
+body.nav-open { overflow: hidden; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--frost);
+  line-height: 1.1;
+  font-weight: 600;
+}
+h2 { font-size: clamp(1.9rem, 4vw, 3rem); letter-spacing: -0.01em; }
+h3 { font-size: 1.3rem; font-weight: 600; }
+p { color: var(--ice); }
+strong { color: var(--frost); font-weight: 600; }
+
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+.section { padding-block: clamp(4.5rem, 10vw, 8rem); position: relative; }
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+}
+.section-eyebrow::before {
+  content: '';
+  width: 18px; height: 1px;
+  background: var(--cyan);
+}
+.section-head { max-width: 640px; margin-bottom: 3rem; }
+.section-head p { margin-top: .9rem; color: var(--ice-dim); font-size: 1.02rem; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--frost); color: var(--void);
+  padding: .75rem 1.25rem; z-index: 10001;
+  font-family: var(--font-mono); font-size: .85rem;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   4. AMBIENT BACKGROUND (gradients / grain / vignette)
+   ========================================================================== */
+.ambient { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.ambient-glow {
+  position: absolute; border-radius: 50%; filter: blur(90px);
+  will-change: transform;
+}
+.ambient-glow--1 {
+  width: 62vw; height: 62vw; left: -18vw; top: -14vw;
+  background: radial-gradient(circle, rgba(46,63,79,.85), transparent 70%);
+}
+.ambient-glow--2 {
+  width: 55vw; height: 55vw; right: -20vw; top: 30vh;
+  background: radial-gradient(circle, rgba(111,224,255,.14), transparent 70%);
+}
+.ambient-glow--3 {
+  width: 45vw; height: 45vw; left: 10vw; bottom: -20vw;
+  background: radial-gradient(circle, rgba(169,201,230,.10), transparent 70%);
+}
+.grain {
+  position: absolute; inset: -60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .05;
+  mix-blend-mode: overlay;
+}
+.vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(5,7,10,.9) 100%);
+}
+
+/* content sits above ambient layer */
+.site-header, main, .site-footer { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   5. PRELOADER
+   ========================================================================== */
+.preloader {
+  position: fixed; inset: 0; z-index: 10000;
+  background: var(--void);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1.5rem;
+  transition: opacity .7s var(--ease-snap), visibility .7s var(--ease-snap);
+}
+.preloader-mark {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.4rem; letter-spacing: .1em; color: var(--frost);
+}
+.preloader-bar {
+  width: min(220px, 60vw); height: 2px; background: rgba(255,255,255,.1);
+  border-radius: 2px; overflow: hidden;
+}
+.preloader-bar span {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--slate-2), var(--cyan));
+  transition: width .15s linear;
+}
+.preloader-pct { font-family: var(--font-mono); font-size: .75rem; color: var(--ice-dim); letter-spacing: .08em; }
+.preloader.is-done { opacity: 0; visibility: hidden; }
+
+/* ==========================================================================
+   6. CUSTOM CURSOR (desktop, fine pointer only)
+   ========================================================================== */
+.cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); }
+.cursor-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--frost); z-index: 9999;
+}
+.cursor-ring {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--ice-dim);
+  transition: width .25s var(--ease-snap), height .25s var(--ease-snap), border-color .25s;
+}
+.cursor-ring.is-active { width: 52px; height: 52px; border-color: var(--cyan); }
+.has-custom-cursor, .has-custom-cursor a, .has-custom-cursor button { cursor: none; }
+
+/* ==========================================================================
+   7. HEADER & NAV
+   ========================================================================== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  padding-block: 1.1rem;
+  transition: padding .35s var(--ease-snap), background .35s var(--ease-snap), border-color .35s var(--ease-snap);
+  border-bottom: 1px solid transparent;
+}
+.site-header.is-scrolled {
+  padding-block: .7rem;
+  background: rgba(5,7,10,.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom-color: var(--line);
+}
+.header-inner {
+  max-width: var(--container); margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+}
+.brand {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;
+  color: var(--frost); text-decoration: none; letter-spacing: .02em;
+}
+.brand-dot { color: var(--cyan); }
+
+.main-nav ul { display: flex; gap: 2.1rem; }
+.main-nav a {
+  position: relative;
+  font-size: .92rem; text-decoration: none; color: var(--ice);
+  opacity: 1; transform: scale(1);
+  transition: opacity .3s var(--ease-snap), transform .3s var(--ease-snap), text-shadow .3s var(--ease-snap), color .3s;
+  padding-bottom: .3rem;
+}
+.main-nav a::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px; background: var(--cyan);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s cubic-bezier(.65,0,.35,1);
+}
+.main-nav ul:has(a:hover) a { opacity: .4; transform: scale(.97); }
+.main-nav a:hover {
+  opacity: 1; color: var(--frost); transform: scale(1.04);
+  text-shadow: 0 0 14px var(--cyan-dim);
+}
+.main-nav a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  font-family: var(--font-mono); font-size: .8rem; text-decoration: none;
+  padding: .6rem 1.15rem; border-radius: 999px;
+  border: 1px solid var(--glass-border); color: var(--frost);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: border-color .3s, color .3s, box-shadow .3s;
+  white-space: nowrap;
+}
+.nav-cta:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 20px -6px var(--cyan-dim); }
+
+.nav-toggle { display: none; flex-direction: column; gap: 5px; width: 26px; z-index: 90; }
+.nav-toggle span { display: block; height: 1.5px; width: 100%; background: var(--frost); transition: transform .3s var(--ease-snap), opacity .3s; }
+.nav-toggle.is-active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(5,7,10,.97);
+  backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transform: translateY(-8px);
+  transition: opacity .4s var(--ease-snap), transform .4s var(--ease-snap), visibility .4s;
+}
+.mobile-nav.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+.mobile-nav ul { display: flex; flex-direction: column; gap: 1.6rem; text-align: center; }
+.mobile-nav a { font-family: var(--font-display); font-size: 1.7rem; text-decoration: none; color: var(--frost); }
+.mobile-nav a:hover { color: var(--cyan); }
+
+/* ==========================================================================
+   8. HERO & GLITCH TEXT
+   ========================================================================== */
+.hero {
+  min-height: 92vh;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  padding-block: 6rem 4rem;
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono); font-size: .78rem; letter-spacing: .1em;
+  color: var(--cyan); margin-bottom: 1.6rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .7s var(--ease-snap) .1s, transform .7s var(--ease-snap) .1s;
+}
+
+.glitch {
+  position: relative;
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 8.4vw, 6.4rem);
+  letter-spacing: -0.015em;
+  color: var(--frost);
+  text-transform: uppercase;
+  line-height: 1.02;
+  opacity: 0;
+  transition: opacity .5s var(--ease-snap);
+}
+.glitch::before, .glitch::after {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  background: var(--void);
+  opacity: 0;
+}
+.glitch::before { color: var(--cyan); clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
+.glitch::after  { color: var(--magenta); clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); }
+
+.glitch:hover::before, .glitch.is-glitching::before { animation: glitchBefore .5s steps(7) both; opacity: .9; }
+.glitch:hover::after,  .glitch.is-glitching::after  { animation: glitchAfter .5s steps(7) both; opacity: .9; }
+@keyframes glitchBefore {
+  0%,100% { transform: translate(0,0); opacity: 0; }
+  10% { opacity: .9; }
+  30% { transform: translate(-9px,-2px); }
+  50% { transform: translate(-4px,1px); }
+  70% { transform: translate(-7px,-1px); }
+  90% { transform: translate(-2px,2px); opacity:.9; }
+}
+@keyframes glitchAfter {
+  0%,100% { transform: translate(0,0); opacity: 0; }
+  10% { opacity: .9; }
+  30% { transform: translate(9px,2px); }
+  50% { transform: translate(4px,-1px); }
+  70% { transform: translate(7px,1px); }
+  90% { transform: translate(2px,-2px); opacity:.9; }
+}
+
+.hero-tagline {
+  max-width: 560px; font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: var(--ice); margin-top: 1.6rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .7s var(--ease-snap) .25s, transform .7s var(--ease-snap) .25s;
+}
+.hero-actions {
+  display: flex; gap: 1rem; margin-top: 2.4rem; flex-wrap: wrap;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .7s var(--ease-snap) .4s, transform .7s var(--ease-snap) .4s;
+}
+
+body.is-loaded .hero-eyebrow,
+body.is-loaded .hero-tagline,
+body.is-loaded .hero-actions { opacity: 1; transform: translateY(0); }
+body.is-loaded .glitch { opacity: 1; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .9rem 1.7rem; border-radius: 999px;
+  font-family: var(--font-mono); font-size: .82rem;
+  letter-spacing: .04em; text-transform: uppercase;
+  text-decoration: none; transition: transform .3s var(--ease-snap), box-shadow .3s var(--ease-snap), border-color .3s, color .3s;
+}
+.btn--primary {
+  background: linear-gradient(135deg, var(--frost), var(--cyan));
+  color: var(--void); font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 10px 34px -12px var(--cyan-dim);
+}
+.btn--primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 16px 42px -12px var(--cyan-dim); }
+.btn--ghost {
+  background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--frost);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.btn--ghost:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+
+.scroll-cue {
+  position: absolute; bottom: 2.4rem; left: 0;
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  color: var(--ice-dim); text-decoration: none;
+  font-family: var(--font-mono); font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+}
+.scroll-cue-line { width: 1px; height: 34px; background: linear-gradient(var(--cyan), transparent); animation: scrollPulse 2.2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%,100% { opacity: .25; transform: scaleY(.55); } 50% { opacity: 1; transform: scaleY(1); } }
+
+/* ==========================================================================
+   9. GLASS CARD (shared) + SCROLL REVEAL
+   ========================================================================== */
+.glass-card {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 0 40px rgba(169,201,230,.05),
+    0 24px 60px -24px rgba(0,0,0,.65);
+  overflow: hidden;
+}
+.glass-card::before {
+  content: ''; position: absolute; inset: 0; padding: 1px; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,0) 45%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none;
+}
+
+[data-reveal] {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity .8s var(--ease-snap), transform .8s var(--ease-snap);
+}
+[data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+[data-reveal-delay="1"] { transition-delay: .1s; }
+[data-reveal-delay="2"] { transition-delay: .2s; }
+
+/* ==========================================================================
+   10. ABOUT
+   ========================================================================== */
+.about-card { padding: clamp(2rem, 5vw, 3.5rem); max-width: 880px; }
+.about-card p { font-size: 1.05rem; max-width: 640px; }
+.about-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+  margin-top: 2.5rem; padding-top: 2.2rem; border-top: 1px solid var(--line);
+}
+.about-stats div strong { display: block; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cyan); font-weight: 500; margin-bottom: .5rem; }
+.about-stats div span { font-size: .92rem; color: var(--frost); line-height: 1.4; display: block; }
+
+/* ==========================================================================
+   11. PROJECTS / ICE-BLOCK TILT CARDS
+   ========================================================================== */
+.project-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem;
+  perspective: 1400px;
+}
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .3s var(--ease-snap);
+  display: flex; flex-direction: column;
+}
+.project-media {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  margin: 1.1rem 1.1rem 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: radial-gradient(circle at 30% 20%, rgba(169,201,230,.12), transparent 60%), var(--charcoal-2);
+  transform: translateZ(-16px);
+  transition: filter .4s ease;
+}
+.project-media svg {
+  width: 100%; height: 100%;
+  -webkit-mask-image: radial-gradient(ellipse 88% 88% at 50% 50%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 88% 88% at 50% 50%, #000 55%, transparent 100%);
+}
+.project-card:hover .project-media {
+  filter: drop-shadow(-2px 0 0 rgba(111,224,255,.55)) drop-shadow(2px 0 0 rgba(255,122,209,.5));
+}
+.project-tag {
+  position: absolute; top: 1.6rem; left: 1.6rem;
+  transform: translateZ(28px);
+  font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase;
+  padding: .35rem .7rem; border-radius: 999px;
+  background: rgba(5,7,10,.55); border: 1px solid var(--glass-border);
+  color: var(--cyan);
+  backdrop-filter: blur(6px);
+}
+.project-body { padding: 1.5rem 1.6rem 1.8rem; transform: translateZ(10px); }
+.project-body h3 { margin-bottom: .7rem; }
+.project-body p { font-size: .92rem; color: var(--ice-dim); }
+.project-stack {
+  display: flex; flex-wrap: wrap; gap: .45rem;
+  margin-top: 1.2rem; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .02em;
+}
+.project-stack li {
+  padding: .32rem .68rem; border-radius: 999px;
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,.03);
+  color: var(--ice);
+}
+.work-more { margin-top: 2.5rem; font-size: .92rem; color: var(--ice-dim); }
+.work-more a { color: var(--cyan); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .3s; }
+.work-more a:hover { border-color: var(--cyan); }
+
+/* project illustration fills, shared across svgs */
+.ill-bg { fill: var(--charcoal-2); }
+.ill-slate-1 { fill: #26343f; }
+.ill-slate-2 { fill: #35485a; }
+.ill-slate-3 { fill: #47617a; }
+.ill-line { stroke: var(--cyan); stroke-opacity: .55; }
+.ill-line-dim { stroke: var(--ice); stroke-opacity: .25; }
+.ill-dot { fill: var(--cyan); }
+.ill-panel { fill: #101720; stroke: rgba(255,255,255,.1); }
+
+/* ==========================================================================
+   12. SKILLS MARQUEE
+   ========================================================================== */
+.marquee-section { padding-block: 3.5rem; border-block: 1px solid var(--line); overflow: hidden; }
+.marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee-track {
+  display: flex; align-items: center; gap: 2.6rem;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-item {
+  font-family: var(--font-display); font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+  color: var(--ice-dim); white-space: nowrap; transition: color .3s;
+}
+.marquee-sep { color: var(--cyan); opacity: .6; font-size: .9rem; }
+
+/* ==========================================================================
+   13. EXPERIENCE TIMELINE
+   ========================================================================== */
+.timeline { position: relative; max-width: 760px; }
+.timeline::before {
+  content: ''; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 1px;
+  background: linear-gradient(var(--line), var(--slate-2) 20%, var(--slate-2) 80%, var(--line));
+}
+.timeline-item { position: relative; padding-left: 2.6rem; margin-bottom: 2.2rem; }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot {
+  position: absolute; left: 2px; top: 1.9rem; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--charcoal); border: 2px solid var(--cyan);
+  box-shadow: 0 0 14px 2px var(--cyan-dim);
+}
+.timeline-content { padding: 1.5rem 1.75rem; }
+.timeline-date { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .07em; text-transform: uppercase; color: var(--cyan); }
+.timeline-org { color: var(--ice); font-size: .88rem; margin: .4rem 0 .8rem; }
+.timeline-content p:last-child { font-size: .92rem; color: var(--ice-dim); }
+
+/* ==========================================================================
+   14. FOOTER / CONTACT / PARTICLES
+   ========================================================================== */
+.site-footer {
+  position: relative; overflow: hidden;
+  padding-block: clamp(4.5rem, 12vw, 9rem) 3rem;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, transparent, rgba(111,224,255,.03));
+}
+.particles { position: absolute; inset: 0; overflow: hidden; }
+.particle {
+  position: absolute; border-radius: 50%;
+  background: var(--frost);
+  box-shadow: 0 0 6px 1px var(--cyan-dim);
+  opacity: 0;
+  animation: particleFloat var(--dur, 14s) linear var(--delay, 0s) infinite;
+}
+@keyframes particleFloat {
+  0% { opacity: 0; transform: translate(0,0); }
+  12% { opacity: .75; }
+  88% { opacity: .4; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, -100px)); }
+}
+.footer-inner { position: relative; z-index: 1; }
+.footer-cta {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.4rem, 9vw, 6rem);
+  line-height: .98; letter-spacing: -.02em; text-transform: uppercase;
+  color: var(--frost); margin-bottom: 3rem;
+}
+.footer-links { display: flex; flex-wrap: wrap; gap: 2.4rem; margin-bottom: 3.5rem; }
+.footer-links a {
+  font-family: var(--font-mono); font-size: 1rem; text-decoration: none;
+  color: var(--ice); letter-spacing: .02em;
+  transition: letter-spacing .35s var(--ease-snap), color .35s, text-shadow .35s;
+}
+.footer-links a:hover { color: var(--frost); letter-spacing: .09em; text-shadow: 0 0 22px var(--cyan-dim); }
+.footer-bottom {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+  padding-top: 1.75rem; border-top: 1px solid var(--line);
+  font-size: .82rem; color: var(--ice-dim);
+}
+.footer-bottom a { color: var(--ice-dim); text-decoration: none; }
+.footer-bottom a:hover { color: var(--cyan); }
+
+/* ==========================================================================
+   15. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 980px) {
+  .main-nav, .nav-cta { display: none; }
+  .nav-toggle { display: flex; }
+  .project-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .about-stats { grid-template-columns: repeat(2, 1fr); row-gap: 1.6rem; }
+  .project-grid { grid-template-columns: 1fr; }
+  .footer-links { gap: 1.6rem 2rem; }
+  .scroll-cue { display: none; }
+}
+@media (pointer: coarse) {
+  .cursor-dot, .cursor-ring { display: none; }
+}
+
+/* ==========================================================================
+   16. REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .2s !important; }
+  .tilt-card { transform: none !important; }
+  .cursor-dot, .cursor-ring { display: none; }
+}
+</style>
+</head>
+<body class="is-loading">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Preloader -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader-mark">GK.</div>
+  <div class="preloader-bar"><span id="preloaderFill"></span></div>
+  <div class="preloader-pct" id="preloaderPct">0%</div>
+</div>
+
+<!-- Ambient background -->
+<div class="ambient" aria-hidden="true">
+  <div class="ambient-glow ambient-glow--1" data-parallax="0.10"></div>
+  <div class="ambient-glow ambient-glow--2" data-parallax="0.16"></div>
+  <div class="ambient-glow ambient-glow--3" data-parallax="0.06"></div>
+  <div class="grain"></div>
+  <div class="vignette"></div>
+</div>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="#top" class="brand">GK<span class="brand-dot">.</span></a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-cta">Let's talk</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero container" id="top">
+    <p class="hero-eyebrow">// Computer Science Engineer — Game Systems — Full-Stack</p>
+    <h1 class="glitch" data-text="GOKULA KUMARAN S">GOKULA KUMARAN S</h1>
+    <p class="hero-tagline">I build persistent, procedural worlds in Unity and reliable full-stack systems in Python. Currently splitting time between infinite terrain streaming and a Django-based internship platform.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn btn--primary">View Work</a>
+      <a href="#contact" class="btn btn--ghost">Get in Touch</a>
+    </div>
+    <a href="#about" class="scroll-cue" aria-label="Scroll to content">
+      <span class="scroll-cue-line"></span>
+      <span>Scroll</span>
+    </a>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="glass-card about-card" data-reveal>
+        <span class="section-eyebrow">About</span>
+        <p>I'm a Computer Science Engineering student at Kingston Engineering College, working across two disciplines that don't usually share a portfolio: real-time procedural systems in Unity, and full-stack web development with Python and Django. I'm drawn to problems at the boundary of performance and structure — seamless terrain streaming, clean LOD transitions, well-normalized data models — and I'm currently applying the web side of that as a full-stack intern.</p>
+        <div class="about-stats">
+          <div><strong>Now</strong><span>Full-Stack Intern, Skiez Digital</span></div>
+          <div><strong>Studying</strong><span>B.E. Computer Science Engineering</span></div>
+          <div><strong>Focus</strong><span>Procedural Systems & Web Platforms</span></div>
+          <div><strong>Based</strong><span>Tamil Nadu, India</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="section" id="work">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="section-eyebrow">Selected Work</span>
+        <h2>Systems I've built</h2>
+        <p>Three projects spanning game systems, web platforms, and data design — each encased below the way this whole site treats things worth a closer look.</p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- Project 1 -->
+        <article class="project-card tilt-card glass-card" data-reveal>
+          <div class="project-media">
+            <span class="project-tag">Game Dev</span>
+            <svg viewBox="0 0 400 280" role="img" aria-label="Abstract illustration of layered procedural terrain">
+              <rect class="ill-bg" width="400" height="280"/>
+              <polygon class="ill-slate-1" points="0,210 55,120 115,185 175,95 235,175 300,110 365,190 400,160 400,280 0,280"/>
+              <polygon class="ill-slate-2" points="0,245 70,180 150,225 215,155 290,215 400,190 400,280 0,280"/>
+              <polygon class="ill-slate-3" points="0,270 90,235 190,260 260,220 340,255 400,240 400,280 0,280"/>
+              <line class="ill-line" x1="0" y1="120" x2="400" y2="120" stroke-dasharray="1 9" stroke-width="1"/>
+              <line class="ill-line-dim" x1="0" y1="60" x2="400" y2="60" stroke-dasharray="1 9" stroke-width="1"/>
+              <circle class="ill-dot" cx="115" cy="185" r="2.5"/>
+              <circle class="ill-dot" cx="290" cy="215" r="2"/>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>Procedural Terrain Engine</h3>
+            <p>A chunk-based, infinite-streaming terrain system for Unity — seamless chunk loading, LOD transitions without visible seams, and biome blending, paired with a custom HLSL triplanar shader. Built toward the kind of endless-world feel games like No Man's Sky are known for.</p>
+            <ul class="project-stack"><li>Unity</li><li>C#</li><li>HLSL</li></ul>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project-card tilt-card glass-card" data-reveal data-reveal-delay="1">
+          <div class="project-media">
+            <span class="project-tag">Full-Stack</span>
+            <svg viewBox="0 0 400 280" role="img" aria-label="Abstract illustration of a web application dashboard">
+              <rect class="ill-bg" width="400" height="280"/>
+              <rect class="ill-panel" x="40" y="35" width="320" height="210" rx="10"/>
+              <circle class="ill-dot" cx="62" cy="57" r="4" opacity=".7"/>
+              <circle class="ill-slate-2" cx="78" cy="57" r="4"/>
+              <circle class="ill-slate-1" cx="94" cy="57" r="4"/>
+              <line class="ill-line-dim" x1="40" y1="76" x2="360" y2="76" stroke-width="1"/>
+              <rect class="ill-slate-1" x="62" y="100" width="120" height="14" rx="4"/>
+              <rect class="ill-slate-2" x="62" y="126" width="80" height="10" rx="4"/>
+              <rect class="ill-panel" x="62" y="156" width="110" height="66" rx="6"/>
+              <rect class="ill-panel" x="188" y="156" width="110" height="66" rx="6"/>
+              <polyline class="ill-line" points="72,205 95,185 120,198 145,170 165,190" fill="none" stroke-width="1.5"/>
+              <line class="ill-line-dim" x1="198" y1="215" x2="288" y2="215" stroke-width="6"/>
+              <line class="ill-line" x1="198" y1="215" x2="250" y2="215" stroke-width="6"/>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>Full-Stack Web Platform</h3>
+            <!-- TODO: personalize with the real scope/features of the internship project -->
+            <p>A full-stack web application built during a team internship — Django and PostgreSQL on the back end, hand-built HTML/CSS/JS on the front. Covers user authentication, structured data models, and a responsive interface, built collaboratively with a four-person team.</p>
+            <ul class="project-stack"><li>Python</li><li>Django</li><li>PostgreSQL</li></ul>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="project-card tilt-card glass-card" data-reveal data-reveal-delay="2">
+          <div class="project-media">
+            <span class="project-tag">Database Design</span>
+            <svg viewBox="0 0 400 280" role="img" aria-label="Abstract illustration of a relational database schema">
+              <rect class="ill-bg" width="400" height="280"/>
+              <ellipse class="ill-slate-2" cx="120" cy="95" rx="58" ry="17"/>
+              <path class="ill-slate-1" d="M62,95 v78 a58,17 0 0 0 116,0 v-78 z"/>
+              <ellipse class="ill-slate-3" cx="120" cy="173" rx="58" ry="17"/>
+              <ellipse class="ill-line" cx="120" cy="95" rx="58" ry="17" fill="none" stroke-width="1.5"/>
+              <line class="ill-line-dim" x1="178" y1="150" x2="248" y2="150" stroke-width="1" stroke-dasharray="4 5"/>
+              <rect class="ill-panel" x="248" y="90" width="110" height="120" rx="8"/>
+              <line class="ill-line-dim" x1="248" y1="120" x2="358" y2="120" stroke-width="1"/>
+              <line class="ill-line-dim" x1="248" y1="150" x2="358" y2="150" stroke-width="1"/>
+              <line class="ill-line-dim" x1="248" y1="180" x2="358" y2="180" stroke-width="1"/>
+              <line class="ill-line" x1="303" y1="90" x2="303" y2="210" stroke-width="1"/>
+              <circle class="ill-dot" cx="248" cy="150" r="2.5"/>
+            </svg>
+          </div>
+          <div class="project-body">
+            <h3>College Examination System</h3>
+            <p>A normalized relational schema for managing student records, exam scheduling, and result processing — designed with attention to referential integrity, sensible indexing, and query performance.</p>
+            <ul class="project-stack"><li>SQL</li><li>DBMS Design</li></ul>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="work-more" data-reveal><!-- TODO: point this at your real GitHub -->More on <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub →</a></p>
+    </div>
+  </section>
+
+  <!-- SKILLS MARQUEE -->
+  <section class="marquee-section" id="skills">
+    <h2 class="visually-hidden">Skills</h2>
+    <ul class="visually-hidden">
+      <li>Unity</li><li>C#</li><li>Procedural Generation</li><li>HLSL Shaders</li><li>Python</li><li>Django</li><li>PostgreSQL</li><li>JavaScript</li><li>HTML5</li><li>CSS3</li><li>Git</li><li>REST APIs</li><li>SQL & DBMS</li><li>OOP</li>
+    </ul>
+    <div class="marquee" aria-hidden="true" data-reveal>
+      <div class="marquee-track" id="marqueeTrack">
+        <span class="marquee-item">Unity</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">C#</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Procedural Generation</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">HLSL Shaders</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Python</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Django</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">PostgreSQL</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">JavaScript</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">HTML5 &amp; CSS3</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Git</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">REST APIs</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">SQL &amp; DBMS</span><span class="marquee-sep">✦</span>
+        <!-- duplicate set — required for seamless -50% loop -->
+        <span class="marquee-item">Unity</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">C#</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Procedural Generation</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">HLSL Shaders</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Python</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Django</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">PostgreSQL</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">JavaScript</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">HTML5 &amp; CSS3</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">Git</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">REST APIs</span><span class="marquee-sep">✦</span>
+        <span class="marquee-item">SQL &amp; DBMS</span><span class="marquee-sep">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="section" id="experience">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="section-eyebrow">Experience</span>
+        <h2>Where the time went</h2>
+      </div>
+      <ol class="timeline">
+        <li class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <span class="timeline-date">Jun – Jul 2026</span>
+            <h3>Python Full-Stack Development Intern</h3>
+            <p class="timeline-org">Skiez Digital — Skiez Technologies India Pvt Ltd, Chengalpattu</p>
+            <p>Working in a four-member team building a full-stack web application with Django, PostgreSQL, and vanilla JavaScript.</p>
+          </div>
+        </li>
+        <li class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <span class="timeline-date">Ongoing</span>
+            <h3>B.E. Computer Science Engineering</h3>
+            <p class="timeline-org">Kingston Engineering College, Anna University</p>
+            <p>Coursework spanning operating systems, DBMS, and core CS fundamentals, alongside self-directed Unity development.</p>
+          </div>
+        </li>
+        <li class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-content glass-card">
+            <span class="timeline-date">Ongoing</span>
+            <h3>Independent Projects</h3>
+            <p class="timeline-org">Self-directed</p>
+            <p>Building procedural generation systems and custom shaders in Unity, focused on infinite terrain streaming techniques.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="particles" id="particles" aria-hidden="true"></div>
+  <div class="container footer-inner">
+    <h2 class="footer-cta" data-reveal>Let's build<br>something</h2>
+    <div class="footer-links" data-reveal>
+      <!-- TODO: replace with your real email -->
+      <a href="mailto:you@example.com">you@example.com</a>
+      <!-- TODO: replace with your GitHub URL -->
+      <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+      <!-- TODO: replace with your LinkedIn URL -->
+      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Gokula Kumaran S. Built by hand with HTML &amp; CSS.</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function initPreloader(){
+    var pre = document.getElementById('preloader');
+    var fill = document.getElementById('preloaderFill');
+    var pct = document.getElementById('preloaderPct');
+    if(!pre) return;
+
+    function finish(){
+      document.body.classList.remove('is-loading');
+      document.body.classList.add('is-loaded');
+      pre.classList.add('is-done');
+      setTimeout(function(){ if(pre.parentNode){ pre.parentNode.removeChild(pre); } }, 750);
+    }
+
+    if(prefersReducedMotion){ fill.style.width='100%'; pct.textContent='100%'; finish(); return; }
+
+    var p = 0;
+    var timer = setInterval(function(){
+      p += 8 + Math.random()*20;
+      if(p >= 100){ p = 100; clearInterval(timer); }
+      fill.style.width = p + '%';
+      pct.textContent = Math.round(p) + '%';
+      if(p === 100){ setTimeout(finish, 280); }
+    }, 110);
+  }
+
+  function initHeaderScroll(){
+    var header = document.getElementById('siteHeader');
+    if(!header) return;
+    window.addEventListener('scroll', function(){
+      header.classList.toggle('is-scrolled', window.scrollY > 40);
+    }, { passive: true });
+  }
+
+  function initMobileNav(){
+    var toggle = document.getElementById('navToggle');
+    var menu = document.getElementById('mobileNav');
+    if(!toggle || !menu) return;
+    function close(){
+      menu.classList.remove('is-open');
+      toggle.classList.remove('is-active');
+      toggle.setAttribute('aria-expanded','false');
+      document.body.classList.remove('nav-open');
+    }
+    toggle.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      toggle.classList.toggle('is-active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('nav-open', open);
+    });
+    menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });
+  }
+
+  function initCursor(){
+    if(prefersReducedMotion) return;
+    if(!window.matchMedia('(pointer: fine)').matches) return;
+    var dot = document.getElementById('cursorDot');
+    var ring = document.getElementById('cursorRing');
+    if(!dot || !ring) return;
+    document.body.classList.add('has-custom-cursor');
+    var mx=0, my=0, rx=0, ry=0;
+    window.addEventListener('mousemove', function(e){
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    function loop(){
+      rx += (mx-rx)*0.16; ry += (my-ry)*0.16;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(loop);
+    }
+    loop();
+    document.querySelectorAll('a, button, .tilt-card').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ ring.classList.add('is-active'); });
+      el.addEventListener('mouseleave', function(){ ring.classList.remove('is-active'); });
+    });
+  }
+
+  function initTilt(){
+    if(prefersReducedMotion) return;
+    if(!window.matchMedia('(pointer: fine)').matches) return;
+    document.querySelectorAll('.tilt-card').forEach(function(card){
+      card.addEventListener('pointermove', function(e){
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left)/r.width - 0.5;
+        var y = (e.clientY - r.top)/r.height - 0.5;
+        card.style.setProperty('--ry', (x*12).toFixed(2)+'deg');
+        card.style.setProperty('--rx', (-y*12).toFixed(2)+'deg');
+      });
+      card.addEventListener('pointerleave', function(){
+        card.style.setProperty('--rx','0deg');
+        card.style.setProperty('--ry','0deg');
+      });
+    });
+  }
+
+  function initReveal(){
+    var items = document.querySelectorAll('[data-reveal]');
+    if(!items.length) return;
+    if(prefersReducedMotion){ items.forEach(function(el){ el.classList.add('is-visible'); }); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function(el){ io.observe(el); });
+  }
+
+  function initParticles(){
+    var container = document.getElementById('particles');
+    if(!container) return;
+    var count = window.innerWidth < 640 ? 12 : 24;
+    if(prefersReducedMotion) count = 0;
+    for(var i=0;i<count;i++){
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random()*2.6+1).toFixed(1);
+      p.style.left = Math.random()*100 + '%';
+      p.style.top = Math.random()*100 + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.setProperty('--dur', (9 + Math.random()*16).toFixed(1) + 's');
+      p.style.setProperty('--delay', (-(Math.random()*20)).toFixed(1) + 's');
+      p.style.setProperty('--dx', (Math.random()*70-35).toFixed(0) + 'px');
+      p.style.setProperty('--dy', (Math.random()*-110-40).toFixed(0) + 'px');
+      container.appendChild(p);
+    }
+  }
+
+  function initParallax(){
+    if(prefersReducedMotion) return;
+    var layers = document.querySelectorAll('[data-parallax]');
+    if(!layers.length) return;
+    var ticking = false;
+    function update(){
+      var y = window.scrollY;
+      layers.forEach(function(l){
+        var speed = parseFloat(l.dataset.parallax) || 0.1;
+        l.style.transform = 'translateY(' + (y*speed) + 'px)';
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', function(){
+      if(!ticking){ requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    initPreloader();
+    initHeaderScroll();
+    initMobileNav();
+    initCursor();
+    initTilt();
+    initReveal();
+    initParticles();
+    initParallax();
+  });
+})();
+</script>
+</body>
+</html>
