@@ -69,12 +69,10 @@
   .cursor-dot.text { width: 4px; height: 4px; background: var(--accent); }
   .cursor-ring.text { width: 4px; height: 4px; background: var(--accent); border-color: var(--accent); }
   .cursor-dot.magnetic { width: 14px; height: 14px; }
-  /* Cursor trail dots */
   .cursor-trail { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99997; top: 0; left: 0; transform: translate(-50%, -50%); opacity: 0; mix-blend-mode: difference; }
 
   .scroll-progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 9999; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); width: 0%; pointer-events: none; }
 
-  /* ═════ NEW: Cursor ambient glow ═════ */
   .cursor-glow {
     position: fixed; width: 500px; height: 500px; border-radius: 50%;
     background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 60%);
@@ -85,7 +83,6 @@
   .cursor-glow.ready { opacity: 1; }
   .cursor-glow.boost { width: 700px; height: 700px; background: radial-gradient(circle, rgba(255, 180, 84, 0.18) 0%, transparent 60%); }
 
-  /* ═════ NEW: Section color tint overlay ═════ */
   .section-tint {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
     background: radial-gradient(ellipse at 50% 50%, var(--tint-color, transparent) 0%, transparent 70%);
@@ -93,7 +90,6 @@
     mix-blend-mode: screen;
   }
 
-  /* ═════ NEW: Click ripple ═════ */
   .click-ripple {
     position: fixed; width: 0; height: 0; border-radius: 50%;
     border: 1.5px solid var(--accent); pointer-events: none; z-index: 99996;
@@ -105,7 +101,6 @@
     100% { width: 80px; height: 80px; opacity: 0; border-width: 1px; }
   }
 
-  /* ═════ NEW: Particle burst ═════ */
   .particle {
     position: fixed; width: 4px; height: 4px; border-radius: 50%;
     pointer-events: none; z-index: 99995;
@@ -113,7 +108,6 @@
     transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s;
   }
 
-  /* ═════ NEW: Section progress (within current section) ═════ */
   .section-progress {
     position: fixed; right: 0.65rem; top: 50%; transform: translateY(-50%);
     width: 2px; height: 120px; background: rgba(255,255,255,0.08);
@@ -126,7 +120,6 @@
   }
   @media (max-width: 760px) { .section-progress { display: none; } }
 
-  /* ═════ NEW: Section counter ═════ */
   .section-counter {
     position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 49;
     font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint);
@@ -138,7 +131,6 @@
   .section-counter .sc-line { width: 24px; height: 1px; background: var(--border); }
   @media (max-width: 760px) { .section-counter { display: none; } }
 
-  /* ═════ NEW: Keyboard hint ═════ */
   .kbd-hint {
     position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 49;
     display: flex; gap: 0.5rem; align-items: center;
@@ -152,7 +144,6 @@
   }
   @media (max-width: 760px) { .kbd-hint { display: none; } }
 
-  /* ═════ NEW: Reveal animations ═════ */
   .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
   .reveal.revealed { opacity: 1; transform: none; }
   .reveal[data-reveal-delay="100"] { transition-delay: 100ms; }
@@ -169,11 +160,9 @@
   .reveal[data-reveal-stagger].revealed > *:nth-child(5) { transition-delay: 320ms; }
   .reveal[data-reveal-stagger].revealed > *:nth-child(6) { transition-delay: 400ms; }
 
-  /* ═════ NEW: 3D tilt base ═════ */
   .tilt { transform-style: preserve-3d; transition: transform 0.4s var(--ease-out); will-change: transform; }
   .tilt .tilt-inner { transform: translateZ(20px); }
 
-  /* ═════ NEW: Easter egg toast ═════ */
   .easter-toast {
     position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px);
     z-index: 9999; padding: 0.9rem 1.4rem; background: var(--accent); color: #08090C;
@@ -184,14 +173,12 @@
   }
   .easter-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ═════ NEW: Magnetic glow on hover ═════ */
   @keyframes glowPulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4); }
     50% { box-shadow: 0 0 0 12px rgba(108, 99, 255, 0); }
   }
   .magnetic-glow { animation: glowPulse 2s infinite; }
 
-  /* ═════ NEW: Drag swipe indicator ═════ */
   .swipe-flash {
     position: fixed; left: 50%; transform: translateX(-50%);
     z-index: 9998; padding: 0.6rem 1rem;
@@ -204,7 +191,7 @@
   .swipe-flash.up { top: 30%; }
   .swipe-flash.down { bottom: 30%; }
 
-  /* ═════ NEW: 2-column card grid for Education / Internships ═════ */
+  /* ═════ 2-column card grid for Education / Internships ═════ */
   .cards-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -399,24 +386,98 @@
   .service-item p { color: var(--text-muted); font-size: 0.92rem; }
   @media (max-width: 760px) { .services-list { grid-template-columns: 1fr; } }
 
-  .panel-certs { padding: 8rem 0; min-height: auto; }
+  /* ═════ FIXED: cert-card styles now work EVERYWHERE (not just .certs-legend) ═════ */
   .certs-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16/9; max-height: 480px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: rgba(10, 11, 15, 0.4); }
   .certs-canvas-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
   .certs-legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
-  .certs-legend .cert-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; display: flex; align-items: center; gap: 1rem; transition: all 0.3s var(--ease-spring); position: relative; overflow: hidden; }
-  .certs-legend .cert-card::after { content: ''; position: absolute; top: 0; right: 0; width: 50px; height: 50px; background: radial-gradient(circle at 100% 0, var(--accent-3), transparent 70%); opacity: 0; transition: opacity 0.4s; }
-  .certs-legend .cert-card:hover { transform: translateY(-4px); border-color: var(--accent); }
-  .certs-legend .cert-card:hover::after { opacity: 0.5; }
-  .certs-legend .cert-thumb { width: 56px; height: 56px; border-radius: 6px; background: rgba(10, 11, 15, 0.5); border: 1px solid var(--border); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .certs-legend .cert-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; padding: 2px; background: rgba(20, 22, 27, 0.5); }
-  .certs-legend .cert-thumb .thumb-fallback { font-size: 1.5rem; }
-  .certs-legend .cert-info { flex: 1; min-width: 0; }
-  .certs-legend .cert-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; transition: color 0.3s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .certs-legend .cert-card:hover .cert-name { color: var(--accent); }
-  .certs-legend .cert-issuer { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .certs-legend .cert-open { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s var(--ease-spring); flex-shrink: 0; }
-  .certs-legend .cert-card:hover .cert-open { background: var(--accent); border-color: var(--accent); color: #08090C; transform: rotate(45deg); }
-  .certs-legend .cert-card.has-image .cert-open { border-color: var(--accent-3); color: var(--accent-3); }
+
+  /* Universal cert-card — works in .certs-legend AND .cards-2 */
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s var(--ease-spring);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .cert-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 50px; height: 50px;
+    background: radial-gradient(circle at 100% 0, var(--accent-3), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .cert-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .cert-card:hover::after { opacity: 0.5; }
+  .cert-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 6px;
+    background: rgba(10, 11, 15, 0.5);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cert-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;        /* ← handles vertical certs without cropping */
+    display: block;
+    padding: 2px;
+    background: rgba(20, 22, 27, 0.5);
+  }
+  .cert-thumb .thumb-fallback { font-size: 1.5rem; }
+  .cert-info { flex: 1; min-width: 0; }
+  .cert-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    transition: color 0.3s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cert-card:hover .cert-name { color: var(--accent); }
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cert-open {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.3s var(--ease-spring);
+    flex-shrink: 0;
+  }
+  .cert-card:hover .cert-open {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #08090C;
+    transform: rotate(45deg);
+  }
+  .cert-card.has-image .cert-open { border-color: var(--accent-3); color: var(--accent-3); }
 
   .panel-contact { padding: 8rem 0; }
   .panel-contact .section-h { font-size: clamp(2.5rem, 7vw, 5rem); font-family: var(--font-display); font-weight: 700; line-height: 1; margin: 0 0 2rem; }
@@ -694,7 +755,7 @@
       <p class="edu-sub reveal" data-reveal-delay="200">Where I <b>started</b>, where I'm <b>going</b> — and the institutions that shaped how I think about software, design, and systems.</p>
       <div class="cards-2 reveal" data-reveal-delay="300" data-reveal-stagger>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"NA Annappa Raja Memorial Higher Secondary School","issuer":"Higher Secondary School · Tamil Nadu","art":"design","icon":"🏫","image":"images/school.jpg","desc":"Completed school education while discovering a passion for programming and technology. This foundational period sparked a curiosity for computers and creative problem-solving that still drives every project I take on."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"NA Annappa Raja Memorial Higher Secondary School","issuer":"Higher Secondary School · Tamil Nadu","art":"design","icon":"🏫","image":"images/school.jpg","desc":"Completed school education while discovering a passion for programming and technology. This foundational period sparked a curiosity for computers and creative problem-solving that still drives every project I take on.","tags":["Higher Secondary","Tamil Nadu","Foundation","Curiosity"]}'>
           <div class="cert-thumb"><img src="images/school.jpg" alt="School" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🏫</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Higher Secondary School</div>
@@ -703,7 +764,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Ramco Institute of Technology","issuer":"B.Tech — CSBS · 2024–Present","art":"fullstack","icon":"🎓","image":"images/college.jpg","desc":"Currently pursuing B.Tech in Computer Science and Business Systems (2024–Present). Focusing on game development, AI systems, and building real-world software projects that combine creativity with technical skill — a blend that’s rare in pure CS programs."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Ramco Institute of Technology","issuer":"B.Tech — CSBS · 2024–Present","art":"fullstack","icon":"🎓","image":"images/college.jpg","desc":"Currently pursuing B.Tech in Computer Science and Business Systems (2024–Present). Focusing on game development, AI systems, and building real-world software projects that combine creativity with technical skill — a blend that’s rare in pure CS programs.","tags":["B.Tech","CSBS","Game Dev","AI Systems"]}'>
           <div class="cert-thumb"><img src="images/college.jpg" alt="College" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎓</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">B.Tech — CSBS</div>
@@ -764,8 +825,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-
-         <div class="work-row has-media tilt" data-project='{"title":"Interactive Space Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["html","css","html"],"image":"images/projects/portfoliov2.png","video":"media/projects/portfolio.mp4","desc":"Spaced-based portfolio using html, css and javascript to create space look website, like sci-fi feel.","link":"https://gokulakumarans2.netlify.app"}'>
+         <div class="work-row has-media tilt" data-project='{"title":"Interactive Space Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["html","css","JavaScript"],"image":"images/projects/portfoliov2.png","video":"media/projects/portfolio.mp4","desc":"Spaced-based portfolio using html, css and javascript to create space look website, like sci-fi feel.","link":"https://gokulakumarans2.netlify.app"}'>
           <span class="w-num">06</span>
           <span class="w-title">Personal portfolio v2</span>
           <span class="w-desc">Simple space based portfolio with html and css only — cinematic, space-themed, scroll-driven.</span>
@@ -782,8 +842,8 @@
     <div class="panel-inner">
       <div class="metrics-grid reveal" data-reveal-stagger>
         <div class="metric-item tilt"><span class="metric-num" data-count="6">0</span><div class="metric-label">Certifications</div></div>
-        <div class="metric-item tilt"><span class="metric-num" data-count="10">0</span><div class="metric-label">Projects shipped</div></div>
-        <div class="metric-item tilt"><span class="metric-num" data-count="2">0</span><div class="metric-label">Hackathons</div></div>
+        <div class="metric-item tilt"><span class="metric-num" data-count="6">0</span><div class="metric-label">Projects shipped</div></div>
+        <div class="metric-item tilt"><span class="metric-num" data-count="2">0</span><div class="metric-label">Internships</div></div>
         <div class="metric-item tilt"><span class="metric-num" data-count="100">0</span><div class="metric-label">% Dedication</div></div>
       </div>
     </div>
@@ -799,22 +859,20 @@
       <p class="intern-sub reveal" data-reveal-delay="200">Real-world exposure to <b>production codebases</b>, deadlines, and the kind of feedback you only get when your work ships to actual users.</p>
       <div class="cards-2 reveal" data-reveal-delay="300" data-reveal-stagger>
 
-        <!-- ✏️ INTERNSHIP 1 — Replace placeholders below with your actual details ✏️ -->
-        <div class="cert-card has-image tilt" data-cert='{"title":"Python-FullStack","issuer":"Skiez Degital · may-4-2026 to july-4-2026 ","Python-FullStack":"webdesign","icon":"💼","image":"images/certificates/internfs.png","desc":"Brief description of what you did, who you worked with, and what you built during this internship. Highlight a specific win — a feature shipped, a system you improved, or a problem you solved that the team kept using after you left."}'>
-          <div class="cert-thumb"><img src="images/certificates/internfs.png" alt="Internship 1" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>💼</span>'" /></div>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Python Full-Stack Development","issuer":"Skiez Digital · Chengalpattu · May–Jul 2026","art":"fullstack","icon":"💼","image":"images/certificates/internfs.png","desc":"Completed a Python Full Stack Development training at Skiez Digital, Chengalpattu, where I learned both frontend and backend web development using Python and modern web technologies. Built practical projects while strengthening my skills in full-stack application development and problem-solving.","tags":["Python","Django","HTML/CSS","JavaScript","MySQL","Full-Stack"]}'>
+          <div class="cert-thumb"><img src="images/certificates/internfs.png" alt="Python Full-Stack Internship" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>💼</span>'" /></div>
           <div class="cert-info">
-            <div class="cert-name">Python Full-Stack/div>
-            <div class="cert-issuer">Skiez Degital</div>
+            <div class="cert-name">Python Full-Stack Development</div>
+            <div class="cert-issuer">Skiez Digital · Chengalpattu</div>
           </div>
           <div class="cert-open">↗</div>
         </div>
 
-        <!-- ✏️ INTERNSHIP 2 — Replace placeholders below with your actual details ✏️ -->
-        <div class="cert-card has-image tilt" data-cert='{"title":"Game Development Intern","issuer":"Playxoft Studios · june-1-2026 to june-30-2026","Procedural generation":"Game Development","icon":"🎮","image":"images/certificates/interngame.jpg","desc":"Brief description of your second internship. Focus on the technology you used (Unity? React? Python?), the scale of the project, and one thing you learned that you would not have learned in a classroom or personal project."}'>
-          <div class="cert-thumb"><img src="images/certificates/interngame.jpg" alt="Internship 2" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎮</span>'" /></div>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Unity Game Development Intern","issuer":"Playxoft Studios Private Limited · Jun 2026","art":"csharp","icon":"🎮","image":"images/certificates/interngame.jpg","desc":"Completed a Unity Game Development Internship at Playxoft Studios Private Limited, where I worked on real-world Unity projects and gained hands-on experience in procedural generation, C#, debugging, optimization, and game development workflows. The internship strengthened my technical skills and provided valuable industry exposure through mentorship and practical development experience.","tags":["Unity 3D","C#","Procedural Generation","Debugging","Optimization","Game Dev"]}'>
+          <div class="cert-thumb"><img src="images/certificates/interngame.jpg" alt="Unity Game Development Internship" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎮</span>'" /></div>
           <div class="cert-info">
-            <div class="cert-name">Game Development Intern</div>
-            <div class="cert-issuer">Playxoft Studios</div>
+            <div class="cert-name">Unity Game Development Intern</div>
+            <div class="cert-issuer">Playxoft Studios Private Limited</div>
           </div>
           <div class="cert-open">↗</div>
         </div>
@@ -844,7 +902,7 @@
       <p style="color: var(--text-faint); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 1rem 0 0.5rem;" class="reveal" data-reveal-delay="200">Click any cert to open details</p>
       <div class="certs-legend reveal" data-reveal-delay="300" data-reveal-stagger id="certsLegend">
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"C# Programming","issuer":"Advanced Certification","art":"csharp","icon":"⚙️","image":"images/certificates/csharp.jpg","desc":"Advanced OOP & Game Logic implementation for Unity development — covering inheritance, polymorphism, delegates, and the patterns that actually matter in production."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"C# Programming","issuer":"Advanced Certification","art":"csharp","icon":"⚙️","image":"images/certificates/csharp.jpg","desc":"Advanced OOP & Game Logic implementation for Unity development — covering inheritance, polymorphism, delegates, and the patterns that actually matter in production.","tags":["C#","OOP","Unity","Game Logic"]}'>
           <div class="cert-thumb"><img src="images/certificates/csharp.jpg" alt="C#" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>⚙️</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">C# Programming</div>
@@ -853,7 +911,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"3D Modeling with Blender","issuer":"Modeling & Texturing","art":"blender","icon":"🎨","image":"images/certificates/blender.jpg","desc":"Mastery of mesh modeling, UV unwrapping, and texturing — from hard-surface props to organic forms, with proper topology and clean materials."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"3D Modeling with Blender","issuer":"Modeling & Texturing","art":"blender","icon":"🎨","image":"images/certificates/blender.jpg","desc":"Mastery of mesh modeling, UV unwrapping, and texturing — from hard-surface props to organic forms, with proper topology and clean materials.","tags":["Blender","3D Modeling","UV Mapping","Texturing"]}'>
           <div class="cert-thumb"><img src="images/certificates/blender.jpg" alt="Blender" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎨</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Blender 3D</div>
@@ -862,7 +920,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Java Programming","issuer":"Core Certification","art":"java","icon":"☕","image":"images/certificates/java.jpg","desc":"Core concepts, data structures, and application development — the foundation that makes every other language easier to pick up."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Java Programming","issuer":"Core Certification","art":"java","icon":"☕","image":"images/certificates/java.jpg","desc":"Core concepts, data structures, and application development — the foundation that makes every other language easier to pick up.","tags":["Java","OOP","Data Structures"]}'>
           <div class="cert-thumb"><img src="images/certificates/java.jpg" alt="Java" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>☕</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Java Programming</div>
@@ -871,7 +929,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"images/certificates/dsa.jpg","desc":"Efficient problem solving with trees, graphs, and algorithms — the kind of thinking that makes you a better engineer everywhere else."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"images/certificates/dsa.jpg","desc":"Efficient problem solving with trees, graphs, and algorithms — the kind of thinking that makes you a better engineer everywhere else.","tags":["DSA","Trees","Graphs","Algorithms"]}'>
           <div class="cert-thumb"><img src="images/certificates/dsa.jpg" alt="DSA" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🔗</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">DSA</div>
@@ -880,7 +938,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","image":"images/certificates/fullstack.jpg","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","image":"images/certificates/fullstack.jpg","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment.","tags":["Full-Stack","Frontend","Backend","Deployment"]}'>
           <div class="cert-thumb"><img src="images/certificates/fullstack.jpg" alt="Full-Stack" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🌐</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Full-Stack Dev</div>
@@ -889,7 +947,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","image":"images/certificates/responsive.jpg","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","image":"images/certificates/responsive.jpg","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on.","tags":["Responsive","CSS Grid","Flexbox","Mobile-First"]}'>
           <div class="cert-thumb"><img src="images/certificates/responsive.jpg" alt="Responsive" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>📱</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Responsive Design</div>
@@ -918,7 +976,7 @@
           <div class="social-row reveal" data-reveal-delay="400">
             <a href="https://github.com/sGokulaKumaran" target="_blank" rel="noopener" class="magnetic">GitHub</a>
             <a href="https://www.linkedin.com/in/gokula-kumaran-s-503545328/" target="_blank" rel="noopener" class="magnetic">LinkedIn</a>
-            <a href="#" target="_blank" rel="noopener" class="magnetic">X / Twitter</a>
+            <a href="https://www.instagram.com/goku_1._38?igsh=Y3EzbXhndzVlcHc2" target="_blank" rel="noopener" class="magnetic">Instagram</a>
           </div>
         </div>
         <form class="contact-form reveal" data-reveal-delay="200" id="contactForm" onsubmit="handleSubmit(event)">
@@ -1530,7 +1588,7 @@ if (isFinePointer) {
   });
   function ringLoop(){ rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(ringLoop); }
   ringLoop();
-  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .certs-legend .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual, .command-item, .contact-prefill, .tilt');
+  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual, .command-item, .contact-prefill, .tilt');
   hoverables.forEach(el => {
     el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
     el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
@@ -1630,11 +1688,16 @@ function closeModal() {
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
+
+/* ═══════════════════════════════════════════════════════════
+   FIXED: cert-card click handler works for ALL cert-cards
+   (was scoped to .certs-legend .cert-card, now universal)
+   ═══════════════════════════════════════════════════════════ */
 function attachCardListeners() {
   document.querySelectorAll('.work-row[data-project]').forEach(row => {
     row.onclick = () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} };
   });
-  document.querySelectorAll('.certs-legend .cert-card[data-cert]').forEach(item => {
+  document.querySelectorAll('.cert-card[data-cert]').forEach(item => {
     item.onclick = () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} };
   });
 }
@@ -1668,6 +1731,10 @@ const commands = [
   { id: 'play-zyqra', title: 'Open Project: Zyqra', sub: 'AI Learning Ecosystem', icon: '◈', action: () => openProjectByTitle('Zyqra') },
   { id: 'play-back', title: 'Open Project: The Back Exit', sub: 'Horror Game', icon: '👁', action: () => openProjectByTitle('The Back Exit') },
   { id: 'play-csharp', title: 'Open Cert: C# Programming', sub: 'Advanced Certification', icon: '⚙️', action: () => openCertByTitle('C# Programming') },
+  { id: 'play-school', title: 'Open: Higher Secondary School', sub: 'Education', icon: '🏫', action: () => openCertByTitle('NA Annappa') },
+  { id: 'play-college', title: 'Open: Ramco Institute', sub: 'Education', icon: '🎓', action: () => openCertByTitle('Ramco Institute') },
+  { id: 'play-intern-fs', title: 'Open: Python Full-Stack', sub: 'Skiez Digital', icon: '💼', action: () => openCertByTitle('Python Full-Stack') },
+  { id: 'play-intern-game', title: 'Open: Unity Game Dev', sub: 'Playxoft Studios', icon: '🎮', action: () => openCertByTitle('Unity Game') },
   { id: 'konami-hint', title: 'Easter egg: ↑↑↓↓←→←→BA', sub: 'Try it...', icon: '🥚', action: () => activateEasterEgg() },
 ];
 
@@ -1676,7 +1743,7 @@ function openProjectByTitle(title) {
   if (row) row.click();
 }
 function openCertByTitle(title) {
-  const card = Array.from(document.querySelectorAll('.certs-legend .cert-card[data-cert]')).find(c => c.dataset.cert.includes(title));
+  const card = Array.from(document.querySelectorAll('.cert-card[data-cert]')).find(c => c.dataset.cert.includes(title));
   if (card) card.click();
 }
 
@@ -1948,7 +2015,7 @@ bgmToggle.addEventListener('click', toggleMusic);
 updateSoundToggle(); updateBgmToggle();
 
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('a, button, .work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button, .contact-prefill');
+  const t = e.target.closest('a, button, .work-row, .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button, .contact-prefill');
   if (t) play('click');
 }, true);
 
@@ -2027,7 +2094,7 @@ function detectDevTools() {
 setInterval(detectDevTools, 1000);
 document.addEventListener('selectstart', e => {
   if (e.target.closest('input, textarea, .selectable')) return;
-  if (e.target.closest('.work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header')) {
+  if (e.target.closest('.work-row, .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header')) {
     e.preventDefault();
   }
 });
