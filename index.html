@@ -69,10 +69,142 @@
   .cursor-dot.text { width: 4px; height: 4px; background: var(--accent); }
   .cursor-ring.text { width: 4px; height: 4px; background: var(--accent); border-color: var(--accent); }
   .cursor-dot.magnetic { width: 14px; height: 14px; }
+  /* Cursor trail dots */
+  .cursor-trail { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99997; top: 0; left: 0; transform: translate(-50%, -50%); opacity: 0; mix-blend-mode: difference; }
 
   .scroll-progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 9999; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); width: 0%; pointer-events: none; }
 
-  body > *:not(.loader):not(.vignette):not(.grain):not(#shader-bg):not(.cursor-dot):not(.cursor-ring):not(.scroll-progress):not(.modal-overlay):not(.nav-mobile):not(.story-progress):not(.site-header):not(.command-palette) { position: relative; z-index: 3; }
+  /* ═════ NEW: Cursor ambient glow ═════ */
+  .cursor-glow {
+    position: fixed; width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 60%);
+    pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
+    transition: width 0.4s var(--ease-out), height 0.4s var(--ease-out), opacity 0.4s;
+    filter: blur(30px); mix-blend-mode: screen; opacity: 0;
+  }
+  .cursor-glow.ready { opacity: 1; }
+  .cursor-glow.boost { width: 700px; height: 700px; background: radial-gradient(circle, rgba(255, 180, 84, 0.18) 0%, transparent 60%); }
+
+  /* ═════ NEW: Section color tint overlay ═════ */
+  .section-tint {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, var(--tint-color, transparent) 0%, transparent 70%);
+    opacity: 0; transition: opacity 1.2s var(--ease);
+    mix-blend-mode: screen;
+  }
+
+  /* ═════ NEW: Click ripple ═════ */
+  .click-ripple {
+    position: fixed; width: 0; height: 0; border-radius: 50%;
+    border: 1.5px solid var(--accent); pointer-events: none; z-index: 99996;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.7s var(--ease-out) forwards;
+  }
+  @keyframes ripple {
+    0% { width: 0; height: 0; opacity: 1; border-width: 2px; }
+    100% { width: 80px; height: 80px; opacity: 0; border-width: 1px; }
+  }
+
+  /* ═════ NEW: Particle burst ═════ */
+  .particle {
+    position: fixed; width: 4px; height: 4px; border-radius: 50%;
+    pointer-events: none; z-index: 99995;
+    background: var(--accent);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s;
+  }
+
+  /* ═════ NEW: Section progress (within current section) ═════ */
+  .section-progress {
+    position: fixed; right: 0.65rem; top: 50%; transform: translateY(-50%);
+    width: 2px; height: 120px; background: rgba(255,255,255,0.08);
+    border-radius: 2px; z-index: 49; overflow: hidden;
+  }
+  .section-progress::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 0;
+    height: var(--sec-progress, 0%); background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    transition: height 0.15s var(--ease-out);
+  }
+  @media (max-width: 760px) { .section-progress { display: none; } }
+
+  /* ═════ NEW: Section counter ═════ */
+  .section-counter {
+    position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 49;
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.6rem;
+    pointer-events: none;
+  }
+  .section-counter .sc-num { color: var(--accent); font-size: 0.85rem; font-weight: 500; }
+  .section-counter .sc-line { width: 24px; height: 1px; background: var(--border); }
+  @media (max-width: 760px) { .section-counter { display: none; } }
+
+  /* ═════ NEW: Keyboard hint ═════ */
+  .kbd-hint {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 49;
+    display: flex; gap: 0.5rem; align-items: center;
+    font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    pointer-events: none; opacity: 0.7;
+  }
+  .kbd-hint kbd {
+    font-family: var(--font-mono); font-size: 0.7rem; padding: 0.15rem 0.4rem;
+    border: 1px solid var(--border); border-radius: 3px; background: rgba(20,22,27,0.6);
+  }
+  @media (max-width: 760px) { .kbd-hint { display: none; } }
+
+  /* ═════ NEW: Reveal animations ═════ */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+  .reveal.revealed { opacity: 1; transform: none; }
+  .reveal[data-reveal-delay="100"] { transition-delay: 100ms; }
+  .reveal[data-reveal-delay="200"] { transition-delay: 200ms; }
+  .reveal[data-reveal-delay="300"] { transition-delay: 300ms; }
+  .reveal[data-reveal-delay="400"] { transition-delay: 400ms; }
+  .reveal[data-reveal-delay="500"] { transition-delay: 500ms; }
+  .reveal[data-reveal-stagger] > * { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+  .reveal[data-reveal-stagger].revealed > * { opacity: 1; transform: none; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(1) { transition-delay: 0ms; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(2) { transition-delay: 80ms; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(3) { transition-delay: 160ms; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(4) { transition-delay: 240ms; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(5) { transition-delay: 320ms; }
+  .reveal[data-reveal-stagger].revealed > *:nth-child(6) { transition-delay: 400ms; }
+
+  /* ═════ NEW: 3D tilt base ═════ */
+  .tilt { transform-style: preserve-3d; transition: transform 0.4s var(--ease-out); will-change: transform; }
+  .tilt .tilt-inner { transform: translateZ(20px); }
+
+  /* ═════ NEW: Easter egg toast ═════ */
+  .easter-toast {
+    position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+    z-index: 9999; padding: 0.9rem 1.4rem; background: var(--accent); color: #08090C;
+    font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+    border-radius: 6px; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s, transform 0.6s var(--ease-spring);
+    box-shadow: 0 20px 50px rgba(108, 99, 255, 0.5);
+  }
+  .easter-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ═════ NEW: Magnetic glow on hover ═════ */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(108, 99, 255, 0); }
+  }
+  .magnetic-glow { animation: glowPulse 2s infinite; }
+
+  /* ═════ NEW: Drag swipe indicator ═════ */
+  .swipe-flash {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    z-index: 9998; padding: 0.6rem 1rem;
+    background: var(--surface-solid); border: 1px solid var(--border-strong);
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);
+    border-radius: 6px; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s, transform 0.4s var(--ease-spring);
+  }
+  .swipe-flash.show { opacity: 1; }
+  .swipe-flash.up { top: 30%; }
+  .swipe-flash.down { bottom: 30%; }
+
+  body > *:not(.loader):not(.vignette):not(.grain):not(#shader-bg):not(.cursor-dot):not(.cursor-ring):not(.cursor-trail):not(.cursor-glow):not(.scroll-progress):not(.modal-overlay):not(.nav-mobile):not(.story-progress):not(.site-header):not(.command-palette):not(.section-progress):not(.section-counter):not(.kbd-hint):not(.easter-toast):not(.swipe-flash):not(.section-tint) { position: relative; z-index: 3; }
 
   .loader { position: fixed; inset: 0; z-index: 99999; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem; transition: opacity 0.8s, visibility 0.8s; }
   .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -119,7 +251,7 @@
   .story-progress button:hover { background: var(--accent-2); }
   @media (max-width: 760px) { .story-progress { display: none; } }
 
-  .panel { min-height: 100vh; min-height: 100svh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 4rem); overflow: hidden; scroll-margin-top: 60px; }
+  .panel { min-height: 100vh; min-height: 100svh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 4vw, 3rem) calc(2rem, 4vw, 4rem); overflow: hidden; scroll-margin-top: 60px; }
   .panel-inner { width: 100%; max-width: var(--max-width); margin: 0 auto; }
   .panel-side { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
   @media (max-width: 880px) { .panel-side { grid-template-columns: 1fr; gap: 2rem; } }
@@ -146,9 +278,6 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     font-style: italic; font-weight: 200; font-size: 0.48em; margin-top: 0.1em;
   }
-  /* Glitch layers now scoped per-row (matching each row's own text/size) instead of
-     the whole h1, so they can no longer wrap into extra oversized lines that
-     overlapped the subtitle and buttons below. */
   .hero-name .row1::before, .hero-name .row1::after,
   .hero-name .row2::before, .hero-name .row2::after {
     content: attr(data-text);
@@ -174,7 +303,6 @@
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
   .btn .arrow { transition: transform 0.3s; display: inline-block; }
   .btn:hover .arrow { transform: translateX(4px); }
-  /* Shortcuts hint placed BELOW the buttons, with proper spacing */
   .hero-shortcuts { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint); letter-spacing: 0.1em; }
   .hero-shortcuts span { display: inline-flex; align-items: center; gap: 0.35rem; }
   .hero-shortcuts kbd { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.15rem 0.45rem; border: 1px solid var(--border); border-radius: 3px; background: rgba(20, 22, 27, 0.5); }
@@ -191,7 +319,6 @@
   .panel-role .role-3d { position: relative; aspect-ratio: 1; max-width: 360px; margin: 0 auto; border-radius: 50%; overflow: hidden; border: 1px solid var(--border); }
   .panel-role .role-3d canvas { width: 100% !important; height: 100% !important; display: block; }
 
-  /* ABOUT — fix overlap: equal min-width on both columns, no overflow */
   .panel-about .about-h { font-size: clamp(1.8rem, 4.5vw, 3.2rem); font-family: var(--font-display); font-weight: 700; line-height: 1.05; margin: 0 0 1.25rem; }
   .panel-about .about-h em { font-style: italic; color: var(--accent); font-weight: 200; }
   .panel-about p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.85rem; max-width: 100%; }
@@ -286,7 +413,6 @@
   .social-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
   .social-row a { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); padding: 0.5rem 0.9rem; border: 1px solid var(--border); border-radius: var(--radius); transition: all 0.3s var(--ease-spring); }
   .social-row a:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
-  /* Pre-fill message box button */
   .contact-prefill { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; padding: 0.6rem 1rem; border: 1px solid var(--accent-2); color: var(--accent-2); border-radius: var(--radius); margin-top: 0.5rem; transition: all 0.3s var(--ease-spring); }
   .contact-prefill:hover { background: var(--accent-2); color: var(--bg); transform: translateY(-2px); }
   .contact-form { display: flex; flex-direction: column; gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.75rem; backdrop-filter: blur(10px); }
@@ -304,7 +430,6 @@
   .footer-tag { font-family: var(--font-mono); }
   .back-to-top { color: var(--text-muted); transition: all 0.3s; display: inline-flex; gap: 0.4rem; align-items: center; }
 
-  /* MODAL — image fills properly, video plays */
   .modal-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(10, 11, 15, 0.92); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; padding: 20px; pointer-events: none; }
   .modal-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
   .modal-box { background: var(--surface-solid); border: 1px solid var(--border-strong); border-radius: 8px; width: 90%; max-width: 900px; max-height: 92vh; overflow-y: auto; transform: scale(0.85) translateY(40px) rotateX(8deg); transition: transform 0.6s var(--ease-spring), opacity 0.4s; position: relative; opacity: 0; transform-origin: center top; }
@@ -392,10 +517,18 @@
 <canvas id="shader-bg"></canvas>
 <div class="vignette"></div>
 <div class="grain"></div>
+<div class="section-tint" id="sectionTint"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
+<div class="section-progress" id="sectionProgress"></div>
+<div class="section-counter" id="sectionCounter"><span class="sc-num" id="scNum">01</span><span class="sc-line"></span><span id="scTotal">08</span><span id="scLabel">Hero</span></div>
+<div class="kbd-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>⌘</kbd><kbd>K</kbd> command</span></div>
+<div class="easter-toast" id="easterToast"></div>
+<div class="swipe-flash up" id="swipeFlashUp">↑ Swipe up for next</div>
+<div class="swipe-flash down" id="swipeFlashDown">↓ Swipe down for previous</div>
 
 <div class="devtools-warning" id="devtoolsWarning">
   <h2>⚠ Developer Tools Detected</h2>
@@ -438,21 +571,21 @@
   <div class="header-inner">
     <a href="#p0" class="wordmark"><span class="dot"></span>GK</a>
     <nav class="main-nav">
-      <a href="#p1">Role</a>
-      <a href="#p2">About</a>
-      <a href="#p3">Work</a>
-      <a href="#p4">Stack</a>
-      <a href="#p5">Certs</a>
-      <a href="#p6">Contact</a>
+      <a href="#p1" data-nav>Role</a>
+      <a href="#p2" data-nav>About</a>
+      <a href="#p3" data-nav>Work</a>
+      <a href="#p4" data-nav>Stack</a>
+      <a href="#p5" data-nav>Certs</a>
+      <a href="#p6" data-nav>Contact</a>
     </nav>
     <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound" title="Toggle UI sounds">🔊</button>
     <button class="sound-toggle" id="bgmToggle" aria-label="Toggle music" title="Toggle space ambient music">🎵</button>
-    <a href="#p6" class="nav-cta">Hire me <kbd>⌘K</kbd></a>
+    <a href="#p6" data-nav class="nav-cta">Hire me <kbd>⌘K</kbd></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
   <div class="nav-mobile" id="navMobile">
-    <a href="#p1">Role</a><a href="#p2">About</a><a href="#p3">Work</a>
-    <a href="#p4">Stack</a><a href="#p5">Certs</a><a href="#p6">Contact</a>
+    <a href="#p1" data-nav>Role</a><a href="#p2" data-nav>About</a><a href="#p3" data-nav>Work</a>
+    <a href="#p4" data-nav>Stack</a><a href="#p5" data-nav>Certs</a><a href="#p6" data-nav>Contact</a>
   </div>
 </header>
 
@@ -469,55 +602,55 @@
 
 <main class="story" id="story">
 
-  <!-- P0: HERO — hero name glitch effect fixed to be per-row so it no longer wraps/overlaps -->
-  <section class="panel panel-hero" id="p0" data-from="scale">
+  <!-- P0: HERO -->
+  <section class="panel panel-hero" id="p0" data-from="scale" data-tint="rgba(108, 99, 255, 0.15)">
     <div class="panel-inner hero-content">
-      <div class="hero-eyebrow"><span class="dot"></span>Available for projects · Q4 2026</div>
-      <h1 class="hero-name" id="heroName">
+      <div class="hero-eyebrow reveal" data-reveal-delay="100"><span class="dot"></span>Available for projects · Q4 2026</div>
+      <h1 class="hero-name reveal" data-reveal-delay="200" id="heroName">
         <span class="row1" id="row1" data-text="Gokula Kumaran"></span>
-        <!-- <span class="row2" id="row2" data-text=""></span> -->
       </h1>
-      <p class="hero-sub">Building <b>immersive digital experiences</b>, interactive applications, and high-fidelity game worlds — from a single idea to a deployed product.</p>
-      <div class="hero-ctas">
-        <a href="#p3" class="btn btn-primary magnetic">View work <span class="arrow">↓</span></a>
-        <a href="#p6" class="btn btn-ghost magnetic">Get in touch <span class="arrow">→</span></a>
+      <p class="hero-sub reveal" data-reveal-delay="300">Building <b>immersive digital experiences</b>, interactive applications, and high-fidelity game worlds — from a single idea to a deployed product.</p>
+      <div class="hero-ctas reveal" data-reveal-delay="400">
+        <a href="#p3" data-nav class="btn btn-primary magnetic">View work <span class="arrow">↓</span></a>
+        <a href="#p6" data-nav class="btn btn-ghost magnetic">Get in touch <span class="arrow">→</span></a>
       </div>
-      <div class="hero-shortcuts">
+      <div class="hero-shortcuts reveal" data-reveal-delay="500">
         <span><kbd>⌘</kbd><kbd>K</kbd> command</span>
         <span><kbd>⌘</kbd><kbd>M</kbd> music</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
       </div>
     </div>
     <div class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></div>
   </section>
 
   <!-- P1: ROLE -->
-  <section class="panel panel-role" id="p1" data-from="right">
+  <section class="panel panel-role" id="p1" data-from="right" data-tint="rgba(255, 180, 84, 0.1)">
     <div class="panel-inner">
       <div class="panel-side">
         <div>
-          <h2 class="role-h">A <em>multi-disciplinary</em> maker working at the seam between design and engineering.</h2>
-          <div class="role-typed" id="roleTyped"></div>
-          <p class="role-desc">I prototype in code when that's faster than Figma, sit in on research when the answer isn't obvious, and ship the actual production component instead of handing off a spec and hoping.</p>
+          <h2 class="role-h reveal">A <em>multi-disciplinary</em> maker working at the seam between design and engineering.</h2>
+          <div class="role-typed reveal" data-reveal-delay="100" id="roleTyped"></div>
+          <p class="role-desc reveal" data-reveal-delay="200">I prototype in code when that's faster than Figma, sit in on research when the answer isn't obvious, and ship the actual production component instead of handing off a spec and hoping.</p>
         </div>
-        <div class="role-3d"><canvas id="roleCanvas"></canvas></div>
+        <div class="role-3d tilt reveal" data-reveal-delay="200"><canvas id="roleCanvas"></canvas></div>
       </div>
     </div>
   </section>
 
-  <!-- P2: ABOUT — fixed overlap, image fills panel properly -->
-  <section class="panel panel-about" id="p2" data-from="left">
+  <!-- P2: ABOUT -->
+  <section class="panel panel-about" id="p2" data-from="left" data-tint="rgba(0, 229, 255, 0.08)">
     <div class="panel-inner">
       <div class="panel-side">
         <div>
-          <h2 class="about-h">I make <em>things</em> that feel alive.</h2>
-          <p>I'm a passionate <strong>Game & Full-Stack Developer</strong> focused on building immersive digital experiences and modern web solutions using Unity, C#, React, and JavaScript.</p>
-          <p>Currently pursuing <strong>B.Tech in Computer Science & Business Systems</strong> at Ramco Institute of Technology — blending a business mindset with technical engineering.</p>
-          <p>Remote-friendly, based in Tamil Nadu, India, and quietly optimistic about what the next browser can do.</p>
-          <div class="about-tags">
+          <h2 class="about-h reveal">I make <em>things</em> that feel alive.</h2>
+          <p class="reveal" data-reveal-delay="100">I'm a passionate <strong>Game & Full-Stack Developer</strong> focused on building immersive digital experiences and modern web solutions using Unity, C#, React, and JavaScript.</p>
+          <p class="reveal" data-reveal-delay="200">Currently pursuing <strong>B.Tech in Computer Science & Business Systems</strong> at Ramco Institute of Technology — blending a business mindset with technical engineering.</p>
+          <p class="reveal" data-reveal-delay="300">Remote-friendly, based in Tamil Nadu, India, and quietly optimistic about what the next browser can do.</p>
+          <div class="about-tags reveal" data-reveal-delay="400" data-reveal-stagger>
             <span>Unity 3D</span><span>C#</span><span>React</span><span>Three.js</span><span>Python</span><span>Blender</span><span>GLSL</span><span>TypeScript</span><span>AI/ML</span><span>Node.js</span>
           </div>
         </div>
-        <div class="about-visual">
+        <div class="about-visual tilt reveal" data-reveal-delay="300">
           <div class="about-avatar">
             <img src="media/profile.jpg" alt="Gokula Kumaran" onerror="this.parentElement.innerHTML='<div style=\'font-size:7rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%;\'>👨‍💻</div>'" />
           </div>
@@ -527,16 +660,16 @@
     </div>
   </section>
 
-  <!-- P3: WORK — video + image paths editable, modal plays them -->
-  <section class="panel panel-work" id="p3" data-from="bottom">
+  <!-- P3: WORK -->
+  <section class="panel panel-work" id="p3" data-from="bottom" data-tint="rgba(108, 99, 255, 0.12)">
     <div class="panel-inner">
       <div class="section-meta">
-        <h2 class="section-h">Selected work</h2>
-        <span class="num">06 projects · click to open</span>
+        <h2 class="section-h reveal">Selected work</h2>
+        <span class="num reveal" data-reveal-delay="100">06 projects · click to open</span>
       </div>
-      <div class="work-stack">
+      <div class="work-stack reveal" data-reveal-stagger>
 
-        <div class="work-row has-media" data-project='{"title":"The Back Exit","meta":"Game · Unity · 2024","art":"horror","icon":"👁","tags":["Unity 3D","C#","Horror Systems","AI Pathfinding","Shader Work"],"image":"media/projects/back-exit.jpg","video":"media/projects/back-exit.mp4","desc":"A first-person psychological horror experience built solo in Unity. Custom horror-style UI, camera bobbing, trigger-based jump-scares, and AI-driven NPC pathfinding — from scratch, no template.","download":"https://drive.google.com/file/d/1evKDtQj6hWwKQmNIAamry9-bZYq2-gst/view"}'>
+        <div class="work-row has-media tilt" data-project='{"title":"The Back Exit","meta":"Game · Unity · 2024","art":"horror","icon":"👁","tags":["Unity 3D","C#","Horror Systems","AI Pathfinding","Shader Work"],"image":"media/projects/back-exit.jpg","video":"media/projects/back-exit.mp4","desc":"A first-person psychological horror experience built solo in Unity. Custom horror-style UI, camera bobbing, trigger-based jump-scares, and AI-driven NPC pathfinding — from scratch, no template.","download":"https://drive.google.com/file/d/1evKDtQj6hWwKQmNIAamry9-bZYq2-gst/view"}'>
           <span class="w-num">01</span>
           <span class="w-title">The Back Exit</span>
           <span class="w-desc">First-person psychological horror game built in Unity with custom UI and AI-driven NPC pathfinding.</span>
@@ -544,7 +677,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media" data-project='{"title":"Zyqra — AI Learning","meta":"Web App · Python · 2024","art":"ai","icon":"◈","tags":["Python","Streamlit","AI/ML","Real-time Processing","UI Design"],"image":"media/projects/zyqra.jpg","video":"media/projects/zyqra.mp4","desc":"A comprehensive AI-powered study platform built with Python and Streamlit. Real-time doubt solving, automated quiz generation, and an interface that makes learning feel like a conversation."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Zyqra — AI Learning","meta":"Web App · Python · 2024","art":"ai","icon":"◈","tags":["Python","Streamlit","AI/ML","Real-time Processing","UI Design"],"image":"media/projects/zyqra.jpg","video":"media/projects/zyqra.mp4","desc":"A comprehensive AI-powered study platform built with Python and Streamlit. Real-time doubt solving, automated quiz generation, and an interface that makes learning feel like a conversation."}'>
           <span class="w-num">02</span>
           <span class="w-title">Zyqra AI Learning</span>
           <span class="w-desc">AI-powered study platform with real-time doubt solving and automated quiz generation.</span>
@@ -552,7 +685,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media" data-project='{"title":"Realistic Forest — HDRP","meta":"3D Environment · Unity · 2023","art":"forest","icon":"🌲","tags":["Unity HDRP","Terrain Sculpting","Real-time GI","Lighting","Atmosphere"],"image":"media/projects/forest.jpg","video":"media/projects/forest.mp4","desc":"High-fidelity forest biome using Unity HDRP. Manual terrain sculpting, hand-tuned lighting, real-time global illumination and atmospheric volumetrics."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Realistic Forest — HDRP","meta":"3D Environment · Unity · 2023","art":"forest","icon":"🌲","tags":["Unity HDRP","Terrain Sculpting","Real-time GI","Lighting","Atmosphere"],"image":"media/projects/forest.jpg","video":"media/projects/forest.mp4","desc":"High-fidelity forest biome using Unity HDRP. Manual terrain sculpting, hand-tuned lighting, real-time global illumination and atmospheric volumetrics."}'>
           <span class="w-num">03</span>
           <span class="w-title">Realistic Forest HDRP</span>
           <span class="w-desc">High-fidelity forest biome — manual terrain sculpting, real-time global illumination.</span>
@@ -560,7 +693,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media" data-project='{"title":"3D Interactive Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["React","Three.js","GLSL Shaders","WebGL","Animation"],"image":"media/projects/portfolio.jpg","video":"media/projects/portfolio.mp4","desc":"WebGL-based portfolio using React and Three.js with custom GLSL shaders for a cinematic, sci-fi feel.","link":"https://gokulakumarans.netlify.app"}'>
+        <div class="work-row has-media tilt" data-project='{"title":"3D Interactive Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["React","Three.js","GLSL Shaders","WebGL","Animation"],"image":"media/projects/portfolio.jpg","video":"media/projects/portfolio.mp4","desc":"WebGL-based portfolio using React and Three.js with custom GLSL shaders for a cinematic, sci-fi feel.","link":"https://gokulakumarans.netlify.app"}'>
           <span class="w-num">04</span>
           <span class="w-title">Personal Developer Hub</span>
           <span class="w-desc">WebGL portfolio with custom GLSL shaders — cinematic, space-themed, scroll-driven.</span>
@@ -568,7 +701,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media" data-project='{"title":"Procedural Shader Studies","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"media/projects/shader.mp4","desc":"Ongoing collection of procedural shader experiments — noise, fractals, fluid-like flow fields, chromatic effects."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Procedural Shader Studies","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"media/projects/shader.mp4","desc":"Ongoing collection of procedural shader experiments — noise, fractals, fluid-like flow fields, chromatic effects."}'>
           <span class="w-num">05</span>
           <span class="w-title">Shader Studies</span>
           <span class="w-desc">Procedural shader experiments — noise, fractals, flow fields, chromatic effects.</span>
@@ -576,7 +709,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media" data-project='{"title":"Anchor — Scroll Animation","meta":"Open Source · JavaScript · 2024","art":"design","icon":"⚓","tags":["JavaScript","Scroll-linked","Animation","MIT","Tiny"],"image":"media/projects/anchor.jpg","video":"media/projects/anchor.mp4","desc":"A 2KB scroll-linked animation library — MIT-licensed, dependency-free, used in production by small studios."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Anchor — Scroll Animation","meta":"Open Source · JavaScript · 2024","art":"design","icon":"⚓","tags":["JavaScript","Scroll-linked","Animation","MIT","Tiny"],"image":"media/projects/anchor.jpg","video":"media/projects/anchor.mp4","desc":"A 2KB scroll-linked animation library — MIT-licensed, dependency-free, used in production by small studios."}'>
           <span class="w-num">06</span>
           <span class="w-title">Anchor · 2KB</span>
           <span class="w-desc">2KB scroll-linked animation library. Tiny, dependency-free, MIT-licensed.</span>
@@ -589,39 +722,39 @@
   </section>
 
   <!-- P3.5: METRICS -->
-  <section class="panel panel-metrics" id="p3-5" data-from="scale">
+  <section class="panel panel-metrics" id="p3-5" data-from="scale" data-tint="rgba(61, 220, 132, 0.08)">
     <div class="panel-inner">
-      <div class="metrics-grid">
-        <div class="metric-item"><span class="metric-num" data-count="6">0</span><div class="metric-label">Certifications</div></div>
-        <div class="metric-item"><span class="metric-num" data-count="10">0</span><div class="metric-label">Projects shipped</div></div>
-        <div class="metric-item"><span class="metric-num" data-count="2">0</span><div class="metric-label">Hackathons</div></div>
-        <div class="metric-item"><span class="metric-num" data-count="100">0</span><div class="metric-label">% Dedication</div></div>
+      <div class="metrics-grid reveal" data-reveal-stagger>
+        <div class="metric-item tilt"><span class="metric-num" data-count="6">0</span><div class="metric-label">Certifications</div></div>
+        <div class="metric-item tilt"><span class="metric-num" data-count="10">0</span><div class="metric-label">Projects shipped</div></div>
+        <div class="metric-item tilt"><span class="metric-num" data-count="2">0</span><div class="metric-label">Hackathons</div></div>
+        <div class="metric-item tilt"><span class="metric-num" data-count="100">0</span><div class="metric-label">% Dedication</div></div>
       </div>
     </div>
   </section>
 
   <!-- P4: SERVICES -->
-  <section class="panel panel-services" id="p4" data-from="left">
+  <section class="panel panel-services" id="p4" data-from="left" data-tint="rgba(108, 99, 255, 0.1)">
     <div class="panel-inner">
-      <h2 class="section-h">Technical stack</h2>
-      <div class="services-list">
-        <div class="service-item"><span class="s-icon">🎮</span><div class="s-num">01</div><h3>Game Engineering</h3><p>High-fidelity environment design using Unity HDRP, custom C# gameplay systems, and 3D asset integration from Blender. From prototype to shippable build.</p></div>
-        <div class="service-item"><span class="s-icon">🌐</span><div class="s-num">02</div><h3>Full-Stack Web</h3><p>Responsive, high-performance applications with React, Node.js, and modern CSS — with the kind of motion and detail that makes people stay on the page.</p></div>
-        <div class="service-item"><span class="s-icon">🤖</span><div class="s-num">03</div><h3>AI & Automation</h3><p>AI-driven tools with Python and Streamlit to solve real-world problems and enhance learning ecosystems — the kind of work that actually ships.</p></div>
-        <div class="service-item"><span class="s-icon">✨</span><div class="s-num">04</div><h3>Shader & VFX</h3><p>Custom GLSL/HLSL shaders for both real-time graphics and web — procedural noise, flow fields, post-processing, and physics-driven effects.</p></div>
+      <h2 class="section-h reveal">Technical stack</h2>
+      <div class="services-list reveal" data-reveal-stagger>
+        <div class="service-item tilt"><span class="s-icon">🎮</span><div class="s-num">01</div><h3>Game Engineering</h3><p>High-fidelity environment design using Unity HDRP, custom C# gameplay systems, and 3D asset integration from Blender. From prototype to shippable build.</p></div>
+        <div class="service-item tilt"><span class="s-icon">🌐</span><div class="s-num">02</div><h3>Full-Stack Web</h3><p>Responsive, high-performance applications with React, Node.js, and modern CSS — with the kind of motion and detail that makes people stay on the page.</p></div>
+        <div class="service-item tilt"><span class="s-icon">🤖</span><div class="s-num">03</div><h3>AI & Automation</h3><p>AI-driven tools with Python and Streamlit to solve real-world problems and enhance learning ecosystems — the kind of work that actually ships.</p></div>
+        <div class="service-item tilt"><span class="s-icon">✨</span><div class="s-num">04</div><h3>Shader & VFX</h3><p>Custom GLSL/HLSL shaders for both real-time graphics and web — procedural noise, flow fields, post-processing, and physics-driven effects.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- P5: CERTIFICATES — all 6 with image paths, object-fit: contain keeps full cert visible -->
-  <section class="panel panel-certs" id="p5" data-from="right">
+  <!-- P5: CERTIFICATES -->
+  <section class="panel panel-certs" id="p5" data-from="right" data-tint="rgba(0, 229, 255, 0.08)">
     <div class="panel-inner">
-      <h2 class="section-h">Certifications · 2024</h2>
-      <div class="certs-canvas-wrap"><canvas id="certsCanvas"></canvas></div>
-      <p style="color: var(--text-faint); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 1rem 0 0.5rem;">Click any cert to open details</p>
-      <div class="certs-legend" id="certsLegend">
+      <h2 class="section-h reveal">Certifications · 2024</h2>
+      <div class="certs-canvas-wrap reveal" data-reveal-delay="100"><canvas id="certsCanvas"></canvas></div>
+      <p style="color: var(--text-faint); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 1rem 0 0.5rem;" class="reveal" data-reveal-delay="200">Click any cert to open details</p>
+      <div class="certs-legend reveal" data-reveal-delay="300" data-reveal-stagger id="certsLegend">
 
-        <div class="cert-card has-image" data-cert='{"title":"C# Programming","issuer":"Advanced Certification","art":"csharp","icon":"⚙️","image":"media/certificates/csharp.jpg","desc":"Advanced OOP & Game Logic implementation for Unity development — covering inheritance, polymorphism, delegates, and the patterns that actually matter in production."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"C# Programming","issuer":"Advanced Certification","art":"csharp","icon":"⚙️","image":"media/certificates/csharp.jpg","desc":"Advanced OOP & Game Logic implementation for Unity development — covering inheritance, polymorphism, delegates, and the patterns that actually matter in production."}'>
           <div class="cert-thumb"><img src="media/certificates/csharp.jpg" alt="C#" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>⚙️</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">C# Programming</div>
@@ -630,7 +763,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image" data-cert='{"title":"3D Modeling with Blender","issuer":"Modeling & Texturing","art":"blender","icon":"🎨","image":"media/certificates/blender.jpg","desc":"Mastery of mesh modeling, UV unwrapping, and texturing — from hard-surface props to organic forms, with proper topology and clean materials."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"3D Modeling with Blender","issuer":"Modeling & Texturing","art":"blender","icon":"🎨","image":"media/certificates/blender.jpg","desc":"Mastery of mesh modeling, UV unwrapping, and texturing — from hard-surface props to organic forms, with proper topology and clean materials."}'>
           <div class="cert-thumb"><img src="media/certificates/blender.jpg" alt="Blender" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎨</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Blender 3D</div>
@@ -639,7 +772,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image" data-cert='{"title":"Java Programming","issuer":"Core Certification","art":"java","icon":"☕","image":"media/certificates/java.jpg","desc":"Core concepts, data structures, and application development — the foundation that makes every other language easier to pick up."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Java Programming","issuer":"Core Certification","art":"java","icon":"☕","image":"media/certificates/java.jpg","desc":"Core concepts, data structures, and application development — the foundation that makes every other language easier to pick up."}'>
           <div class="cert-thumb"><img src="media/certificates/java.jpg" alt="Java" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>☕</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Java Programming</div>
@@ -648,7 +781,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"media/certificates/dsa.jpg","desc":"Efficient problem solving with trees, graphs, and algorithms — the kind of thinking that makes you a better engineer everywhere else."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"media/certificates/dsa.jpg","desc":"Efficient problem solving with trees, graphs, and algorithms — the kind of thinking that makes you a better engineer everywhere else."}'>
           <div class="cert-thumb"><img src="media/certificates/dsa.jpg" alt="DSA" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🔗</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">DSA</div>
@@ -657,7 +790,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","image":"media/certificates/fullstack.jpg","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","image":"media/certificates/fullstack.jpg","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment."}'>
           <div class="cert-thumb"><img src="media/certificates/fullstack.jpg" alt="Full-Stack" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🌐</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Full-Stack Dev</div>
@@ -666,7 +799,7 @@
           <div class="cert-open">↗</div>
         </div>
 
-        <div class="cert-card has-image" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","image":"media/certificates/responsive.jpg","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on."}'>
+        <div class="cert-card has-image tilt" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","image":"media/certificates/responsive.jpg","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on."}'>
           <div class="cert-thumb"><img src="media/certificates/responsive.jpg" alt="Responsive" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>📱</span>'" /></div>
           <div class="cert-info">
             <div class="cert-name">Responsive Design</div>
@@ -679,26 +812,26 @@
     </div>
   </section>
 
-  <!-- P6: CONTACT — pre-fill message + direct email link -->
-  <section class="panel panel-contact" id="p6" data-from="bottom">
+  <!-- P6: CONTACT -->
+  <section class="panel panel-contact" id="p6" data-from="bottom" data-tint="rgba(255, 180, 84, 0.12)">
     <div class="panel-inner">
-      <h2 class="section-h">Let's build <em>the future.</em></h2>
+      <h2 class="section-h reveal">Let's build <em>the future.</em></h2>
       <div class="contact-grid">
         <div>
-          <p class="contact-text">Have something that needs a <strong style="color:var(--text)">design eye</strong> and someone who can <strong style="color:var(--text)">build it</strong>? I'm currently open to select freelance work and full-time opportunities.</p>
-          <a href="mailto:gokulakumaran2007@gmail.com?subject=Project%20Inquiry&body=Hi%20Gokula%2C%0A%0AI%20want%20to%20talk%20about%20a%20project%20..." class="contact-email magnetic" id="emailLink">gokulakumaran2007@gmail.com →</a>
-          <div>
+          <p class="contact-text reveal" data-reveal-delay="100">Have something that needs a <strong style="color:var(--text)">design eye</strong> and someone who can <strong style="color:var(--text)">build it</strong>? I'm currently open to select freelance work and full-time opportunities.</p>
+          <a href="mailto:gokulakumaran2007@gmail.com?subject=Project%20Inquiry&body=Hi%20Gokula%2C%0A%0AI%20want%20to%20talk%20about%20a%20project%20..." class="contact-email magnetic reveal" data-reveal-delay="200" id="emailLink">gokulakumaran2007@gmail.com →</a>
+          <div class="reveal" data-reveal-delay="300">
             <div class="contact-detail"><span class="contact-detail-label">Phone</span><span class="contact-detail-val">+91 73739 80805</span></div>
             <div class="contact-detail"><span class="contact-detail-label">Location</span><span class="contact-detail-val">Tamil Nadu, India</span></div>
             <div class="contact-detail"><span class="contact-detail-label">Status</span><span class="contact-detail-val" style="color:var(--status)">● Open to work</span></div>
           </div>
-          <div class="social-row">
+          <div class="social-row reveal" data-reveal-delay="400">
             <a href="https://github.com/sGokulaKumaran" target="_blank" rel="noopener" class="magnetic">GitHub</a>
             <a href="https://www.linkedin.com/in/gokula-kumaran-s-503545328/" target="_blank" rel="noopener" class="magnetic">LinkedIn</a>
             <a href="#" target="_blank" rel="noopener" class="magnetic">X / Twitter</a>
           </div>
         </div>
-        <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <form class="contact-form reveal" data-reveal-delay="200" id="contactForm" onsubmit="handleSubmit(event)">
           <div class="form-group"><label>Your name</label><input type="text" id="cf-name" placeholder="Alex Johnson" required></div>
           <div class="form-group"><label>Email</label><input type="email" id="cf-email" placeholder="alex@company.com" required></div>
           <div class="form-group"><label>Service</label><select id="cf-service"><option value="">Select a service</option><option>Game Development</option><option>Full-Stack Web</option><option>AI Integration</option><option>Other</option></select></div>
@@ -717,12 +850,12 @@
   <div class="footer-inner">
     <p>© <span id="year"></span> S. Gokula Kumaran</p>
     <p class="footer-tag">Design + build · same person</p>
-    <a href="#p0" class="back-to-top magnetic">Back to top ↑</a>
+    <a href="#p0" data-nav class="back-to-top magnetic">Back to top ↑</a>
   </div>
 </footer>
 
 <script>
-/* ═══ SHADER BG — raymarched SDF ═══ */
+/* ═══ SHADER BG ═══ */
 (function () {
   const canvas = document.getElementById('shader-bg');
   const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -782,11 +915,11 @@
   const fs = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fs, fsSrc);
   gl.compileShader(fs);
-  if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(fs)); return; }
+  if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) return;
   const prog = gl.createProgram();
   gl.attachShader(prog, vs); gl.attachShader(prog, fs);
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error(gl.getProgramInfoLog(prog)); return; }
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
   gl.useProgram(prog);
   const buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -865,7 +998,7 @@
   frame();
 })();
 
-/* ═══ CERTS CANVAS — particle constellation ═══ */
+/* ═══ CERTS CANVAS ═══ */
 (function(){
   const canvas = document.getElementById('certsCanvas');
   if (!canvas) return;
@@ -937,12 +1070,321 @@
 </script>
 
 <script>
+/* ═══════════════════════════════════════════════════════════
+   NEW: CINEMATIC SMOOTH SCROLL SYSTEM
+   - Slow, eased scroll when clicking nav/buttons
+   - Cancellable if user scrolls manually
+   ═══════════════════════════════════════════════════════════ */
+const SmoothScroll = {
+  duration: 1400,           // ms — slow & cinematic
+  isAnimating: false,
+  startY: 0,
+  targetY: 0,
+  startTime: 0,
+  cancelled: false,
+
+  // easing curves
+  easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; },
+  easeOutQuart(t) { return 1 - Math.pow(1-t, 4); },
+
+  to(targetY) {
+    if (Math.abs(targetY - window.scrollY) < 5) return;
+    this.cancel();
+    this.isAnimating = true;
+    this.cancelled = false;
+    this.startY = window.scrollY;
+    this.targetY = Math.max(0, Math.min(targetY, document.documentElement.scrollHeight - window.innerHeight));
+    this.startTime = performance.now();
+    this._tick();
+  },
+
+  cancel() {
+    this.isAnimating = false;
+    this.cancelled = true;
+  },
+
+  _tick() {
+    if (!this.isAnimating) return;
+    const now = performance.now();
+    const elapsed = now - this.startTime;
+    const progress = Math.min(elapsed / this.duration, 1);
+    const eased = this.easeInOutCubic(progress);
+    const currentY = this.startY + (this.targetY - this.startY) * eased;
+    window.scrollTo(0, currentY);
+    if (progress < 1) requestAnimationFrame(() => this._tick());
+    else this.isAnimating = false;
+  }
+};
+
+/* Universal nav: any [data-nav] smoothly scrolls */
+function navTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const target = el.getBoundingClientRect().top + window.scrollY - 40;
+  SmoothScroll.to(target);
+}
+
+/* Override all [data-nav] click handlers */
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-nav], a[href^="#"]');
+  if (!a) return;
+  const href = a.getAttribute('href');
+  if (href && href.startsWith('#')) {
+    e.preventDefault();
+    navTo(href.slice(1));
+    // close mobile menu if open
+    navMobile.classList.remove('open');
+    navToggle.classList.remove('open');
+  }
+});
+
+/* Cancel smooth scroll if user manually scrolls */
+['wheel', 'touchstart', 'keydown'].forEach(evt => {
+  window.addEventListener(evt, e => {
+    if (evt === 'keydown' && ['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)) return; // let our handler run
+    SmoothScroll.cancel();
+  }, { passive: true });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: KEYBOARD NAVIGATION (arrow keys / j-k / pgup-pgdn)
+   ═══════════════════════════════════════════════════════════ */
+const PANEL_IDS = ['p0','p1','p2','p3','p3-5','p4','p5','p6'];
+function panelScrollTop(id) {
+  const el = document.getElementById(id);
+  return el ? el.getBoundingClientRect().top + window.scrollY - 40 : 0;
+}
+function getCurrentPanel() {
+  let closest = 0, minDist = Infinity;
+  PANEL_IDS.forEach((id, i) => {
+    const dist = Math.abs(panelScrollTop(id) - window.scrollY);
+    if (dist < minDist) { minDist = dist; closest = i; }
+  });
+  return closest;
+}
+function navByDir(dir) {
+  const cur = getCurrentPanel();
+  const next = Math.max(0, Math.min(PANEL_IDS.length - 1, cur + dir));
+  if (next !== cur) {
+    play('whoosh');
+    navTo(PANEL_IDS[next]);
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'ArrowDown' || e.key === 'j' || e.key === 'PageDown') { e.preventDefault(); navByDir(1); }
+  else if (e.key === 'ArrowUp' || e.key === 'k' || e.key === 'PageUp') { e.preventDefault(); navByDir(-1); }
+  else if (e.key === 'Home') { e.preventDefault(); navTo('p0'); play('whoosh'); }
+  else if (e.key === 'End') { e.preventDefault(); navTo('p6'); play('whoosh'); }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: SWIPE GESTURES (mobile / trackpad)
+   ═══════════════════════════════════════════════════════════ */
+let touchStartY = 0, touchStartX = 0, touchStartTime = 0;
+let swipeFlashTimer = null;
+function showSwipeHint(dir) {
+  const el = dir > 0 ? document.getElementById('swipeFlashUp') : document.getElementById('swipeFlashDown');
+  el.classList.add('show');
+  clearTimeout(swipeFlashTimer);
+  swipeFlashTimer = setTimeout(() => el.classList.remove('show'), 1000);
+}
+window.addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
+  touchStartTime = performance.now();
+}, { passive: true });
+window.addEventListener('touchend', e => {
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  const dx = touchStartX - e.changedTouches[0].clientX;
+  const dt = performance.now() - touchStartTime;
+  if (Math.abs(dy) > 80 && Math.abs(dy) > Math.abs(dx) * 1.5 && dt < 600) {
+    navByDir(dy > 0 ? 1 : -1);
+    showSwipeHint(dy > 0 ? 1 : -1);
+  }
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: CURSOR AMBIENT GLOW
+   ═══════════════════════════════════════════════════════════ */
+const cursorGlow = document.getElementById('cursorGlow');
+const glowState = { x: 0, y: 0, tx: 0, ty: 0, active: false };
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  setTimeout(() => cursorGlow.classList.add('ready'), 600);
+  document.addEventListener('mousemove', e => {
+    glowState.tx = e.clientX; glowState.ty = e.clientY; glowState.active = true;
+  });
+  function glowLoop() {
+    glowState.x += (glowState.tx - glowState.x) * 0.12;
+    glowState.y += (glowState.ty - glowState.y) * 0.12;
+    cursorGlow.style.left = glowState.x + 'px';
+    cursorGlow.style.top = glowState.y + 'px';
+    requestAnimationFrame(glowLoop);
+  }
+  glowLoop();
+  // boost when over interactive area
+  document.querySelectorAll('.work-row, .service-item, .cert-card, .btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorGlow.classList.add('boost'));
+    el.addEventListener('mouseleave', () => cursorGlow.classList.remove('boost'));
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: CLICK RIPPLES + PARTICLE BURST
+   ═══════════════════════════════════════════════════════════ */
+const PARTICLE_COLORS = ['#6C63FF', '#FFB454', '#00E5FF', '#3DDC84'];
+function spawnRipple(x, y) {
+  const r = document.createElement('div');
+  r.className = 'click-ripple';
+  r.style.left = x + 'px'; r.style.top = y + 'px';
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+function spawnParticles(x, y, count = 8) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = x + 'px'; p.style.top = y + 'px';
+    p.style.background = PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)];
+    document.body.appendChild(p);
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+    const dist = 40 + Math.random() * 60;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    requestAnimationFrame(() => {
+      p.style.transform = `translate(${tx}px, ${ty}px) scale(${0.5 + Math.random()})`;
+      p.style.opacity = '0';
+    });
+    setTimeout(() => p.remove(), 900);
+  }
+}
+document.addEventListener('click', e => {
+  // skip on form inputs and modal overlay
+  if (e.target.closest('input, textarea, select, .modal-overlay')) return;
+  spawnRipple(e.clientX, e.clientY);
+  // extra particles for nav clicks
+  if (e.target.closest('.main-nav a, .story-progress button, .nav-cta')) {
+    spawnParticles(e.clientX, e.clientY, 12);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: 3D TILT EFFECT (on .tilt elements)
+   ═══════════════════════════════════════════════════════════ */
+function initTilt() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.tilt').forEach(el => {
+    let raf = null;
+    el.addEventListener('mousemove', e => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        const rx = (y - 0.5) * -8;
+        const ry = (x - 0.5) * 8;
+        el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+      });
+    });
+    el.addEventListener('mouseleave', () => {
+      if (raf) cancelAnimationFrame(raf);
+      el.style.transform = '';
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: REVEAL ANIMATIONS (scroll-triggered stagger)
+   ═══════════════════════════════════════════════════════════ */
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('revealed');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+function initReveals() {
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: SECTION COLOR TINT
+   ═══════════════════════════════════════════════════════════ */
+const sectionTint = document.getElementById('sectionTint');
+const tintObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio > 0.4) {
+      const tint = e.target.dataset.tint;
+      if (tint) {
+        sectionTint.style.setProperty('--tint-color', tint);
+        sectionTint.style.opacity = '1';
+      }
+    }
+  });
+}, { threshold: [0.4, 0.6] });
+document.querySelectorAll('.panel[data-tint]').forEach(p => tintObserver.observe(p));
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: SECTION PROGRESS BAR + COUNTER
+   ═══════════════════════════════════════════════════════════ */
+const sectionProgressEl = document.getElementById('sectionProgress');
+const scNum = document.getElementById('scNum');
+const scLabel = document.getElementById('scLabel');
+const PANEL_LABELS = ['Hero', 'Role', 'About', 'Work', 'Stats', 'Stack', 'Certs', 'Contact'];
+let currentSection = 0;
+
+function updateSectionProgress() {
+  const cur = getCurrentPanel();
+  if (cur !== currentSection) {
+    currentSection = cur;
+    scNum.textContent = String(cur + 1).padStart(2, '0');
+    scLabel.textContent = PANEL_LABELS[cur];
+  }
+  // progress within current section
+  const id = PANEL_IDS[cur];
+  const el = document.getElementById(id);
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const next = PANEL_IDS[cur + 1] ? panelScrollTop(PANEL_IDS[cur + 1]) : top + el.offsetHeight;
+    const ratio = Math.max(0, Math.min(1, (window.scrollY - top) / (next - top)));
+    sectionProgressEl.style.setProperty('--sec-progress', (ratio * 100) + '%');
+  }
+}
+window.addEventListener('scroll', updateSectionProgress, { passive: true });
+updateSectionProgress();
+
+/* ═══════════════════════════════════════════════════════════
+   NEW: KONAMI CODE EASTER EGG
+   ═══════════════════════════════════════════════════════════ */
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiIdx = 0;
+document.addEventListener('keydown', e => {
+  if (e.key === KONAMI[konamiIdx]) {
+    konamiIdx++;
+    if (konamiIdx === KONAMI.length) {
+      konamiIdx = 0;
+      activateEasterEgg();
+    }
+  } else { konamiIdx = 0; }
+});
+function activateEasterEgg() {
+  const toast = document.getElementById('easterToast');
+  toast.textContent = '✨ You found the secret. Welcome, friend. — GK';
+  toast.classList.add('show');
+  play('success');
+  // burst of particles at center
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => spawnParticles(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2, 20), i*200);
+  }
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
 /* HERO NAME — split into spans */
 (function(){
   const row1 = document.getElementById('row1');
-  const row2 = document.getElementById('row2');
   if (row1) row1.innerHTML = 'Gokula'.split('').map(c => `<span>${c}</span>`).join('');
-  if (row2) row2.innerHTML = 'Kumaran'.split('').map(c => `<span>${c}</span>`).join('');
 })();
 
 /* TYPING EFFECT */
@@ -973,7 +1415,6 @@ onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 /* PANEL IN-VIEW */
 const storyEl = document.getElementById('story');
 const progressDots = document.querySelectorAll('.story-progress button');
-const PANEL_IDS = ['p0','p1','p2','p3','p3-5','p4','p5','p6'];
 const dotByPanel = {};
 PANEL_IDS.forEach((id, i) => { dotByPanel[id] = progressDots[i]; });
 
@@ -1012,7 +1453,7 @@ if (isFinePointer) {
   });
   function ringLoop(){ rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(ringLoop); }
   ringLoop();
-  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .certs-legend .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual, .command-item, .contact-prefill');
+  const hoverables = document.querySelectorAll('a, button, .work-row, .service-item, .nav-cta, .btn, .metric-item, .certs-legend .cert-card, .contact-detail, .modal-close, .submit-btn, .story-progress button, .about-tags span, .form-group input, .form-group textarea, .form-group select, .social-row a, .back-to-top, .wordmark, .panel .about-visual, .command-item, .contact-prefill, .tilt');
   hoverables.forEach(el => {
     el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
     el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
@@ -1050,7 +1491,7 @@ document.querySelectorAll('.magnetic').forEach(el => {
   el.addEventListener('mouseleave', () => { el.style.transform = ''; });
 });
 
-/* MODAL — video > image > art */
+/* MODAL */
 const modalOverlay = document.getElementById('modalOverlay');
 const modalMedia = document.getElementById('modalMedia');
 const modalTitle = document.getElementById('modalTitle');
@@ -1099,6 +1540,7 @@ function openModal(data) {
   renderModalMedia(data);
   modalOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+  play('open');
 }
 function closeModal() {
   const v = modalMedia.querySelector('video');
@@ -1106,6 +1548,7 @@ function closeModal() {
   modalOverlay.classList.remove('open');
   document.body.style.overflow = '';
   setTimeout(() => { modalMedia.innerHTML = ''; }, 200);
+  play('close');
 }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
@@ -1120,22 +1563,24 @@ function attachCardListeners() {
 }
 attachCardListeners();
 
-/* COMMAND PALETTE (Cmd+K) */
+/* COMMAND PALETTE */
 const commandPalette = document.getElementById('commandPalette');
 const commandInput = document.getElementById('commandInput');
 const commandList = document.getElementById('commandList');
 const commandBackdrop = document.getElementById('commandBackdrop');
 
 const commands = [
-  { id: 'p0', title: 'Go to Hero', sub: 'Gokula Kumaran', icon: '👋', action: () => goTo('p0') },
-  { id: 'p1', title: 'Go to Role', sub: 'What I do', icon: '💼', action: () => goTo('p1') },
-  { id: 'p2', title: 'Go to About', sub: 'About me', icon: '👤', action: () => goTo('p2') },
-  { id: 'p3', title: 'Go to Work', sub: 'Selected projects (6)', icon: '💻', action: () => goTo('p3') },
-  { id: 'p4', title: 'Go to Stack', sub: 'Technical skills', icon: '🛠', action: () => goTo('p4') },
-  { id: 'p5', title: 'Go to Certifications', sub: '06 credentials', icon: '🎓', action: () => goTo('p5') },
-  { id: 'p6', title: 'Go to Contact', sub: 'Get in touch', icon: '✉️', action: () => goTo('p6') },
-  { id: 'top', title: 'Back to top', sub: 'Scroll to hero', icon: '↑', action: () => goTo('p0') },
-  { id: 'email-prefill', title: 'Email Gokula', sub: 'Pre-fills message box', icon: '✉️', action: () => { goTo('p6'); setTimeout(prefillMessage, 600); } },
+  { id: 'p0', title: 'Go to Hero', sub: 'Gokula Kumaran', icon: '👋', action: () => navTo('p0') },
+  { id: 'p1', title: 'Go to Role', sub: 'What I do', icon: '💼', action: () => navTo('p1') },
+  { id: 'p2', title: 'Go to About', sub: 'About me', icon: '👤', action: () => navTo('p2') },
+  { id: 'p3', title: 'Go to Work', sub: 'Selected projects (6)', icon: '💻', action: () => navTo('p3') },
+  { id: 'p4', title: 'Go to Stack', sub: 'Technical skills', icon: '🛠', action: () => navTo('p4') },
+  { id: 'p5', title: 'Go to Certifications', sub: '06 credentials', icon: '🎓', action: () => navTo('p5') },
+  { id: 'p6', title: 'Go to Contact', sub: 'Get in touch', icon: '✉️', action: () => navTo('p6') },
+  { id: 'top', title: 'Back to top', sub: 'Scroll to hero', icon: '↑', action: () => navTo('p0') },
+  { id: 'next', title: 'Next section', sub: '↓ Arrow key', icon: '↓', action: () => navByDir(1) },
+  { id: 'prev', title: 'Previous section', sub: '↑ Arrow key', icon: '↑', action: () => navByDir(-1) },
+  { id: 'email-prefill', title: 'Email Gokula', sub: 'Pre-fills message box', icon: '✉️', action: () => { navTo('p6'); setTimeout(prefillMessage, 1000); } },
   { id: 'email-direct', title: 'Open mailto:', sub: 'Launch email app', icon: '📧', action: () => { window.location.href = 'mailto:gokulakumaran2007@gmail.com?subject=Project%20Inquiry&body=Hi%20Gokula%2C%0A%0A'; } },
   { id: 'sound', title: 'Toggle UI Sound', sub: 'On / Off', icon: '🔊', action: () => toggleSound() },
   { id: 'music', title: 'Toggle Space Music', sub: 'On / Off', icon: '🎵', action: () => toggleMusic() },
@@ -1144,12 +1589,9 @@ const commands = [
   { id: 'play-zyqra', title: 'Open Project: Zyqra', sub: 'AI Learning Ecosystem', icon: '◈', action: () => openProjectByTitle('Zyqra') },
   { id: 'play-back', title: 'Open Project: The Back Exit', sub: 'Horror Game', icon: '👁', action: () => openProjectByTitle('The Back Exit') },
   { id: 'play-csharp', title: 'Open Cert: C# Programming', sub: 'Advanced Certification', icon: '⚙️', action: () => openCertByTitle('C# Programming') },
+  { id: 'konami-hint', title: 'Easter egg: ↑↑↓↓←→←→BA', sub: 'Try it...', icon: '🥚', action: () => activateEasterEgg() },
 ];
 
-function goTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
-}
 function openProjectByTitle(title) {
   const row = document.querySelector(`.work-row[data-project*="${title}"]`);
   if (row) row.click();
@@ -1208,11 +1650,11 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && commandPalette.classList.contains('open')) { e.preventDefault(); closeCommand(); }
 });
 progressDots.forEach(d => d.addEventListener('click', () => {
-  const t = document.getElementById(d.dataset.target);
-  if (t) t.scrollIntoView({ behavior: 'smooth' });
+  navTo(d.dataset.target);
+  play('click');
 }));
 
-/* INFINITE SCROLL — true append */
+/* INFINITE SCROLL */
 const sentinel = document.getElementById('infiniteSentinel');
 let appending = false;
 let cloneCounter = 0;
@@ -1236,7 +1678,7 @@ function clonePanels(suffix) {
     panelIO.observe(clone);
   });
   cloneCounter++;
-  setTimeout(attachCardListeners, 0);
+  setTimeout(() => { attachCardListeners(); initTilt(); initReveals(); }, 0);
 }
 const sentinelObs = new IntersectionObserver(entries => {
   entries.forEach(entry => {
@@ -1380,23 +1822,8 @@ function play(type = 'click') {
   } catch(e) {}
 }
 
-const customSounds = {};
-async function loadCustomSound(name, url) {
-  return new Promise((resolve, reject) => {
-    const audio = new Audio(url);
-    audio.preload = 'auto';
-    audio.addEventListener('canplaythrough', () => { customSounds[name] = audio; resolve(audio); });
-    audio.addEventListener('error', reject);
-  });
-}
-function playCustom(name) {
-  if (customSounds[name]) { customSounds[name].currentTime = 0; customSounds[name].play().catch(()=>{}); }
-}
 window.SoundFX = {
-  play, loadCustomSound, playCustom,
-  presets: Object.keys(SOUND_PRESETS),
-  sounds: customSounds,
-  startMusic, stopMusic, toggleMusic, toggleSound,
+  play, startMusic, stopMusic, toggleMusic, toggleSound,
   isSoundEnabled: () => soundEnabled,
   isMusicEnabled: () => musicEnabled,
 };
@@ -1429,11 +1856,7 @@ function updateBgmToggle() {
   bgmToggle.classList.toggle('active', musicEnabled);
   bgmToggle.classList.toggle('muted', !musicEnabled);
 }
-function toggleSound() {
-  ensureAudio();
-  soundEnabled = !soundEnabled; updateSoundToggle();
-  if (soundEnabled) play('pop');
-}
+function toggleSound() { ensureAudio(); soundEnabled = !soundEnabled; updateSoundToggle(); if (soundEnabled) play('pop'); }
 function toggleMusic() {
   ensureAudio();
   if (!firstUserGesture) unlockAudio();
@@ -1449,8 +1872,6 @@ document.addEventListener('click', (e) => {
   const t = e.target.closest('a, button, .work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button, .contact-prefill');
   if (t) play('click');
 }, true);
-document.getElementById('modalClose').addEventListener('click', () => play('close'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) play('close'); });
 
 const counters = document.querySelectorAll('.metric-num[data-count], .hero-stat-num[data-count]');
 const cObs = new IntersectionObserver(entries => {
@@ -1465,7 +1886,7 @@ counters.forEach(el => cObs.observe(el));
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* CONTACT FORM — pre-fill support + submit */
+/* CONTACT FORM */
 const cfName = document.getElementById('cf-name');
 const cfEmail = document.getElementById('cf-email');
 const cfService = document.getElementById('cf-service');
@@ -1498,7 +1919,6 @@ function handleSubmit(e) {
   b.disabled = true;
   play('swoosh');
   setTimeout(() => {
-    /* Open the user's email app with the form data pre-filled */
     window.location.href = buildMailto();
     setTimeout(() => {
       b.textContent = 'Email ready ✓';
@@ -1508,21 +1928,6 @@ function handleSubmit(e) {
     }, 400);
   }, 300);
 }
-
-let scrollVel = 0, scrollTarget = 0;
-const SCROLL_FRICTION = 0.82, SCROLL_MAX = 35;
-window.addEventListener('wheel', e => {
-  scrollTarget = Math.max(-SCROLL_MAX, Math.min(SCROLL_MAX, scrollTarget + e.deltaY * 0.25));
-  e.preventDefault(); scrollVel = scrollTarget; window.scrollBy({ top: scrollVel });
-  scrollTarget *= SCROLL_FRICTION;
-  if (Math.abs(scrollTarget) < 0.4) scrollTarget = 0;
-}, { passive: false });
-let lastTouchY = 0;
-window.addEventListener('touchstart', e => { lastTouchY = e.touches[0].clientY; }, { passive: true });
-window.addEventListener('touchmove', e => {
-  const y = e.touches[0].clientY; const dy = (lastTouchY - y) * 0.85; lastTouchY = y;
-  window.scrollBy({ top: dy }); e.preventDefault();
-}, { passive: false });
 
 document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
 document.addEventListener('keydown', e => {
@@ -1549,10 +1954,17 @@ document.addEventListener('selectstart', e => {
 });
 
 console.log('%c👋 Hey there!', 'color: #6C63FF; font-size: 24px; font-weight: bold;');
+console.log('%c⚡ New: Try ↑/↓ keys, swipe on mobile, or Konami code (↑↑↓↓←→←→BA)!', 'color: #FFB454; font-size: 12px;');
 console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.keys(SOUND_PRESETS));
-console.log('%cLoad your own:', 'color: #6C63FF;', 'await SoundFX.loadCustomSound("name", "sounds/file.mp3")');
 
-window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600));
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
+  // Init new features after page is ready
+  setTimeout(() => {
+    initTilt();
+    initReveals();
+  }, 700);
+});
 </script>
 </body>
 </html>
