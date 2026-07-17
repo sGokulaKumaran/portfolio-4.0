@@ -204,6 +204,25 @@
   .swipe-flash.up { top: 30%; }
   .swipe-flash.down { bottom: 30%; }
 
+  /* ═════ NEW: 2-column card grid for Education / Internships ═════ */
+  .cards-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 920px;
+    margin: 2.5rem auto 0;
+  }
+  @media (max-width: 760px) {
+    .cards-2 { grid-template-columns: 1fr; }
+  }
+  .edu-sub, .intern-sub {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 56ch;
+    margin: 0.5rem 0 0;
+  }
+  .edu-sub b, .intern-sub b { color: var(--text); font-weight: 500; }
+
   body > *:not(.loader):not(.vignette):not(.grain):not(#shader-bg):not(.cursor-dot):not(.cursor-ring):not(.cursor-trail):not(.cursor-glow):not(.scroll-progress):not(.modal-overlay):not(.nav-mobile):not(.story-progress):not(.site-header):not(.command-palette):not(.section-progress):not(.section-counter):not(.kbd-hint):not(.easter-toast):not(.swipe-flash):not(.section-tint) { position: relative; z-index: 3; }
 
   .loader { position: fixed; inset: 0; z-index: 99999; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem; transition: opacity 0.8s, visibility 0.8s; }
@@ -524,7 +543,7 @@
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
 <div class="section-progress" id="sectionProgress"></div>
-<div class="section-counter" id="sectionCounter"><span class="sc-num" id="scNum">01</span><span class="sc-line"></span><span id="scTotal">08</span><span id="scLabel">Hero</span></div>
+<div class="section-counter" id="sectionCounter"><span class="sc-num" id="scNum">01</span><span class="sc-line"></span><span id="scTotal">10</span><span id="scLabel">Hero</span></div>
 <div class="kbd-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>⌘</kbd><kbd>K</kbd> command</span></div>
 <div class="easter-toast" id="easterToast"></div>
 <div class="swipe-flash up" id="swipeFlashUp">↑ Swipe up for next</div>
@@ -573,7 +592,9 @@
     <nav class="main-nav">
       <a href="#p1" data-nav>Role</a>
       <a href="#p2" data-nav>About</a>
+      <a href="#p2-edu" data-nav>Education</a>
       <a href="#p3" data-nav>Work</a>
+      <a href="#p3-intern" data-nav>Internships</a>
       <a href="#p4" data-nav>Stack</a>
       <a href="#p5" data-nav>Certs</a>
       <a href="#p6" data-nav>Contact</a>
@@ -584,7 +605,8 @@
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
   <div class="nav-mobile" id="navMobile">
-    <a href="#p1" data-nav>Role</a><a href="#p2" data-nav>About</a><a href="#p3" data-nav>Work</a>
+    <a href="#p1" data-nav>Role</a><a href="#p2" data-nav>About</a><a href="#p2-edu" data-nav>Education</a>
+    <a href="#p3" data-nav>Work</a><a href="#p3-intern" data-nav>Internships</a>
     <a href="#p4" data-nav>Stack</a><a href="#p5" data-nav>Certs</a><a href="#p6" data-nav>Contact</a>
   </div>
 </header>
@@ -593,8 +615,10 @@
   <button data-target="p0" data-label="Hero" class="active"></button>
   <button data-target="p1" data-label="Role"></button>
   <button data-target="p2" data-label="About"></button>
+  <button data-target="p2-edu" data-label="Education"></button>
   <button data-target="p3" data-label="Work"></button>
   <button data-target="p3-5" data-label="Stats"></button>
+  <button data-target="p3-intern" data-label="Internships"></button>
   <button data-target="p4" data-label="Stack"></button>
   <button data-target="p5" data-label="Certs"></button>
   <button data-target="p6" data-label="Contact"></button>
@@ -647,7 +671,7 @@
           <p class="reveal" data-reveal-delay="200">Currently pursuing <strong>B.Tech in Computer Science & Business Systems</strong> at Ramco Institute of Technology — blending a business mindset with technical engineering.</p>
           <p class="reveal" data-reveal-delay="300">Remote-friendly, based in Tamil Nadu, India, and quietly optimistic about what the next browser can do.</p>
           <div class="about-tags reveal" data-reveal-delay="400" data-reveal-stagger>
-            <span>Unity 3D</span><span>C#</span><span>React</span><span>Three.js</span><span>Python</span><span>Blender</span><span>GLSL</span><span>TypeScript</span><span>AI/ML</span><span>Node.js</span>
+            <span>Unity 3D</span><span>C#</span><span>React</span><span>Three.js</span><span>Python</span><span>Blender</span><span>java</span><span>Dsa</span><span>AI/ML</span><span>Django</span>
           </div>
         </div>
         <div class="about-visual tilt reveal" data-reveal-delay="300">
@@ -656,6 +680,38 @@
           </div>
           <div class="about-visual-float">GK</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P2-EDU: EDUCATION -->
+  <section class="panel panel-edu" id="p2-edu" data-from="bottom" data-tint="rgba(0, 229, 255, 0.08)">
+    <div class="panel-inner">
+      <div class="section-meta">
+        <h2 class="section-h reveal">Education</h2>
+        <span class="num reveal" data-reveal-delay="100">02 institutions · click to expand</span>
+      </div>
+      <p class="edu-sub reveal" data-reveal-delay="200">Where I <b>started</b>, where I'm <b>going</b> — and the institutions that shaped how I think about software, design, and systems.</p>
+      <div class="cards-2 reveal" data-reveal-delay="300" data-reveal-stagger>
+
+        <div class="cert-card has-image tilt" data-cert='{"title":"NA Annappa Raja Memorial Higher Secondary School","issuer":"Higher Secondary School · Tamil Nadu","art":"design","icon":"🏫","image":"images/school.jpg","desc":"Completed school education while discovering a passion for programming and technology. This foundational period sparked a curiosity for computers and creative problem-solving that still drives every project I take on."}'>
+          <div class="cert-thumb"><img src="images/school.jpg" alt="School" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🏫</span>'" /></div>
+          <div class="cert-info">
+            <div class="cert-name">Higher Secondary School</div>
+            <div class="cert-issuer">NA Annappa Raja Memorial HSS</div>
+          </div>
+          <div class="cert-open">↗</div>
+        </div>
+
+        <div class="cert-card has-image tilt" data-cert='{"title":"Ramco Institute of Technology","issuer":"B.Tech — CSBS · 2024–Present","art":"fullstack","icon":"🎓","image":"images/college.jpg","desc":"Currently pursuing B.Tech in Computer Science and Business Systems (2024–Present). Focusing on game development, AI systems, and building real-world software projects that combine creativity with technical skill — a blend that’s rare in pure CS programs."}'>
+          <div class="cert-thumb"><img src="images/college.jpg" alt="College" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎓</span>'" /></div>
+          <div class="cert-info">
+            <div class="cert-name">B.Tech — CSBS</div>
+            <div class="cert-issuer">Ramco Institute of Technology</div>
+          </div>
+          <div class="cert-open">↗</div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -692,28 +748,28 @@
           <div class="w-tags"><span>Unity HDRP</span><span>GI</span><span>Lighting</span></div>
           <div class="w-arrow">↗</div>
         </div>
-
-        <div class="work-row has-media tilt" data-project='{"title":"3D Interactive Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["React","Three.js","GLSL Shaders","WebGL","Animation"],"image":"media/projects/portfolio.jpg","video":"media/projects/portfolio.mp4","desc":"WebGL-based portfolio using React and Three.js with custom GLSL shaders for a cinematic, sci-fi feel.","link":"https://gokulakumarans.netlify.app"}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Procedural Generation","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"videos/pgen.mp4","desc":"Ongoing collection of procedural shader experiments — noise, fractals, fluid-like flow fields, chromatic effects."}'>
           <span class="w-num">04</span>
-          <span class="w-title">Personal Developer Hub</span>
+          <span class="w-title">Procedural Generation</span>
+          <span class="w-desc">Procedural generation experiments — noise, fractals, flow fields, chromatic effects.</span>
+          <div class="w-tags"><span>GLSL</span><span>Procedural</span><span>Math</span></div>
+          <div class="w-arrow">↗</div>
+        </div>
+
+        <div class="work-row has-media tilt" data-project='{"title":"3D Interactive Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["React","Three.js","GLSL Shaders","WebGL","Animation"],"image":"images/projects/portfoliov1.1.jpg","video":"media/projects/portfolio.mp4","desc":"WebGL-based portfolio using React and Three.js with custom GLSL shaders for a cinematic, sci-fi feel.","link":"https://gokulakumarans.netlify.app"}'>
+          <span class="w-num">05</span>
+          <span class="w-title">Personal portfolio v1</span>
           <span class="w-desc">WebGL portfolio with custom GLSL shaders — cinematic, space-themed, scroll-driven.</span>
           <div class="w-tags"><span>React</span><span>Three.js</span><span>GLSL</span></div>
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media tilt" data-project='{"title":"Procedural Shader Studies","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"media/projects/shader.mp4","desc":"Ongoing collection of procedural shader experiments — noise, fractals, fluid-like flow fields, chromatic effects."}'>
-          <span class="w-num">05</span>
-          <span class="w-title">Shader Studies</span>
-          <span class="w-desc">Procedural shader experiments — noise, fractals, flow fields, chromatic effects.</span>
-          <div class="w-tags"><span>GLSL</span><span>Procedural</span><span>Math</span></div>
-          <div class="w-arrow">↗</div>
-        </div>
 
-        <div class="work-row has-media tilt" data-project='{"title":"Anchor — Scroll Animation","meta":"Open Source · JavaScript · 2024","art":"design","icon":"⚓","tags":["JavaScript","Scroll-linked","Animation","MIT","Tiny"],"image":"media/projects/anchor.jpg","video":"media/projects/anchor.mp4","desc":"A 2KB scroll-linked animation library — MIT-licensed, dependency-free, used in production by small studios."}'>
+         <div class="work-row has-media tilt" data-project='{"title":"Interactive Space Portfolio","meta":"Interactive Web · 2024","art":"portfolio","icon":"◉","tags":["html","css","html"],"image":"images/projects/portfoliov2.png","video":"media/projects/portfolio.mp4","desc":"Spaced-based portfolio using html, css and javascript to create space look website, like sci-fi feel.","link":"https://gokulakumarans2.netlify.app"}'>
           <span class="w-num">06</span>
-          <span class="w-title">Anchor · 2KB</span>
-          <span class="w-desc">2KB scroll-linked animation library. Tiny, dependency-free, MIT-licensed.</span>
-          <div class="w-tags"><span>JavaScript</span><span>2KB</span><span>MIT</span></div>
+          <span class="w-title">Personal portfolio v2</span>
+          <span class="w-desc">Simple space based portfolio with html and css only — cinematic, space-themed, scroll-driven.</span>
+          <div class="w-tags"><span>html</span><span>css</span><span>JavaScript</span></div>
           <div class="w-arrow">↗</div>
         </div>
 
@@ -729,6 +785,40 @@
         <div class="metric-item tilt"><span class="metric-num" data-count="10">0</span><div class="metric-label">Projects shipped</div></div>
         <div class="metric-item tilt"><span class="metric-num" data-count="2">0</span><div class="metric-label">Hackathons</div></div>
         <div class="metric-item tilt"><span class="metric-num" data-count="100">0</span><div class="metric-label">% Dedication</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P3-INTERN: INTERNSHIPS -->
+  <section class="panel panel-intern" id="p3-intern" data-from="right" data-tint="rgba(255, 180, 84, 0.1)">
+    <div class="panel-inner">
+      <div class="section-meta">
+        <h2 class="section-h reveal">Internships</h2>
+        <span class="num reveal" data-reveal-delay="100">02 experiences · click to expand</span>
+      </div>
+      <p class="intern-sub reveal" data-reveal-delay="200">Real-world exposure to <b>production codebases</b>, deadlines, and the kind of feedback you only get when your work ships to actual users.</p>
+      <div class="cards-2 reveal" data-reveal-delay="300" data-reveal-stagger>
+
+        <!-- ✏️ INTERNSHIP 1 — Replace placeholders below with your actual details ✏️ -->
+        <div class="cert-card has-image tilt" data-cert='{"title":"Python-FullStack","issuer":"Skiez Degital · may-4-2026 to july-4-2026 ","Python-FullStack":"webdesign","icon":"💼","image":"images/certificates/internfs.png","desc":"Brief description of what you did, who you worked with, and what you built during this internship. Highlight a specific win — a feature shipped, a system you improved, or a problem you solved that the team kept using after you left."}'>
+          <div class="cert-thumb"><img src="images/certificates/internfs.png" alt="Internship 1" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>💼</span>'" /></div>
+          <div class="cert-info">
+            <div class="cert-name">Python Full-Stack/div>
+            <div class="cert-issuer">Skiez Degital</div>
+          </div>
+          <div class="cert-open">↗</div>
+        </div>
+
+        <!-- ✏️ INTERNSHIP 2 — Replace placeholders below with your actual details ✏️ -->
+        <div class="cert-card has-image tilt" data-cert='{"title":"Game Development Intern","issuer":"Playxoft Studios · june-1-2026 to june-30-2026","Procedural generation":"Game Development","icon":"🎮","image":"images/certificates/interngame.jpg","desc":"Brief description of your second internship. Focus on the technology you used (Unity? React? Python?), the scale of the project, and one thing you learned that you would not have learned in a classroom or personal project."}'>
+          <div class="cert-thumb"><img src="images/certificates/interngame.jpg" alt="Internship 2" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎮</span>'" /></div>
+          <div class="cert-info">
+            <div class="cert-name">Game Development Intern</div>
+            <div class="cert-issuer">Playxoft Studios</div>
+          </div>
+          <div class="cert-open">↗</div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1071,21 +1161,17 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   NEW: CINEMATIC SMOOTH SCROLL SYSTEM
-   - Slow, eased scroll when clicking nav/buttons
-   - Cancellable if user scrolls manually
+   CINEMATIC SMOOTH SCROLL SYSTEM
    ═══════════════════════════════════════════════════════════ */
 const SmoothScroll = {
-  duration: 1400,           // ms — slow & cinematic
+  duration: 1400,
   isAnimating: false,
   startY: 0,
   targetY: 0,
   startTime: 0,
   cancelled: false,
 
-  // easing curves
   easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; },
-  easeOutQuart(t) { return 1 - Math.pow(1-t, 4); },
 
   to(targetY) {
     if (Math.abs(targetY - window.scrollY) < 5) return;
@@ -1116,7 +1202,6 @@ const SmoothScroll = {
   }
 };
 
-/* Universal nav: any [data-nav] smoothly scrolls */
 function navTo(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -1124,7 +1209,6 @@ function navTo(id) {
   SmoothScroll.to(target);
 }
 
-/* Override all [data-nav] click handlers */
 document.addEventListener('click', e => {
   const a = e.target.closest('a[data-nav], a[href^="#"]');
   if (!a) return;
@@ -1132,24 +1216,22 @@ document.addEventListener('click', e => {
   if (href && href.startsWith('#')) {
     e.preventDefault();
     navTo(href.slice(1));
-    // close mobile menu if open
     navMobile.classList.remove('open');
     navToggle.classList.remove('open');
   }
 });
 
-/* Cancel smooth scroll if user manually scrolls */
 ['wheel', 'touchstart', 'keydown'].forEach(evt => {
   window.addEventListener(evt, e => {
-    if (evt === 'keydown' && ['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)) return; // let our handler run
+    if (evt === 'keydown' && ['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)) return;
     SmoothScroll.cancel();
   }, { passive: true });
 });
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: KEYBOARD NAVIGATION (arrow keys / j-k / pgup-pgdn)
+   KEYBOARD NAVIGATION
    ═══════════════════════════════════════════════════════════ */
-const PANEL_IDS = ['p0','p1','p2','p3','p3-5','p4','p5','p6'];
+const PANEL_IDS = ['p0','p1','p2','p2-edu','p3','p3-5','p3-intern','p4','p5','p6'];
 function panelScrollTop(id) {
   const el = document.getElementById(id);
   return el ? el.getBoundingClientRect().top + window.scrollY - 40 : 0;
@@ -1180,7 +1262,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: SWIPE GESTURES (mobile / trackpad)
+   SWIPE GESTURES
    ═══════════════════════════════════════════════════════════ */
 let touchStartY = 0, touchStartX = 0, touchStartTime = 0;
 let swipeFlashTimer = null;
@@ -1206,7 +1288,7 @@ window.addEventListener('touchend', e => {
 }, { passive: true });
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: CURSOR AMBIENT GLOW
+   CURSOR AMBIENT GLOW
    ═══════════════════════════════════════════════════════════ */
 const cursorGlow = document.getElementById('cursorGlow');
 const glowState = { x: 0, y: 0, tx: 0, ty: 0, active: false };
@@ -1223,7 +1305,6 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     requestAnimationFrame(glowLoop);
   }
   glowLoop();
-  // boost when over interactive area
   document.querySelectorAll('.work-row, .service-item, .cert-card, .btn').forEach(el => {
     el.addEventListener('mouseenter', () => cursorGlow.classList.add('boost'));
     el.addEventListener('mouseleave', () => cursorGlow.classList.remove('boost'));
@@ -1231,7 +1312,7 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: CLICK RIPPLES + PARTICLE BURST
+   CLICK RIPPLES + PARTICLE BURST
    ═══════════════════════════════════════════════════════════ */
 const PARTICLE_COLORS = ['#6C63FF', '#FFB454', '#00E5FF', '#3DDC84'];
 function spawnRipple(x, y) {
@@ -1260,17 +1341,15 @@ function spawnParticles(x, y, count = 8) {
   }
 }
 document.addEventListener('click', e => {
-  // skip on form inputs and modal overlay
   if (e.target.closest('input, textarea, select, .modal-overlay')) return;
   spawnRipple(e.clientX, e.clientY);
-  // extra particles for nav clicks
   if (e.target.closest('.main-nav a, .story-progress button, .nav-cta')) {
     spawnParticles(e.clientX, e.clientY, 12);
   }
 });
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: 3D TILT EFFECT (on .tilt elements)
+   3D TILT EFFECT
    ═══════════════════════════════════════════════════════════ */
 function initTilt() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -1295,7 +1374,7 @@ function initTilt() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: REVEAL ANIMATIONS (scroll-triggered stagger)
+   REVEAL ANIMATIONS
    ═══════════════════════════════════════════════════════════ */
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -1310,7 +1389,7 @@ function initReveals() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: SECTION COLOR TINT
+   SECTION COLOR TINT
    ═══════════════════════════════════════════════════════════ */
 const sectionTint = document.getElementById('sectionTint');
 const tintObserver = new IntersectionObserver(entries => {
@@ -1327,12 +1406,12 @@ const tintObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.panel[data-tint]').forEach(p => tintObserver.observe(p));
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: SECTION PROGRESS BAR + COUNTER
+   SECTION PROGRESS BAR + COUNTER
    ═══════════════════════════════════════════════════════════ */
 const sectionProgressEl = document.getElementById('sectionProgress');
 const scNum = document.getElementById('scNum');
 const scLabel = document.getElementById('scLabel');
-const PANEL_LABELS = ['Hero', 'Role', 'About', 'Work', 'Stats', 'Stack', 'Certs', 'Contact'];
+const PANEL_LABELS = ['Hero', 'Role', 'About', 'Education', 'Work', 'Stats', 'Internships', 'Stack', 'Certs', 'Contact'];
 let currentSection = 0;
 
 function updateSectionProgress() {
@@ -1342,7 +1421,6 @@ function updateSectionProgress() {
     scNum.textContent = String(cur + 1).padStart(2, '0');
     scLabel.textContent = PANEL_LABELS[cur];
   }
-  // progress within current section
   const id = PANEL_IDS[cur];
   const el = document.getElementById(id);
   if (el) {
@@ -1356,7 +1434,7 @@ window.addEventListener('scroll', updateSectionProgress, { passive: true });
 updateSectionProgress();
 
 /* ═══════════════════════════════════════════════════════════
-   NEW: KONAMI CODE EASTER EGG
+   KONAMI CODE EASTER EGG
    ═══════════════════════════════════════════════════════════ */
 const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let konamiIdx = 0;
@@ -1374,7 +1452,6 @@ function activateEasterEgg() {
   toast.textContent = '✨ You found the secret. Welcome, friend. — GK';
   toast.classList.add('show');
   play('success');
-  // burst of particles at center
   for (let i = 0; i < 3; i++) {
     setTimeout(() => spawnParticles(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2, 20), i*200);
   }
@@ -1573,7 +1650,9 @@ const commands = [
   { id: 'p0', title: 'Go to Hero', sub: 'Gokula Kumaran', icon: '👋', action: () => navTo('p0') },
   { id: 'p1', title: 'Go to Role', sub: 'What I do', icon: '💼', action: () => navTo('p1') },
   { id: 'p2', title: 'Go to About', sub: 'About me', icon: '👤', action: () => navTo('p2') },
+  { id: 'p2-edu', title: 'Go to Education', sub: 'School + College', icon: '🎓', action: () => navTo('p2-edu') },
   { id: 'p3', title: 'Go to Work', sub: 'Selected projects (6)', icon: '💻', action: () => navTo('p3') },
+  { id: 'p3-intern', title: 'Go to Internships', sub: '02 experiences', icon: '💼', action: () => navTo('p3-intern') },
   { id: 'p4', title: 'Go to Stack', sub: 'Technical skills', icon: '🛠', action: () => navTo('p4') },
   { id: 'p5', title: 'Go to Certifications', sub: '06 credentials', icon: '🎓', action: () => navTo('p5') },
   { id: 'p6', title: 'Go to Contact', sub: 'Get in touch', icon: '✉️', action: () => navTo('p6') },
@@ -1959,7 +2038,6 @@ console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.ke
 
 window.addEventListener('load', () => {
   setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
-  // Init new features after page is ready
   setTimeout(() => {
     initTilt();
     initReveals();
