@@ -35,9 +35,19 @@
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   *, *::before, *::after { box-sizing: border-box; }
+
+  /* Hide scrollbar everywhere but keep functional */
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
-  html { scroll-behavior: smooth; }
-  body { font-family: var(--font-body); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  html { scroll-behavior: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  *::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+  body {
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    /* SLOW SCROLL — smooth + momentum control */
+    overscroll-behavior-y: contain;
+  }
   a { color: inherit; text-decoration: none; }
   ul { list-style: none; margin: 0; padding: 0; }
   button { font: inherit; background: none; border: none; color: inherit; }
@@ -45,6 +55,10 @@
   p { margin: 0; }
   img, canvas, svg, video { display: block; max-width: 100%; }
   a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  /* Disable text selection on UI chrome (keep it on body content) */
+  .no-select { user-select: none; -webkit-user-select: none; }
+  /* Disable native context menu globally (we block right-click) */
+  * { -webkit-touch-callout: none; }
 
   @media (hover: hover) and (pointer: fine) {
     html, body, a, button, * { cursor: none !important; }
@@ -103,7 +117,6 @@
   .nav-mobile a:hover { color: var(--accent); transform: translateX(8px); }
   @media (max-width: 760px) { .main-nav, .nav-cta { display: none; } .nav-toggle { display: flex; } }
 
-  /* Story progress */
   .story-progress { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.5rem; z-index: 50; }
   .story-progress button { width: 4px; height: 24px; background: rgba(255, 255, 255, 0.15); border: none; padding: 0; border-radius: 2px; transition: all 0.4s var(--ease); position: relative; }
   .story-progress button::after { content: attr(data-label); position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0; transition: opacity 0.3s; white-space: nowrap; pointer-events: none; }
@@ -112,7 +125,6 @@
   .story-progress button:hover { background: var(--accent-2); }
   @media (max-width: 760px) { .story-progress { display: none; } }
 
-  /* Panels */
   .panel { min-height: 100vh; min-height: 100svh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 4rem); overflow: hidden; }
   .panel-inner { width: 100%; max-width: var(--max-width); margin: 0 auto; }
   .panel-side { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
@@ -153,7 +165,6 @@
   .scroll-hint i { width: 1px; height: 32px; background: linear-gradient(var(--text-faint), transparent); animation: scrollLine 2s ease-in-out infinite; }
   @keyframes scrollLine { 50% { transform: scaleY(1); } }
 
-  /* ROLE */
   .panel-role .role-h { font-size: clamp(2.2rem, 6vw, 4.5rem); font-family: var(--font-display); font-weight: 700; line-height: 0.98; margin: 0; }
   .panel-role .role-h em { font-style: italic; color: var(--accent); font-weight: 200; }
   .panel-role .role-typed { font-family: var(--font-mono); color: var(--accent); font-size: clamp(0.95rem, 1.4vw, 1.15rem); letter-spacing: 0.1em; text-transform: uppercase; margin: 1.5rem 0; min-height: 1.4em; }
@@ -163,7 +174,6 @@
   .panel-role .role-3d { position: relative; aspect-ratio: 1; max-width: 360px; margin: 0 auto; border-radius: 50%; overflow: hidden; border: 1px solid var(--border); }
   .panel-role .role-3d canvas { width: 100% !important; height: 100% !important; display: block; }
 
-  /* ABOUT */
   .panel-about .about-h { font-size: clamp(2rem, 5vw, 3.5rem); font-family: var(--font-display); font-weight: 700; line-height: 1; margin: 0 0 1.5rem; }
   .panel-about .about-h em { font-style: italic; color: var(--accent); font-weight: 200; }
   .panel-about p { color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem; max-width: 56ch; }
@@ -179,7 +189,6 @@
   .panel-about .about-visual-float { position: absolute; bottom: -20px; right: -20px; width: 45%; aspect-ratio: 1; background: var(--accent-2); border: 4px solid var(--bg); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 3rem; color: var(--bg); transition: all 0.5s var(--ease-spring); }
   .panel-about .about-visual:hover .about-visual-float { transform: rotate(10deg) scale(1.05); background: var(--accent); color: #fff; }
 
-  /* WORK */
   .panel-work { padding: 8rem 0; min-height: auto; }
   .section-h { font-size: clamp(2rem, 5vw, 3.5rem); font-family: var(--font-display); font-weight: 700; line-height: 1; margin: 0 0 1rem; }
   .section-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
@@ -201,7 +210,6 @@
   .work-row:hover .w-arrow { background: var(--accent); border-color: var(--accent); color: #08090C; transform: rotate(-45deg); }
   @media (max-width: 880px) { .work-row { grid-template-columns: 40px 1fr auto; gap: 1rem; padding: 1.25rem 0.5rem; } .work-row .w-desc, .work-row .w-tags { display: none; } }
 
-  /* METRICS */
   .panel-metrics { padding: 4rem 0; min-height: auto; }
   .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); }
   .metric-item { background: var(--bg); padding: 3rem 1.5rem; text-align: center; transition: background 0.3s; }
@@ -210,7 +218,6 @@
   .metric-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.5rem; }
   @media (max-width: 680px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
 
-  /* SERVICES */
   .panel-services { padding: 8rem 0; min-height: auto; }
   .services-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .service-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 2rem; backdrop-filter: blur(10px); position: relative; overflow: hidden; transition: all 0.4s var(--ease-out); }
@@ -225,7 +232,6 @@
   .service-item p { color: var(--text-muted); font-size: 0.92rem; }
   @media (max-width: 760px) { .services-list { grid-template-columns: 1fr; } }
 
-  /* CERTS — with open button */
   .panel-certs { padding: 8rem 0; min-height: auto; }
   .certs-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16/9; max-height: 480px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: rgba(10, 11, 15, 0.4); }
   .certs-canvas-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
@@ -243,7 +249,6 @@
   .certs-legend .cert-open { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s var(--ease-spring); flex-shrink: 0; }
   .certs-legend .cert-card:hover .cert-open { background: var(--accent); border-color: var(--accent); color: #08090C; transform: rotate(45deg); }
 
-  /* CONTACT */
   .panel-contact { padding: 8rem 0; }
   .panel-contact .section-h { font-size: clamp(2.5rem, 7vw, 5rem); font-family: var(--font-display); font-weight: 700; line-height: 1; margin: 0 0 2rem; }
   .panel-contact .section-h em { font-style: italic; color: var(--accent); font-weight: 200; }
@@ -268,13 +273,11 @@
   .submit-btn:hover { background: #8580ff; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(108, 99, 255, 0.4); }
   @media (max-width: 880px) { .contact-grid { grid-template-columns: 1fr; gap: 2rem; } }
 
-  /* Footer */
   .site-footer { border-top: 1px solid var(--border); padding: 2rem 0; }
   .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-faint); }
   .footer-tag { font-family: var(--font-mono); }
   .back-to-top { color: var(--text-muted); transition: all 0.3s; display: inline-flex; gap: 0.4rem; align-items: center; }
 
-  /* MODAL */
   .modal-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(10, 11, 15, 0.92); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; padding: 20px; pointer-events: none; }
   .modal-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
   .modal-box { background: var(--surface-solid); border: 1px solid var(--border-strong); border-radius: 8px; width: 90%; max-width: 900px; max-height: 92vh; overflow-y: auto; transform: scale(0.85) translateY(40px) rotateX(8deg); transition: transform 0.6s var(--ease-spring), opacity 0.4s; position: relative; opacity: 0; transform-origin: center top; }
@@ -309,7 +312,7 @@
   .modal-close { position: absolute; top: 1rem; right: 1rem; z-index: 10; background: rgba(10, 11, 15, 0.85); backdrop-filter: blur(8px); border: 1px solid var(--border-strong); color: var(--text); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease-spring); }
   .modal-close:hover { border-color: var(--accent); transform: rotate(90deg); }
 
-  /* COMMAND PALETTE (Cmd+K) */
+  /* COMMAND PALETTE */
   .command-palette { position: fixed; top: 0; left: 0; right: 0; z-index: 10001; display: flex; justify-content: center; padding-top: 12vh; pointer-events: none; opacity: 0; transition: opacity 0.25s; }
   .command-palette.open { pointer-events: auto; opacity: 1; }
   .command-backdrop { position: fixed; inset: 0; background: rgba(10, 11, 15, 0.7); backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.25s; }
@@ -321,7 +324,8 @@
   .command-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 1rem; }
   .command-input::placeholder { color: var(--text-faint); }
   .command-kbd { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.15rem 0.4rem; border: 1px solid var(--border); border-radius: 3px; color: var(--text-faint); }
-  .command-list { max-height: 360px; overflow-y: auto; padding: 0.5rem; }
+  .command-list { max-height: 360px; overflow-y: auto; padding: 0.5rem; scrollbar-width: none; }
+  .command-list::-webkit-scrollbar { display: none; }
   .command-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0.85rem; border-radius: 6px; transition: background 0.15s, color 0.15s; color: var(--text-muted); }
   .command-item:hover, .command-item.active { background: rgba(108, 99, 255, 0.1); color: var(--text); }
   .command-item .ci-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
@@ -334,16 +338,17 @@
   .command-footer span { display: inline-flex; align-items: center; gap: 0.35rem; }
   .command-footer kbd { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.35rem; border: 1px solid var(--border); border-radius: 3px; }
 
-  /* Sound toggle */
   .sound-toggle { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.3s var(--ease-spring); margin-right: 0.5rem; font-size: 0.95rem; }
   .sound-toggle:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
   .sound-toggle.muted { opacity: 0.5; }
 
-  /* ═══ INFINITE SCROLL LOOP INDICATOR ═══ */
-  .infinite-hint { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint); letter-spacing: 0.15em; text-transform: uppercase; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
-  .infinite-hint.show { opacity: 1; }
-  .infinite-hint svg { animation: bounceDown 1.5s ease-in-out infinite; }
-  @keyframes bounceDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  /* In-page anchor offset for fixed header (smooth scroll lands below header) */
+  [id^="p"] { scroll-margin-top: 60px; }
+
+  /* DevTools block overlay (shown briefly when devtools detected) */
+  .devtools-warning { position: fixed; inset: 0; z-index: 999999; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
+  .devtools-warning.show { display: flex; }
+  .devtools-warning h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--accent-2); }
 
   @media (prefers-reduced-motion: reduce) {
     .panel[data-from] .panel-inner { transform: none; opacity: 1; }
@@ -369,6 +374,13 @@
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- DevTools warning (only shown when DevTools is open) -->
+<div class="devtools-warning" id="devtoolsWarning">
+  <h2>⚠ Developer Tools Detected</h2>
+  <p style="color: var(--text-muted);">This site is protected. Please close the developer tools to continue.</p>
+  <button onclick="location.reload()" style="background: var(--accent); color: #08090C; padding: 0.75rem 1.5rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.85rem; border: none;">Reload Page</button>
+</div>
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
@@ -413,6 +425,7 @@
       <a href="#p6">Contact</a>
     </nav>
     <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound" title="Toggle sound">🔊</button>
+    <button class="sound-toggle" id="bgmToggle" aria-label="Toggle music" title="Toggle background music">🎵</button>
     <a href="#p6" class="nav-cta">Hire me <kbd>⌘K</kbd></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
@@ -433,12 +446,6 @@
   <button data-target="p6" data-label="Contact"></button>
 </nav>
 
-<!-- Infinite scroll hint (appears near end) -->
-<div class="infinite-hint" id="infiniteHint">
-  <span>Keep scrolling · loop</span>
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-</div>
-
 <main class="story" id="story">
 
   <section class="panel panel-hero" id="p0" data-from="scale">
@@ -453,7 +460,7 @@
         <a href="#p3" class="btn btn-primary magnetic">View work <span class="arrow">→</span></a>
         <a href="#p6" class="btn btn-ghost magnetic">Get in touch <span class="arrow">→</span></a>
       </div>
-      <p class="hero-hint">Press <kbd>⌘</kbd><kbd>K</kbd> or <kbd>Ctrl</kbd><kbd>K</kbd> to command</p>
+      <p class="hero-hint">Press <kbd>⌘</kbd><kbd>K</kbd> · <kbd>Ctrl</kbd><kbd>K</kbd> · <kbd>ESC</kbd> to close DevTools</p>
     </div>
     <div class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></div>
   </section>
@@ -654,6 +661,9 @@
     </div>
   </section>
 
+  <!-- Infinite scroll sentinel (a tiny element that triggers more content) -->
+  <div id="infiniteSentinel" style="height: 1px; width: 100%;"></div>
+
 </main>
 
 <footer class="site-footer">
@@ -702,32 +712,20 @@
       float d5 = sdBox(q5, vec3(0.5));
       vec3 mouse = vec3(uMouse.x*5.0, uMouse.y*3.0, 0.);
       float dm = sdSphere(p - mouse, 1.1);
-      float d = smin(d1, d2, 0.6);
-      d = smin(d, d3, 0.6);
-      d = smin(d, d4, 0.5);
-      d = smin(d, d5, 0.5);
-      d = smin(d, dm, 1.0);
+      float d = smin(d1, d2, 0.6); d = smin(d, d3, 0.6); d = smin(d, d4, 0.5); d = smin(d, d5, 0.5); d = smin(d, dm, 1.0);
       return d;
     }
     vec3 calcNormal(vec3 p){
       vec2 e=vec2(0.001,0.);
-      return normalize(vec3(
-        map(p+e.xyy)-map(p-e.xyy),
-        map(p+e.yxy)-map(p-e.yxy),
-        map(p+e.yyx)-map(p-e.yyx)));
+      return normalize(vec3(map(p+e.xyy)-map(p-e.xyy), map(p+e.yxy)-map(p-e.yxy), map(p+e.yyx)-map(p-e.yyx)));
     }
     void main(){
       vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
-      vec3 ro = vec3(0.,0.,-7.);
-      vec3 rd = normalize(vec3(uv, 1.3));
-      ro.xy += uMouse * 1.8;
-      rd.xy += uMouse * 0.35;
-      float t=0.;
-      float glow = 0.;
-      vec3 col = vec3(0.035, 0.04, 0.06);
+      vec3 ro = vec3(0.,0.,-7.); vec3 rd = normalize(vec3(uv, 1.3));
+      ro.xy += uMouse * 1.8; rd.xy += uMouse * 0.35;
+      float t=0., glow=0.; vec3 col = vec3(0.035, 0.04, 0.06);
       for(int i=0;i<64;i++){
-        vec3 p = ro + rd*t;
-        float d = map(p);
+        vec3 p = ro + rd*t; float d = map(p);
         if(d<0.01){
           vec3 n = calcNormal(p);
           float diff1 = max(dot(n, normalize(vec3(1,1,0.5))), 0.);
@@ -738,14 +736,10 @@
           col = mix(col, base*0.25, smoothstep(8., 30., t));
           break;
         }
-        glow += 0.015 / (1. + d*d*4.);
-        t += d * 0.85;
-        if(t>40.) break;
+        glow += 0.015 / (1. + d*d*4.); t += d * 0.85; if(t>40.) break;
       }
-      col += vec3(0.42,0.39,1.0) * glow * 0.65;
-      col += vec3(1.0,0.7,0.33) * glow * 0.3;
-      float vig = 1.0 - smoothstep(0.4, 1.2, length(uv));
-      col *= vig;
+      col += vec3(0.42,0.39,1.0) * glow * 0.65 + vec3(1.0,0.7,0.33) * glow * 0.3;
+      float vig = 1.0 - smoothstep(0.4, 1.2, length(uv)); col *= vig;
       col += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233)))*43758.5453)-0.5)*0.025;
       gl_FragColor = vec4(col, 1.);
     }
@@ -771,14 +765,11 @@
   const uScroll = gl.getUniformLocation(prog, 'uScroll');
   function resize(){
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
+    canvas.width = window.innerWidth * dpr; canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px'; canvas.style.height = window.innerHeight + 'px';
     gl.viewport(0,0, canvas.width, canvas.height);
   }
-  resize();
-  window.addEventListener('resize', resize);
+  resize(); window.addEventListener('resize', resize);
   const mouse = {x:0,y:0,tx:0,ty:0};
   window.addEventListener('mousemove', e=>{ mouse.tx = (e.clientX/window.innerWidth)*2-1; mouse.ty = -((e.clientY/window.innerHeight)*2-1); });
   let scrollY = 0;
@@ -786,12 +777,9 @@
   const t0 = performance.now();
   function frame(){
     const t = (performance.now() - t0) / 1000;
-    mouse.x += (mouse.tx - mouse.x)*0.06;
-    mouse.y += (mouse.ty - mouse.y)*0.06;
-    gl.uniform1f(uTime, t);
-    gl.uniform2f(uRes, canvas.width, canvas.height);
-    gl.uniform2f(uMouse, mouse.x, mouse.y);
-    gl.uniform1f(uScroll, scrollY * 0.001);
+    mouse.x += (mouse.tx - mouse.x)*0.06; mouse.y += (mouse.ty - mouse.y)*0.06;
+    gl.uniform1f(uTime, t); gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform2f(uMouse, mouse.x, mouse.y); gl.uniform1f(uScroll, scrollY * 0.001);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(frame);
   }
@@ -838,8 +826,7 @@
   function frame(){
     const t=(performance.now()-t0)/1000;
     m.x+=(m.tx-m.x)*0.08; m.y+=(m.ty-m.y)*0.08;
-    const ang=t*0.5;
-    const c=Math.cos(ang), s=Math.sin(ang);
+    const ang=t*0.5; const c=Math.cos(ang), s=Math.sin(ang);
     const rot = [c,0,s, 0,1,0, -s,0,c];
     const perspMat = [1.2,0,0,0, 0,1.2,0,0, 0,0,1,0, 0,0,-2.5,1];
     function mul(a,b){ const o=[]; for(let i=0;i<4;i++) for(let j=0;j<4;j++){ o[i*4+j]=0; for(let k=0;k<4;k++) o[i*4+j]+=a[k*4+j]*b[i*4+k]; } return o; }
@@ -899,8 +886,7 @@
     });
     certs.forEach((a,i)=>{
       for(let j=i+1;j<certs.length;j++){
-        const b=certs[j];
-        const dx=a.px-b.px, dy=a.py-b.py; const d=Math.hypot(dx,dy);
+        const b=certs[j]; const dx=a.px-b.px, dy=a.py-b.py; const d=Math.hypot(dx,dy);
         if(d<180){
           ctx.strokeStyle = `rgba(108,99,255,${(1-d/180)*0.4})`;
           ctx.lineWidth = 1;
@@ -933,14 +919,12 @@
 </script>
 
 <script>
-/* ═══ HERO NAME — split into letter spans (mouse-reactive) ═══ */
+/* ═══ HERO NAME split + mouse-reactive letters ═══ */
 (function(){
   const row1 = document.getElementById('row1');
   const row2 = document.getElementById('row2');
-  const name1 = 'Gokula';
-  const name2 = 'Kumaran';
-  if (row1) row1.innerHTML = name1.split('').map(c => `<span>${c}</span>`).join('');
-  if (row2) row2.innerHTML = name2.split('').map(c => `<span>${c}</span>`).join('');
+  if (row1) row1.innerHTML = 'Gokula'.split('').map(c => `<span>${c}</span>`).join('');
+  if (row2) row2.innerHTML = 'Kumaran'.split('').map(c => `<span>${c}</span>`).join('');
 })();
 
 /* ═══ TYPING ═══ */
@@ -958,6 +942,36 @@
   setTimeout(tick, 600);
 })();
 
+/* ═══ SMOOTH + SLOW SCROLL ═══ */
+/* Decelerates scroll velocity so user can't fly through the page */
+let scrollVelocity = 0;
+let targetVelocity = 0;
+const SCROLL_FRICTION = 0.85;
+const SCROLL_MAX = 50;
+
+window.addEventListener('wheel', (e) => {
+  // Limit scroll velocity
+  targetVelocity += e.deltaY * 0.3;
+  targetVelocity = Math.max(-SCROLL_MAX, Math.min(SCROLL_MAX, targetVelocity));
+  e.preventDefault();
+  // Apply velocity to scroll
+  scrollVelocity = targetVelocity;
+  window.scrollBy({ top: scrollVelocity, behavior: 'auto' });
+  targetVelocity *= SCROLL_FRICTION;
+  if (Math.abs(targetVelocity) < 0.5) targetVelocity = 0;
+}, { passive: false });
+
+/* Touch scroll: smooth and slightly dampened */
+let lastTouchY = 0;
+window.addEventListener('touchstart', (e) => { lastTouchY = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchmove', (e) => {
+  const y = e.touches[0].clientY;
+  const dy = (lastTouchY - y) * 0.85; // dampen
+  lastTouchY = y;
+  window.scrollBy({ top: dy, behavior: 'auto' });
+  e.preventDefault();
+}, { passive: false });
+
 /* ═══ HEADER + SCROLL PROGRESS ═══ */
 const header = document.getElementById('siteHeader');
 const progressBar = document.getElementById('scrollProgress');
@@ -968,25 +982,17 @@ function onScroll(){
 }
 onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-/* ═══ PANEL IN-VIEW ═══ */
-const panels = document.querySelectorAll('.panel');
-const progressDots = document.querySelectorAll('.story-progress button');
+/* ═══ PANEL IN-VIEW (IntersectionObserver) ═══ */
 const io = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       e.target.classList.add('in-view');
       const id = e.target.id;
-      progressDots.forEach(d=>d.classList.toggle('active', d.dataset.target === id));
+      document.querySelectorAll('.story-progress button').forEach(d=>d.classList.toggle('active', d.dataset.target === id));
     }
   });
-}, {threshold: 0.35});
-panels.forEach(p=>io.observe(p));
-
-/* Progress dot click */
-progressDots.forEach(d=>d.addEventListener('click', ()=>{
-  const t = document.getElementById(d.dataset.target);
-  if(t) t.scrollIntoView({behavior:'smooth'});
-}));
+}, {threshold: 0.25});
+document.querySelectorAll('.panel').forEach(p=>io.observe(p));
 
 /* ═══ NAV TOGGLE ═══ */
 const navToggle=document.getElementById('navToggle'), navMobile=document.getElementById('navMobile');
@@ -1013,7 +1019,7 @@ if (isFinePointer) {
   });
 }
 
-/* ═══ HERO NAME — mouse-reactive letters ═══ */
+/* ═══ HERO NAME mouse-reactive letters ═══ */
 (function(){
   const nameEl = document.getElementById('heroName');
   if (!nameEl) return;
@@ -1052,7 +1058,6 @@ const modalDesc = document.getElementById('modalDesc');
 const modalMeta = document.getElementById('modalMeta');
 const modalTags = document.getElementById('modalTags');
 const modalActions = document.getElementById('modalActions');
-
 function openModal(data) {
   modalTitle.textContent = data.title;
   modalDesc.textContent = data.desc;
@@ -1081,7 +1086,7 @@ document.querySelectorAll('.certs-legend .cert-card[data-cert]').forEach(item =>
   item.addEventListener('click', () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} });
 });
 
-/* ═══ COMMAND PALETTE (Cmd+K) ═══ */
+/* ═══ COMMAND PALETTE (Cmd+K) — fixed ═══ */
 const commandPalette = document.getElementById('commandPalette');
 const commandInput = document.getElementById('commandInput');
 const commandList = document.getElementById('commandList');
@@ -1094,7 +1099,8 @@ const commands = [
   { id: 'p4', title: 'Stack', sub: 'Technical skills', icon: '🛠', action: () => document.getElementById('p4').scrollIntoView({behavior:'smooth'}) },
   { id: 'p5', title: 'Certifications', sub: '06 credentials', icon: '🎓', action: () => document.getElementById('p5').scrollIntoView({behavior:'smooth'}) },
   { id: 'p6', title: 'Contact', sub: 'Get in touch', icon: '✉️', action: () => document.getElementById('p6').scrollIntoView({behavior:'smooth'}) },
-  { id: 'theme', title: 'Toggle Sound', sub: '🔊 mute / unmute', icon: '🔊', action: () => toggleSound() },
+  { id: 'sound', title: 'Toggle Sound', sub: 'UI sound effects', icon: '🔊', action: () => toggleSound() },
+  { id: 'music', title: 'Toggle Music', sub: 'Background music', icon: '🎵', action: () => toggleMusic() },
   { id: 'top', title: 'Back to top', sub: 'Scroll to hero', icon: '↑', action: () => document.getElementById('p0').scrollIntoView({behavior:'smooth'}) },
   { id: 'email', title: 'Email', sub: 'gokulakumaran2007@gmail.com', icon: '✉️', action: () => window.location.href = 'mailto:gokulakumaran2007@gmail.com' },
   { id: 'github', title: 'GitHub', sub: 'github.com/sGokulaKumaran', icon: '⌨️', action: () => window.open('https://github.com/sGokulaKumaran','_blank') },
@@ -1109,6 +1115,7 @@ function renderCommands(filter='') {
     return;
   }
   activeCmdIdx = Math.min(activeCmdIdx, filtered.length - 1);
+  if (activeCmdIdx < 0) activeCmdIdx = 0;
   commandList.innerHTML = filtered.map((c, i) => `
     <div class="command-item ${i === activeCmdIdx ? 'active' : ''}" data-idx="${i}">
       <div class="ci-icon">${c.icon}</div>
@@ -1128,110 +1135,246 @@ function openCommand() {
   commandInput.value = '';
   activeCmdIdx = 0;
   renderCommands();
-  setTimeout(() => commandInput.focus(), 50);
+  setTimeout(() => commandInput.focus(), 60);
 }
-function closeCommand() {
-  commandPalette.classList.remove('open');
-}
+function closeCommand() { commandPalette.classList.remove('open'); }
 commandBackdrop.addEventListener('click', closeCommand);
 commandInput.addEventListener('input', e => { activeCmdIdx = 0; renderCommands(e.target.value); });
 commandInput.addEventListener('keydown', e => {
-  const items = commandList.querySelectorAll('.command-item');
-  if (e.key === 'ArrowDown') { e.preventDefault(); activeCmdIdx = Math.min(activeCmdIdx + 1, items.length - 1); renderCommands(commandInput.value); }
+  const f = commandInput.value.toLowerCase().trim();
+  const filtered = f ? commands.filter(c => (c.title + c.sub).toLowerCase().includes(f)) : commands;
+  if (e.key === 'ArrowDown') { e.preventDefault(); activeCmdIdx = Math.min(activeCmdIdx + 1, filtered.length - 1); renderCommands(commandInput.value); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); activeCmdIdx = Math.max(activeCmdIdx - 1, 0); renderCommands(commandInput.value); }
-  else if (e.key === 'Enter') { e.preventDefault(); const itemsArr = Array.from(items); const f = commandInput.value.toLowerCase().trim(); const filtered = f ? commands.filter(c => (c.title + c.sub).toLowerCase().includes(f)) : commands; if (filtered[activeCmdIdx]) { filtered[activeCmdIdx].action(); closeCommand(); } }
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (filtered[activeCmdIdx]) { filtered[activeCmdIdx].action(); closeCommand(); }
+  }
   else if (e.key === 'Escape') { closeCommand(); }
 });
+/* GLOBAL key handler — works on both inputs and body */
 document.addEventListener('keydown', e => {
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCommand(); }
-  if (e.key === 'Escape' && commandPalette.classList.contains('open')) { closeCommand(); }
+  // Cmd+K / Ctrl+K — open command palette
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault();
+    if (commandPalette.classList.contains('open')) closeCommand();
+    else openCommand();
+  }
+  // Escape to close command palette (only when not in another input)
+  if (e.key === 'Escape' && commandPalette.classList.contains('open')) {
+    closeCommand();
+  }
 });
 
-/* ═══ INFINITE SCROLL (igloo-style) ═══ */
-/* As you reach the bottom, the scroll loops back to the top seamlessly */
+/* ═══ INFINITE SCROLL (true append-on-scroll) ═══ */
 const story = document.getElementById('story');
-const infiniteHint = document.getElementById('infiniteHint');
-let infiniteScrollCooldown = false;
-const LOOP_THRESHOLD = 0.92; // Trigger at 92% scrolled
-const LOOP_TRIGGER_HEIGHT = 200; // px from bottom to trigger
+const sentinel = document.getElementById('infiniteSentinel');
+let appending = false;
+let cloneCounter = 0;
 
-function checkInfiniteScroll() {
-  if (infiniteScrollCooldown) return;
-  const scrollY = window.scrollY;
-  const winH = window.innerHeight;
-  const docH = document.documentElement.scrollHeight;
-  const scrolled = (scrollY + winH) / docH;
-
-  // Show hint near end
-  if (scrolled > 0.7) infiniteHint.classList.add('show');
-  else infiniteHint.classList.remove('show');
-
-  // Trigger loop near bottom (only on user scroll, not programmatic)
-  if (scrolled > LOOP_THRESHOLD && scrollY > docH - winH - LOOP_TRIGGER_HEIGHT) {
-    infiniteScrollCooldown = true;
-    // Smooth scroll to top, then re-enable
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => { infiniteScrollCooldown = false; }, 1500);
-  }
+function clonePanels(suffix) {
+  /* Get all panels (but exclude sentinel/footer) */
+  const panels = story.querySelectorAll('.panel:not(.cloned)');
+  panels.forEach(panel => {
+    const clone = panel.cloneNode(true);
+    clone.classList.add('cloned');
+    clone.id = panel.id + '-' + suffix;
+    /* Update progress dot targets to new IDs (if any) */
+    /* Re-trigger in-view animation */
+    clone.classList.remove('in-view');
+    /* Re-attach event listeners to work rows and cert cards */
+    const workRows = clone.querySelectorAll('.work-row[data-project]');
+    workRows.forEach(row => {
+      row.addEventListener('click', () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} });
+      row.addEventListener('click', () => play('click'));
+    });
+    const certCards = clone.querySelectorAll('.cert-card[data-cert]');
+    certCards.forEach(card => {
+      card.addEventListener('click', () => { try { openModal(JSON.parse(card.dataset.cert)); } catch(e){} });
+      card.addEventListener('click', () => play('click'));
+    });
+    const closeBtn = clone.querySelector('.modal-close');
+    /* Modal close button isn't in panels, so skip */
+    /* Insert before sentinel */
+    story.insertBefore(clone, sentinel);
+    /* Re-observe for in-view animation */
+    io.observe(clone);
+  });
+  /* Pre-load next batch of clones (always keep 1 extra at the bottom) */
+  cloneCounter++;
 }
-window.addEventListener('scroll', checkInfiniteScroll, { passive: true });
 
-/* ═══ SOUND SYSTEM (Web Audio API) ═══ */
+/* IntersectionObserver on the sentinel */
+const sentinelObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !appending) {
+      appending = true;
+      const beforeHeight = story.offsetHeight;
+      clonePanels(cloneCounter);
+      const afterHeight = story.offsetHeight;
+      /* Don't reset scroll - let the new content appear below current position */
+      appending = false;
+    }
+  });
+}, { rootMargin: '500px 0px 500px 0px' });
+sentinelObs.observe(sentinel);
+
+/* Also handle scroll up: when near top, prepend content (in reverse) */
+/* For simplicity, we only append on scroll down. To go back up, user scrolls up normally. */
+
+/* ═══ SOUND ENGINE — Web Audio API ═══ */
 let audioCtx = null;
+let masterGain = null;
 let soundEnabled = true;
+let musicEnabled = false;
+let musicNodes = []; // Track active music oscillators
+
 function ensureAudio() {
   if (!audioCtx) {
-    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.4;
+      masterGain.connect(audioCtx.destination);
+    } catch(e) { return null; }
   }
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
+
+const SOUND_PRESETS = {
+  click: { type: 'sine', freq: 800, dur: 0.04, vol: 0.06 },
+  pop:   { type: 'sine', freq: 600, dur: 0.06, vol: 0.08, sweep: 1.5 },
+  hover: { type: 'sine', freq: 1200, dur: 0.018, vol: 0.025 },
+  success: { type: 'triangle', freq: 523, dur: 0.15, vol: 0.08, sweep: 1.5 },
+  error: { type: 'sawtooth', freq: 200, dur: 0.15, vol: 0.06, sweep: 0.5 },
+  swoosh: { type: 'triangle', freq: 400, dur: 0.12, vol: 0.05, sweep: 2 },
+  open:  { type: 'sine', freq: 400, dur: 0.18, vol: 0.07, sweep: 1.4 },
+  close: { type: 'sine', freq: 400, dur: 0.12, vol: 0.05, sweep: 0.6 },
+  whoosh: { type: 'sine', freq: 200, dur: 0.3, vol: 0.04, sweep: 3 },
+  ambient: { type: 'sine', freq: 220, dur: 0.5, vol: 0.02 },
+};
+
 function play(type = 'click') {
   if (!soundEnabled) return;
   const ctx = ensureAudio();
-  if (!ctx) return;
-  const t = ctx.currentTime;
-  const presets = {
-    click: { type: 'sine', freq: 800, dur: 0.04, vol: 0.06 },
-    pop:   { type: 'sine', freq: 600, dur: 0.06, vol: 0.08, sweep: 1.5 },
-    hover: { type: 'sine', freq: 1200, dur: 0.02, vol: 0.03 },
-    success: { type: 'sine', freq: 523, dur: 0.15, vol: 0.08, sweep: 1.5 },
-    error: { type: 'sawtooth', freq: 200, dur: 0.15, vol: 0.06, sweep: 0.5 },
-    swoosh: { type: 'triangle', freq: 400, dur: 0.12, vol: 0.06, sweep: 2 },
-    open:  { type: 'sine', freq: 400, dur: 0.18, vol: 0.07, sweep: 1.4 },
-    close: { type: 'sine', freq: 400, dur: 0.12, vol: 0.05, sweep: 0.6 },
-  };
-  const p = presets[type] || presets.click;
+  if (!ctx || !masterGain) return;
+  const p = SOUND_PRESETS[type] || SOUND_PRESETS.click;
   try {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = p.type;
-    osc.frequency.setValueAtTime(p.freq, t);
-    if (p.sweep) osc.frequency.exponentialRampToValueAtTime(p.freq * p.sweep, t + p.dur);
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(p.vol, t + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + p.dur);
+    osc.frequency.setValueAtTime(p.freq, ctx.currentTime);
+    if (p.sweep) osc.frequency.exponentialRampToValueAtTime(p.freq * p.sweep, ctx.currentTime + p.dur);
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(p.vol, ctx.currentTime + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + p.dur);
     osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + p.dur + 0.02);
+    gain.connect(masterGain);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + p.dur + 0.02);
   } catch(e) {}
 }
 
+/* ═══ CUSTOM SOUNDS — User-uploaded ═══ */
+const customSounds = {};
+function loadCustomSound(name, url) {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio(url);
+    audio.preload = 'auto';
+    audio.addEventListener('canplaythrough', () => {
+      customSounds[name] = audio;
+      resolve(audio);
+    });
+    audio.addEventListener('error', reject);
+  });
+}
+
+function playCustom(name) {
+  if (customSounds[name]) {
+    customSounds[name].currentTime = 0;
+    customSounds[name].play().catch(()=>{});
+  }
+}
+
+/* Expose for user use */
+window.SoundFX = { play, loadCustomSound, playCustom, presets: Object.keys(SOUND_PRESETS), sounds: customSounds };
+
+/* ═══ BACKGROUND MUSIC — ambient generative ═══ */
+function startMusic() {
+  if (musicNodes.length) return;
+  const ctx = ensureAudio();
+  if (!ctx || !masterGain) return;
+  /* Generate a slow ambient pad: 3 detuned sine oscillators with slow LFO */
+  const baseFreqs = [110, 164.81, 220]; // A2, E3, A3
+  baseFreqs.forEach((freq, i) => {
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    osc1.type = 'sine'; osc1.frequency.value = freq;
+    osc2.type = 'sine'; osc2.frequency.value = freq * 1.005; // detune
+    lfo.type = 'sine'; lfo.frequency.value = 0.1 + i * 0.05;
+    lfoGain.gain.value = 0.02;
+    gain.gain.value = 0;
+    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 1.5);
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(masterGain);
+    osc1.start(); osc2.start(); lfo.start();
+    musicNodes.push(osc1, osc2, lfo, gain);
+  });
+}
+function stopMusic() {
+  musicNodes.forEach(n => { try { n.stop && n.stop(); } catch(e){} });
+  musicNodes = [];
+}
+
+/* ═══ CURSOR MOVEMENT SOUND (subtle ambient) ═══ */
+let lastCursorSound = 0;
+const CURSOR_SOUND_THROTTLE = 200; // ms
+document.addEventListener('mousemove', (e) => {
+  if (!soundEnabled) return;
+  const now = performance.now();
+  if (now - lastCursorSound < CURSOR_SOUND_THROTTLE) return;
+  lastCursorSound = now;
+  // Only play cursor sound if moving significantly
+  // (very subtle, low volume)
+  if (Math.random() > 0.7) play('hover');
+});
+
+/* ═══ SOUND TOGGLES ═══ */
 const soundToggle = document.getElementById('soundToggle');
+const bgmToggle = document.getElementById('bgmToggle');
+
 function toggleSound() {
   soundEnabled = !soundEnabled;
   soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
   soundToggle.classList.toggle('muted', !soundEnabled);
   if (soundEnabled) play('pop');
 }
-soundToggle.addEventListener('click', toggleSound);
+function toggleMusic() {
+  musicEnabled = !musicEnabled;
+  bgmToggle.textContent = musicEnabled ? '🎶' : '🎵';
+  bgmToggle.classList.toggle('muted', !musicEnabled);
+  if (musicEnabled) { startMusic(); play('open'); }
+  else { stopMusic(); play('close'); }
+}
 
-/* Add sound to clicks/opens */
-document.querySelectorAll('a, button, .work-row, .certs-legend .cert-card').forEach(el => {
-  el.addEventListener('click', () => play('click'));
-});
-document.querySelector('.modal-close')?.addEventListener('click', () => play('close'));
+soundToggle.addEventListener('click', toggleSound);
+bgmToggle.addEventListener('click', toggleMusic);
+
+/* Click sounds on interactive elements */
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('a, button, .work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .skill-tag, .contact-detail, .about-tags span, .social-row a, .story-progress button, .form-group input, .form-group textarea, .form-group select');
+  if (t) play('click');
+}, true);
+
+/* Modal close sound */
+document.getElementById('modalClose').addEventListener('click', () => play('close'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) play('close'); });
 
 /* ═══ COUNTERS ═══ */
 const counters = document.querySelectorAll('.metric-num[data-count]');
@@ -1271,6 +1414,65 @@ function handleSubmit(e) {
     setTimeout(() => { b.textContent = o; b.style.background = ''; b.disabled = false; document.getElementById('contactForm').reset(); }, 2000);
   }, 1000);
 }
+
+/* ═══ ANTI-INSPECT / DEVTOOLS PROTECTION ═══ */
+/* Block right-click context menu */
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+/* Block keyboard shortcuts for DevTools / View Source / Save */
+document.addEventListener('keydown', (e) => {
+  // F12
+  if (e.key === 'F12') { e.preventDefault(); play('error'); return false; }
+  // Ctrl+Shift+I (DevTools)
+  if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); play('error'); return false; }
+  // Ctrl+Shift+J (Console)
+  if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); play('error'); return false; }
+  // Ctrl+Shift+C (Inspect element)
+  if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); play('error'); return false; }
+  // Ctrl+U (View source)
+  if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); play('error'); return false; }
+  // Ctrl+S (Save page)
+  if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); play('error'); return false; }
+  // Ctrl+P (Print)
+  if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) { e.preventDefault(); play('error'); return false; }
+  // Cmd+Opt+I (Mac DevTools)
+  if (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); play('error'); return false; }
+  return true;
+});
+
+/* Detect DevTools opening — uses window size comparison */
+const devtoolsWarning = document.getElementById('devtoolsWarning');
+let devToolsThreshold = 160;
+let devToolsDetected = false;
+
+function detectDevTools() {
+  const widthDiff = window.outerWidth - window.innerWidth;
+  const heightDiff = window.outerHeight - window.innerHeight;
+  if ((widthDiff > devToolsThreshold || heightDiff > devToolsThreshold) && !devToolsDetected) {
+    devToolsDetected = true;
+    devtoolsWarning.classList.add('show');
+    play('error');
+    setTimeout(() => { devtoolsWarning.classList.remove('show'); devToolsDetected = false; }, 3000);
+  }
+}
+setInterval(detectDevTools, 1000);
+
+/* Block text selection on UI chrome (to prevent accidental highlight when inspecting) */
+document.addEventListener('selectstart', (e) => {
+  if (e.target.closest('input, textarea, .selectable')) return;
+  if (e.target.closest('.work-row, .certs-legend .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header')) {
+    e.preventDefault();
+  }
+});
+
+/* Console warning */
+console.log('%c👋 Hey there!', 'color: #6C63FF; font-size: 24px; font-weight: bold;');
+console.log('%cThis site is protected. DevTools detection is active.', 'color: #FFB454; font-size: 14px;');
+console.log('%cSound FX: window.SoundFX.play("click") | window.SoundFX.play("pop") | window.SoundFX.play("success")', 'color: #9195A0; font-size: 12px;');
+console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.keys(SOUND_PRESETS));
 
 /* ═══ LOADER ═══ */
 window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600));
