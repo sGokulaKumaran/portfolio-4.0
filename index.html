@@ -66,9 +66,6 @@
   .cursor-ring { position: fixed; width: 40px; height: 40px; border: 1.5px solid #fff; border-radius: 50%; pointer-events: none; z-index: 99998; top: 0; left: 0; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width 0.4s var(--ease-out), height 0.4s var(--ease-out), border-color 0.3s, opacity 0.3s; }
   .cursor-dot.hover { width: 6px; height: 6px; }
   .cursor-ring.hover { width: 64px; height: 64px; border-color: var(--accent); }
-  .cursor-dot.text { width: 4px; height: 4px; background: var(--accent); }
-  .cursor-ring.text { width: 4px; height: 4px; background: var(--accent); border-color: var(--accent); }
-  .cursor-dot.magnetic { width: 14px; height: 14px; }
   .cursor-trail { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); pointer-events: none; z-index: 99997; top: 0; left: 0; transform: translate(-50%, -50%); opacity: 0; mix-blend-mode: difference; }
 
   .scroll-progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 9999; background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); width: 0%; pointer-events: none; }
@@ -92,7 +89,7 @@
 
   .click-ripple {
     position: fixed; width: 0; height: 0; border-radius: 50%;
-    border: 1.5px solid var(--accent); pointer-events: none; z-index: 99996;
+    border:1.5px solid var(--accent); pointer-events: none; z-index: 99996;
     transform: translate(-50%, -50%);
     animation: ripple 0.7s var(--ease-out) forwards;
   }
@@ -108,15 +105,16 @@
     transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s;
   }
 
+  /* Section progress bar (left side, slim) */
   .section-progress {
-    position: fixed; right: 0.65rem; top: 50%; transform: translateY(-50%);
-    width: 2px; height: 120px; background: rgba(255,255,255,0.08);
-    border-radius: 2px; z-index: 49; overflow: hidden;
+    position: fixed; left: 0.65rem; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 160px; background: rgba(255,255,255,0.08);
+    border-radius: 3px; z-index: 49; overflow: hidden;
   }
   .section-progress::after {
     content: ''; position: absolute; left: 0; right: 0; top: 0;
     height: var(--sec-progress, 0%); background: linear-gradient(180deg, var(--accent), var(--accent-2));
-    transition: height 0.15s var(--ease-out);
+    transition: height 0.18s var(--ease-out);
   }
   @media (max-width: 760px) { .section-progress { display: none; } }
 
@@ -161,7 +159,6 @@
   .reveal[data-reveal-stagger].revealed > *:nth-child(6) { transition-delay: 400ms; }
 
   .tilt { transform-style: preserve-3d; transition: transform 0.4s var(--ease-out); will-change: transform; }
-  .tilt .tilt-inner { transform: translateZ(20px); }
 
   .easter-toast {
     position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -191,7 +188,6 @@
   .swipe-flash.up { top: 30%; }
   .swipe-flash.down { bottom: 30%; }
 
-  /* 2-column card grid */
   .cards-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -574,40 +570,43 @@
   .sound-toggle.muted { opacity: 0.5; }
   .sound-toggle.active { border-color: var(--accent-2); color: var(--accent-2); }
 
-  .devtools-warning { position: fixed; inset: 0; z-index: 999999; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
-  .devtools-warning.show { display: flex; }
-  .devtools-warning h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--accent-2); }
-
-  /* ═════ Easter egg: secret panel ═════ */
+  /* ═════ Easter egg: secret panel — highest z-index, always on top ═════ */
   .secret-overlay {
-    position: fixed; inset: 0; z-index: 99998; pointer-events: none;
-    opacity: 0; transition: opacity 0.6s;
+    position: fixed; inset: 0; z-index: 100000; pointer-events: none;
+    opacity: 0; transition: opacity 0.5s;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
   }
   .secret-overlay.show { opacity: 1; pointer-events: auto; }
+  .secret-backdrop {
+    position: absolute; inset: 0; background: rgba(10, 11, 15, 0.85);
+    backdrop-filter: blur(20px);
+  }
   .secret-card {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%) scale(0.85) rotate(-2deg);
-    width: min(560px, 92vw);
+    position: relative;
+    width: min(580px, 92vw);
     background: linear-gradient(135deg, #14161B 0%, #0A0B0F 100%);
     border: 1px solid var(--accent);
     border-radius: 14px;
     padding: 2.25rem 2.25rem 2rem;
-    box-shadow: 0 40px 100px rgba(108, 99, 255, 0.4), 0 0 0 1px rgba(108, 99, 255, 0.2) inset;
+    box-shadow: 0 40px 100px rgba(108, 99, 255, 0.5), 0 0 0 1px rgba(108, 99, 255, 0.25) inset;
+    transform: scale(0.85) rotate(-2deg);
     transition: transform 0.6s var(--ease-spring);
+    z-index: 2;
   }
-  .secret-overlay.show .secret-card { transform: translate(-50%, -50%) scale(1) rotate(0); }
+  .secret-overlay.show .secret-card { transform: scale(1) rotate(0); }
   .secret-card::before {
     content: ''; position: absolute; inset: -2px;
     background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
-    border-radius: 15px; z-index: -1; opacity: 0.4;
+    border-radius: 15px; z-index: -1; opacity: 0.5;
     filter: blur(20px);
   }
   .secret-meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-2); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .secret-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2rem); color: var(--text); margin-bottom: 0.5rem; line-height: 1.1; }
+  .secret-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2rem); color: var(--text); margin-bottom: 1rem; line-height: 1.15; }
   .secret-title em { font-style: italic; color: var(--accent); font-weight: 200; }
-  .secret-body { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem; }
+  .secret-body { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem; min-height: 6.5em; }
   .secret-body b { color: var(--text); font-weight: 500; }
-  .secret-favs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 1.5rem; }
+  .secret-favs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 1.25rem; }
   .secret-favs span {
     font-family: var(--font-mono); font-size: 0.7rem;
     padding: 0.35rem 0.7rem; border: 1px solid var(--border);
@@ -628,14 +627,23 @@
     color: var(--text-muted); font-size: 0.9rem;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.3s var(--ease-spring);
+    z-index: 3;
   }
   .secret-close:hover { border-color: var(--accent); color: var(--accent); transform: rotate(90deg); }
-  /* typewriter cursor */
+  .secret-hint {
+    font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint);
+    margin-top: 1rem; letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: center;
+  }
   .secret-typed .cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent); margin-left: 4px; vertical-align: middle; animation: blink 1s step-end infinite; }
-  /* confetti container */
+
+  .devtools-warning { position: fixed; inset: 0; z-index: 99997; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
+  .devtools-warning.show { display: flex; }
+  .devtools-warning h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--accent-2); }
+
   .confetti-piece {
     position: fixed; top: -10px; width: 10px; height: 14px;
-    pointer-events: none; z-index: 99999;
+    pointer-events: none; z-index: 100001;
     will-change: transform, opacity;
   }
 
@@ -669,22 +677,25 @@
 <div class="swipe-flash up" id="swipeFlashUp">↑ Swipe up for next</div>
 <div class="swipe-flash down" id="swipeFlashDown">↓ Swipe down for previous</div>
 
-<div class="secret-overlay" id="secretOverlay">
+<div style="height: 150px";>  </div>
+<div class="secret-overlay" id="secretOverlay" role="dialog" aria-modal="true" aria-label="Secret panel">
+  <div class="secret-backdrop" id="secretBackdrop"></div>
   <div class="secret-card">
     <button class="secret-close" id="secretClose" aria-label="Close secret">✕</button>
     <div class="secret-meta">// secret_unlocked.txt</div>
     <h2 class="secret-title">You found <em>the room behind the code</em>.</h2>
     <p class="secret-body secret-typed" id="secretBody"></p>
     <div class="secret-favs">
-      <span>🎮 Hollow Knight</span>
-      <span>🌌 Interstellar OST</span>
-      <span>☕ Strong filter coffee</span>
-      <span>🎨 Studio Ghibli frames</span>
-      <span>⌨️ Mechanical keyboards</span>
-      <span>📷 Fujifilm X100V vibes</span>
-      <span>🛠 Vim + a big monitor</span>
-    </div>
-    <p class="secret-sig">— built with caffeine & shaders by Gokula ✨</p>
+  <span>🎮 Unity Game Dev</span>
+  <span>💻 C# & Java</span>
+  <span>🌍 Procedural Generation</span>
+  <span>🤖 AI Experiments</span>
+  <span>🌐 Web Development</span>
+  <span>🛠 Building & Debugging</span>
+  <span>🎯 Indie Game Dreams</span>
+</div>
+   <p class="secret-sig">— built with curiosity, caffeine & code by Gokula ✨</p>
+    <p class="secret-hint">Press <kbd style="font-family:monospace;border:1px solid var(--border);padding:0.1rem 0.35rem;border-radius:3px;">ESC</kbd> or click outside to close</p>
   </div>
 </div>
 
@@ -770,7 +781,7 @@
     <div class="panel-inner hero-content">
       <div class="hero-eyebrow reveal" data-reveal-delay="100"><span class="dot"></span>Available for projects · Q4 2026</div>
       <h1 class="hero-name reveal" data-reveal-delay="200" id="heroName">
-        <span class="row1" id="row1" data-text="Gokula Kumaran"></span>
+        <span class="row1" id="row1" data-text="GokulaKumaran"></span>
       </h1>
       <p class="hero-sub reveal" data-reveal-delay="300">Building <b>immersive digital experiences</b>, interactive applications, and high-fidelity game worlds — from a single idea to a deployed product.</p>
       <div class="hero-ctas reveal" data-reveal-delay="400">
@@ -864,7 +875,7 @@
       </div>
       <div class="work-stack reveal" data-reveal-stagger>
 
-        <div class="work-row has-media tilt" data-project='{"title":"The Back Exit","meta":"Game · Unity · 2024","art":"horror","icon":"👁","tags":["Unity 3D","C#","Horror Systems","AI Pathfinding","Shader Work"],"image":"media/projects/back-exit.jpg","video":"videos/the-back-exit.mp4","desc":"A first-person psychological horror experience built solo in Unity. Custom horror-style UI, camera bobbing, trigger-based jump-scares, and AI-driven NPC pathfinding — from scratch, no template.","download":"https://drive.google.com/file/d/1evKDtQj6hWwKQmNIAamry9-bZYq2-gst/view"}'>
+        <div class="work-row has-media tilt" data-project='{"title":"The Back Exit","meta":"Game · Unity · 2024","art":"horror","icon":"👁","tags":["Unity 3D","C#","Horror Systems","AI Pathfinding","Shader Work"],"image":"media/projects/back-exit.jpg","video":"videos/the-back-exit.mp4","desc":"first-person psychological horror game built solo in Unity — featuring an atmospheric forest environment, custom horror UI, camera bobbing, interactive elements, trigger-based jump scares, and AI-driven NPC pathfinding.","download":"https://drive.google.com/file/d/1evKDtQj6hWwKQmNIAamry9-bZYq2-gst/view"}'>
           <span class="w-num">01</span>
           <span class="w-title">The Back Exit</span>
           <span class="w-desc">First-person psychological horror game built in Unity with custom UI and AI-driven NPC pathfinding.</span>
@@ -872,7 +883,7 @@
           <div class="w-arrow">↗</div>
         </div>
 
-        <div class="work-row has-media tilt" data-project='{"title":"Zyqra — AI Learning","meta":"Web App · Python · 2024","art":"ai","icon":"◈","tags":["Python","Streamlit","AI/ML","Real-time Processing","UI Design"],"image":"media/projects/zyqra.jpg","video":"videos/zyqra.mp4","desc":"A comprehensive AI-powered study platform built with Python and Streamlit. Real-time doubt solving, automated quiz generation, and an interface that makes learning feel like a conversation."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Zyqra — AI Learning","meta":"Web App · Python · 2024","art":"ai","icon":"◈","tags":["Python","Streamlit","AI/ML","Real-time Processing","UI Design"],"image":"media/projects/zyqra.jpg","video":"videos/zyqra.mp4","desc":"An AI-powered learning platform built with Python and Streamlit — real-time doubt solving, automated quizzes, personalized learning, and interactive study support."}'>
           <span class="w-num">02</span>
           <span class="w-title">Zyqra AI Learning</span>
           <span class="w-desc">AI-powered study platform with real-time doubt solving and automated quiz generation.</span>
@@ -887,7 +898,7 @@
           <div class="w-tags"><span>Unity HDRP</span><span>GI</span><span>Lighting</span></div>
           <div class="w-arrow">↗</div>
         </div>
-        <div class="work-row has-media tilt" data-project='{"title":"Procedural Generation","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"videos/pgen.mp4","desc":"Ongoing collection of procedural shader experiments — noise, fractals, fluid-like flow fields, chromatic effects."}'>
+        <div class="work-row has-media tilt" data-project='{"title":"Procedural Generation","meta":"R&D · Shaders · 2024","art":"shader","icon":"◇","tags":["GLSL","HLSL","Procedural","Math","Visuals"],"image":"media/projects/shader.jpg","video":"videos/pgen.mp4","desc":"Ongoing exploration of procedural terrain generation — Perlin noise, multi-octave noise, infinite terrain chunks, dynamic generation, and optimized world building."}'>
           <span class="w-num">04</span>
           <span class="w-title">Procedural Generation</span>
           <span class="w-desc">Procedural generation experiments — noise, fractals, flow fields, chromatic effects.</span>
@@ -963,76 +974,101 @@
   <section class="panel panel-services" id="p4" data-from="left" data-tint="rgba(108, 99, 255, 0.1)">
     <div class="panel-inner">
       <h2 class="section-h reveal">Technical stack</h2>
-      <div class="services-list reveal" data-reveal-stagger>
-        <div class="service-item tilt"><span class="s-icon">🎮</span><div class="s-num">01</div><h3>Game Engineering</h3><p>High-fidelity environment design using Unity HDRP, custom C# gameplay systems, and 3D asset integration from Blender. From prototype to shippable build.</p></div>
-        <div class="service-item tilt"><span class="s-icon">🌐</span><div class="s-num">02</div><h3>Full-Stack Web</h3><p>Responsive, high-performance applications with React, Node.js, and modern CSS — with the kind of motion and detail that makes people stay on the page.</p></div>
-        <div class="service-item tilt"><span class="s-icon">🤖</span><div class="s-num">03</div><h3>AI & Automation</h3><p>AI-driven tools with Python and Streamlit to solve real-world problems and enhance learning ecosystems — the kind of work that actually ships.</p></div>
-        <div class="service-item tilt"><span class="s-icon">✨</span><div class="s-num">04</div><h3>Shader & VFX</h3><p>Custom GLSL/HLSL shaders for both real-time graphics and web — procedural noise, flow fields, post-processing, and physics-driven effects.</p></div>
-      </div>
+     <div class="services-list reveal" data-reveal-stagger>
+
+  <div class="service-item tilt">
+    <span class="s-icon">🎮</span>
+    <div class="s-num">01</div>
+    <h3>Game Development</h3>
+    <p>Building interactive games and experiences in Unity with C# — from gameplay mechanics and AI systems to procedural generation and immersive environments.</p>
+  </div>
+
+  <div class="service-item tilt">
+    <span class="s-icon">🌐</span>
+    <div class="s-num">02</div>
+    <h3>Full-Stack Development</h3>
+    <p>Creating responsive and modern web applications with clean interfaces, reliable functionality, and a focus on delivering smooth user experiences.</p>
+  </div>
+
+  <div class="service-item tilt">
+    <span class="s-icon">🤖</span>
+    <div class="s-num">03</div>
+    <h3>AI Development</h3>
+    <p>Developing AI-powered applications with Python and modern AI tools — integrating intelligent features, automation, and interactive learning experiences.</p>
+  </div>
+
+  <div class="service-item tilt">
+    <span class="s-icon">🌍</span>
+    <div class="s-num">04</div>
+    <h3>Procedural Generation</h3>
+    <p>Exploring procedural world generation in Unity using Perlin noise, multi-octave terrain systems, dynamic terrain chunks, and runtime environment generation.</p>
+  </div>
+
+</div>
     </div>
   </section>
 
   <!-- P5: CERTIFICATES -->
   <section class="panel panel-certs" id="p5" data-from="right" data-tint="rgba(0, 229, 255, 0.08)">
     <div class="panel-inner">
-      <h2 class="section-h reveal">Certifications · 2024</h2>
+      <h2 class="section-h reveal">Certifications</h2>
       <div class="certs-canvas-wrap reveal" data-reveal-delay="100"><canvas id="certsCanvas"></canvas></div>
       <p style="color: var(--text-faint); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 1rem 0 0.5rem;" class="reveal" data-reveal-delay="200">Click any cert to open details</p>
       <div class="certs-legend reveal" data-reveal-delay="300" data-reveal-stagger id="certsLegend">
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"C# Programming","issuer":"Advanced Certification","art":"csharp","icon":"⚙️","image":"images/certificates/csharp.jpg","desc":"Advanced OOP & Game Logic implementation for Unity development — covering inheritance, polymorphism, delegates, and the patterns that actually matter in production.","tags":["C#","OOP","Unity","Game Logic"]}'>
-          <div class="cert-thumb"><img src="images/certificates/csharp.jpg" alt="C#" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>⚙️</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">C# Programming</div>
-            <div class="cert-issuer">Advanced Certification</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+        <div class="cert-card has-image tilt" data-cert='{"title":"C# Programming","issuer":"Programming Certification","art":"csharp","icon":"⚙️","image":"images/certificates/csharp.jpg","desc":"Developed a strong foundation in C# programming, object-oriented concepts, and programming logic applicable to Unity game development.","tags":["C#","OOP","Unity","Programming"]}'>
+  <div class="cert-thumb"><img src="images/certificates/csharp.jpg" alt="C#" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>⚙️</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">C# Programming</div>
+    <div class="cert-issuer">Programming Certification</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"3D Modeling with Blender","issuer":"Modeling & Texturing","art":"blender","icon":"🎨","image":"images/certificates/blender.jpg","desc":"Mastery of mesh modeling, UV unwrapping, and texturing — from hard-surface props to organic forms, with proper topology and clean materials.","tags":["Blender","3D Modeling","UV Mapping","Texturing"]}'>
-          <div class="cert-thumb"><img src="images/certificates/blender.jpg" alt="Blender" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎨</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">Blender 3D</div>
-            <div class="cert-issuer">Modeling & Texturing</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+<div class="cert-card has-image tilt" data-cert='{"title":"3D Modeling with Blender","issuer":"3D Design & Modeling","art":"blender","icon":"🎨","image":"images/certificates/blender.jpg","desc":"Explored 3D modeling and asset creation with Blender, including mesh modeling, materials, texturing, and creating assets for interactive environments.","tags":["Blender","3D Modeling","Texturing","Game Assets"]}'>
+  <div class="cert-thumb"><img src="images/certificates/blender.jpg" alt="Blender" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🎨</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">Blender 3D</div>
+    <div class="cert-issuer">3D Design & Modeling</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Java Programming","issuer":"Core Certification","art":"java","icon":"☕","image":"images/certificates/java.jpg","desc":"Core concepts, data structures, and application development — the foundation that makes every other language easier to pick up.","tags":["Java","OOP","Data Structures"]}'>
-          <div class="cert-thumb"><img src="images/certificates/java.jpg" alt="Java" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>☕</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">Java Programming</div>
-            <div class="cert-issuer">Core Certification</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+<div class="cert-card has-image tilt" data-cert='{"title":"Java Programming","issuer":"Programming Certification","art":"java","icon":"☕","image":"images/certificates/java.jpg","desc":"Built a foundation in Java programming, object-oriented principles, problem solving, and core programming concepts.","tags":["Java","OOP","Problem Solving","Programming"]}'>
+  <div class="cert-thumb"><img src="images/certificates/java.jpg" alt="Java" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>☕</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">Java Programming</div>
+    <div class="cert-issuer">Programming Certification</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"images/certificates/dsa.jpg","desc":"Efficient problem solving with trees, graphs, and algorithms — the kind of thinking that makes you a better engineer everywhere else.","tags":["DSA","Trees","Graphs","Algorithms"]}'>
-          <div class="cert-thumb"><img src="images/certificates/dsa.jpg" alt="DSA" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🔗</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">DSA</div>
-            <div class="cert-issuer">Computer Science</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+<div class="cert-card has-image tilt" data-cert='{"title":"Data Structures & Algorithms","issuer":"Computer Science","art":"dsa","icon":"🔗","image":"images/certificates/dsa.jpg","desc":"Studied fundamental data structures and algorithms with a focus on logical thinking, efficient problem solving, and writing structured solutions.","tags":["DSA","Data Structures","Algorithms","Problem Solving"]}'>
+  <div class="cert-thumb"><img src="images/certificates/dsa.jpg" alt="DSA" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🔗</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">DSA</div>
+    <div class="cert-issuer">Computer Science</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Full-Stack Development","issuer":"Web Engineering","art":"fullstack","icon":"🌐","image":"images/certificates/fullstack.jpg","desc":"Frontend and backend technologies for modern web applications — the full pipeline, from database to deployment.","tags":["Full-Stack","Frontend","Backend","Deployment"]}'>
-          <div class="cert-thumb"><img src="images/certificates/fullstack.jpg" alt="Full-Stack" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🌐</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">Full-Stack Dev</div>
-            <div class="cert-issuer">Web Engineering</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+<div class="cert-card has-image tilt" data-cert='{"title":"Full-Stack Development","issuer":"Web Development","art":"fullstack","icon":"🌐","image":"images/certificates/fullstack.jpg","desc":"Gained experience with frontend and backend development concepts for building modern web applications, from user interfaces to application logic and databases.","tags":["Full-Stack","Frontend","Backend","Web Development"]}'>
+  <div class="cert-thumb"><img src="images/certificates/fullstack.jpg" alt="Full-Stack" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>🌐</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">Full-Stack Development</div>
+    <div class="cert-issuer">Web Development</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
-        <div class="cert-card has-image tilt" data-cert='{"title":"Responsive Web Design","issuer":"UI/UX Foundations","art":"responsive","icon":"📱","image":"images/certificates/responsive.jpg","desc":"Mobile-first approaches, CSS Grid, Flexbox — designing layouts that work at any size, not just the desktop you designed them on.","tags":["Responsive","CSS Grid","Flexbox","Mobile-First"]}'>
-          <div class="cert-thumb"><img src="images/certificates/responsive.jpg" alt="Responsive" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>📱</span>'" /></div>
-          <div class="cert-info">
-            <div class="cert-name">Responsive Design</div>
-            <div class="cert-issuer">UI/UX Foundations</div>
-          </div>
-          <div class="cert-open">↗</div>
-        </div>
+<div class="cert-card has-image tilt" data-cert='{"title":"Responsive Web Design","issuer":"Web Design","art":"responsive","icon":"📱","image":"images/certificates/responsive.jpg","desc":"Learned responsive web design principles for creating adaptable interfaces across desktop, tablet, and mobile screen sizes.","tags":["Responsive Design","CSS","Flexbox","Mobile-First"]}'>
+  <div class="cert-thumb"><img src="images/certificates/responsive.jpg" alt="Responsive" onerror="this.parentElement.innerHTML='<span class=\'thumb-fallback\'>📱</span>'" /></div>
+  <div class="cert-info">
+    <div class="cert-name">Responsive Web Design</div>
+    <div class="cert-issuer">Web Design</div>
+  </div>
+  <div class="cert-open">↗</div>
+</div>
 
       </div>
     </div>
@@ -1253,7 +1289,6 @@ function startCertsCanvas(canvas) {
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // only seed positions on first init
     if (!certs[0].px) {
       certs.forEach(c => {
         c.px = c.x * W; c.py = c.y * H;
@@ -1265,7 +1300,6 @@ function startCertsCanvas(canvas) {
     }
   }
   resize();
-  // re-resize on viewport change (canvas is in a panel, resizing = full layout change)
   window.addEventListener('resize', resize);
   const t0 = performance.now();
   function frame(){
@@ -1317,7 +1351,6 @@ function startCertsCanvas(canvas) {
   }
   frame();
 }
-// Init on every canvas with the class (works for original + clones)
 function initAllCertsCanvases() {
   document.querySelectorAll('canvas#certsCanvas, canvas[id^="certsCanvas-"]').forEach(startCertsCanvas);
 }
@@ -1335,9 +1368,7 @@ const SmoothScroll = {
   targetY: 0,
   startTime: 0,
   cancelled: false,
-
   easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2; },
-
   to(targetY) {
     if (Math.abs(targetY - window.scrollY) < 5) return;
     this.cancel();
@@ -1348,12 +1379,7 @@ const SmoothScroll = {
     this.startTime = performance.now();
     this._tick();
   },
-
-  cancel() {
-    this.isAnimating = false;
-    this.cancelled = true;
-  },
-
+  cancel() { this.isAnimating = false; this.cancelled = true; },
   _tick() {
     if (!this.isAnimating) return;
     const now = performance.now();
@@ -1518,8 +1544,7 @@ document.addEventListener('click', e => {
    ═══════════════════════════════════════════════════════════ */
 function initTilt() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  document.querySelectorAll('.tilt').forEach(el => {
-    if (el.dataset.tiltInit === '1') return;
+  document.querySelectorAll('.tilt:not([data-tilt-init])').forEach(el => {
     el.dataset.tiltInit = '1';
     let raf = null;
     el.addEventListener('mousemove', e => {
@@ -1573,80 +1598,99 @@ const tintObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.panel[data-tint]').forEach(p => tintObserver.observe(p));
 
 /* ═══════════════════════════════════════════════════════════
-   SECTION PROGRESS BAR + COUNTER — dynamic, works after infinite-scroll
+   SECTION PROGRESS BAR + COUNTER
+   — Rebuilt as a pure, copy-safe data model that recomputes
+     panel offsets on every scroll and on every clone.
    ═══════════════════════════════════════════════════════════ */
 const sectionProgressEl = document.getElementById('sectionProgress');
 const scNum = document.getElementById('scNum');
 const scLabel = document.getElementById('scLabel');
 const PANEL_LABELS = ['Hero', 'Role', 'About', 'Education', 'Work', 'Stats', 'Internships', 'Stack', 'Certs', 'Contact'];
-let currentSection = 0;
+let currentSection = -1;
 
-/**
- * Rebuild the list of ORIGINAL (non-cloned) panels every time we need it.
- * The infinite-scroll clone loop adds extra panels with IDs like p3-1, p5-2.
- * We only ever use the original 10 for the progress-bar math and the counter,
- * so the bar always represents progress through the real first-page story.
- */
-function getOriginalPanels() {
-  return PANEL_IDS.map(id => document.getElementById(id)).filter(Boolean);
-}
-function getActiveOriginalPanel() {
-  const panels = getOriginalPanels();
-  if (!panels.length) return 0;
-  let activeIdx = 0, minDist = Infinity;
-  panels.forEach((el, i) => {
-    const top = el.getBoundingClientRect().top + window.scrollY - 40;
-    const dist = Math.abs(top - window.scrollY);
-    if (dist < minDist) { minDist = dist; activeIdx = i; }
+/* Always read positions fresh — never cache. This survives infinite-scroll
+   clones because we ignore anything with .cloned via data-base. */
+function getPanelMap() {
+  // build a flat list of ALL panels in DOM order, with `base` set to the original id
+  const all = document.querySelectorAll('.panel');
+  const list = [];
+  all.forEach((el, i) => {
+    list.push({
+      el: el,
+      base: el.dataset.base || el.id,
+      top: el.getBoundingClientRect().top + window.scrollY
+    });
   });
-  return activeIdx;
+  // sort by top so we always have a clean ordered list
+  list.sort((a, b) => a.top - b.top);
+  return list;
 }
+
+function findOriginalIndexInMap(map, scrollY) {
+  // For the *original* 10 sections, find which one is currently dominant.
+  // We use the map of ALL panels (including clones) so the bar is honest
+  // about scroll position, but the *label counter* only ever increments
+  // when an ORIGINAL panel is the closest one.
+  let bestIdx = 0, bestDist = Infinity;
+  map.forEach((p, i) => {
+    const d = Math.abs(p.top - scrollY);
+    if (d < bestDist) { bestDist = d; bestIdx = i; }
+  });
+  // The base-id of the dominant panel tells us which original section it is
+  return bestIdx;
+}
+
 function updateSectionProgress() {
-  const panels = getOriginalPanels();
-  if (!panels.length) return;
-  const cur = getActiveOriginalPanel();
-  if (cur !== currentSection) {
-    currentSection = cur;
-    scNum.textContent = String(cur + 1).padStart(2, '0');
-    scLabel.textContent = PANEL_LABELS[cur] || '';
+  const map = getPanelMap();
+  if (!map.length) return;
+
+  const scrollY = window.scrollY;
+  const dominantIdx = findOriginalIndexInMap(map, scrollY);
+  const dominant = map[dominantIdx];
+  const baseId = dominant.base;
+
+  // Update label counter only when the *original* section changes
+  const labelIdx = PANEL_IDS.indexOf(baseId);
+  if (labelIdx !== -1 && labelIdx !== currentSection) {
+    currentSection = labelIdx;
+    scNum.textContent = String(labelIdx + 1).padStart(2, '0');
+    scLabel.textContent = PANEL_LABELS[labelIdx] || '';
   }
-  const el = panels[cur];
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY;
-  // Next "real" panel boundary — wrap to the document end on the last panel
-  const nextEl = panels[cur + 1];
-  const next = nextEl
-    ? nextEl.getBoundingClientRect().top + window.scrollY - 40
-    : top + el.offsetHeight;
+
+  // Bar fill: how far we are between this panel's top and the NEXT panel's top
+  // If we're at the very last panel, fill goes to 100% as we approach the end
+  const top = dominant.top;
+  const panelHeight = dominant.el.offsetHeight;
+  const next = (dominantIdx < map.length - 1) ? map[dominantIdx + 1].top : (top + panelHeight);
   const range = Math.max(1, next - top);
-  const ratio = Math.max(0, Math.min(1, (window.scrollY - top) / range));
+  const ratio = Math.max(0, Math.min(1, (scrollY - top) / range));
   sectionProgressEl.style.setProperty('--sec-progress', (ratio * 100) + '%');
 }
 window.addEventListener('scroll', updateSectionProgress, { passive: true });
+window.addEventListener('resize', updateSectionProgress);
 updateSectionProgress();
 
 /* ═══════════════════════════════════════════════════════════
    EASTER EGG — secret panel with confetti + typewriter
+   — Uses a single document-level keydown listener that is
+     added BEFORE the command-palette listener, so it cannot
+     be shadowed by it. Also has a manual trigger for ⌘K.
    ═══════════════════════════════════════════════════════════ */
 const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let konamiIdx = 0;
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  if (e.key === KONAMI[konamiIdx]) {
-    konamiIdx++;
-    if (konamiIdx === KONAMI.length) {
-      konamiIdx = 0;
-      activateEasterEgg();
-    }
-  } else { konamiIdx = 0; }
-});
+
+const secretOverlay = document.getElementById('secretOverlay');
+const secretBody = document.getElementById('secretBody');
+const secretCloseBtn = document.getElementById('secretClose');
+const secretBackdrop = document.getElementById('secretBackdrop');
 
 const SECRET_MESSAGE = "Hi! Most people stop scrolling here. You didn't. That's the kind of curiosity that builds the best engineers — and the best games. This site was hand-rolled without a framework, with a hand-tuned raymarched background, a 3D WebGL hero cube, custom shaders, and a stack of niceties I shipped because I wanted the user to feel something. If that resonates with you, we should probably talk.";
 let typeInterval = null;
+
 function typeSecretMessage(target, text, speed = 22) {
+  clearInterval(typeInterval);
   target.innerHTML = '<span class="cursor"></span>';
   let i = 0;
-  clearInterval(typeInterval);
   typeInterval = setInterval(() => {
     if (i >= text.length) {
       clearInterval(typeInterval);
@@ -1660,14 +1704,18 @@ function typeSecretMessage(target, text, speed = 22) {
       cur.insertAdjacentText('beforebegin', ch);
     } else {
       target.appendChild(document.createTextNode(ch));
-      target.appendChild(Object.assign(document.createElement('span'), { className: 'cursor' }));
+      const span = document.createElement('span');
+      span.className = 'cursor';
+      target.appendChild(span);
     }
     i++;
   }, speed);
 }
+
 function launchConfetti() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const colors = ['#6C63FF', '#FFB454', '#00E5FF', '#3DDC84', '#F3F1EA'];
-  const count = 60;
+  const count = 70;
   for (let i = 0; i < count; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
@@ -1690,29 +1738,45 @@ function launchConfetti() {
     setTimeout(() => piece.remove(), dur + 200);
   }
 }
-function activateEasterEgg() {
-  const overlay = document.getElementById('secretOverlay');
-  const body = document.getElementById('secretBody');
-  overlay.classList.add('show');
-  typeSecretMessage(body, SECRET_MESSAGE, 20);
+
+function activateEasterEgg(source) {
+  // Always log so you can verify in DevTools that the function actually ran
+  console.log('%c🥚 Easter egg unlocked via ' + source, 'color:#6C63FF;font-size:14px;font-weight:bold;');
+  secretOverlay.classList.add('show');
+  typeSecretMessage(secretBody, SECRET_MESSAGE, 20);
   launchConfetti();
-  play('success');
-  // skip-confetti if user is sensitive
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // play is defined further below; guard so it never throws if audio isn't ready
+  try { play('success'); } catch(e) { /* audio not ready, that's fine */ }
   // center burst
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => spawnParticles(window.innerWidth / 2 + (Math.random() - 0.5) * 300, window.innerHeight / 2, 18), i * 220);
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => spawnParticles(window.innerWidth / 2 + (Math.random() - 0.5) * 300, window.innerHeight / 2, 18), i * 220);
+    }
   }
 }
 function closeSecret() {
-  const overlay = document.getElementById('secretOverlay');
-  overlay.classList.remove('show');
+  secretOverlay.classList.remove('show');
   clearInterval(typeInterval);
+  if (secretBody) secretBody.innerHTML = '<span class="cursor"></span>';
 }
-document.getElementById('secretClose').addEventListener('click', closeSecret);
+if (secretCloseBtn) secretCloseBtn.addEventListener('click', closeSecret);
+if (secretBackdrop) secretBackdrop.addEventListener('click', closeSecret);
+
+/* Single, dedicated Konami listener. Registered FIRST so no other handler
+   can preventDefault on the keys before us. */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('secretOverlay').classList.contains('show')) {
-    closeSecret();
+  // Don't trigger if user is typing into an input/textarea/select
+  const tag = e.target && e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  if (e.key === KONAMI[konamiIdx]) {
+    konamiIdx++;
+    if (konamiIdx === KONAMI.length) {
+      konamiIdx = 0;
+      activateEasterEgg('Konami code');
+    }
+  } else {
+    konamiIdx = 0;
   }
 });
 
@@ -1747,7 +1811,7 @@ function onScroll(){
 }
 onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-/* PANEL IN-VIEW — observe originals + clones (clones add their dots, originals are still primary) */
+/* PANEL IN-VIEW */
 const storyEl = document.getElementById('story');
 const progressDots = document.querySelectorAll('.story-progress button');
 const dotByPanel = {};
@@ -1887,9 +1951,7 @@ function closeModal() {
 }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
 
-/* cert/work click listeners — re-runnable for clones */
 function attachCardListeners() {
   document.querySelectorAll('.work-row[data-project]:not([data-listener])').forEach(row => {
     row.dataset.listener = '1';
@@ -1934,8 +1996,8 @@ const commands = [
   { id: 'play-college', title: 'Open: Ramco Institute', sub: 'Education', icon: '🎓', action: () => openCertByTitle('Ramco Institute') },
   { id: 'play-intern-fs', title: 'Open: Python Full-Stack', sub: 'Skiez Digital', icon: '💼', action: () => openCertByTitle('Python Full-Stack') },
   { id: 'play-intern-game', title: 'Open: Unity Game Dev', sub: 'Playxoft Studios', icon: '🎮', action: () => openCertByTitle('Unity Game') },
-  { id: 'secret', title: 'Open the secret panel', sub: '↑↑↓↓←→←→BA', icon: '🔓', action: () => activateEasterEgg() },
-  { id: 'konami-hint', title: 'Easter egg: ↑↑↓↓←→←→BA', sub: 'Try it...', icon: '🥚', action: () => activateEasterEgg() },
+  { id: 'secret', title: 'Open the secret panel', sub: 'Hint: ↑↑↓↓←→←→BA', icon: '🔓', action: () => activateEasterEgg('command palette') },
+  { id: 'konami-hint', title: 'Easter egg: ↑↑↓↓←→←→BA', sub: 'Try it...', icon: '🥚', action: () => activateEasterEgg('command palette') },
 ];
 
 function openProjectByTitle(title) {
@@ -1989,7 +2051,12 @@ commandInput.addEventListener('keydown', e => {
   else if (e.key === 'Enter') { e.preventDefault(); if (currentFiltered[activeCmdIdx]) { currentFiltered[activeCmdIdx].action(); closeCommand(); } }
   else if (e.key === 'Escape') { e.preventDefault(); closeCommand(); }
 });
+/* ESC closes secret panel if it's open (handled by secret listener, but also this one) */
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && secretOverlay.classList.contains('show')) {
+    closeSecret();
+    return;
+  }
   const isMod = e.metaKey || e.ctrlKey;
   if (isMod && e.key.toLowerCase() === 'k') { e.preventDefault(); if (commandPalette.classList.contains('open')) closeCommand(); else openCommand(); return; }
   if (isMod && e.key.toLowerCase() === 'm') { e.preventDefault(); toggleMusic(); return; }
@@ -2000,7 +2067,7 @@ progressDots.forEach(d => d.addEventListener('click', () => {
   play('click');
 }));
 
-/* INFINITE SCROLL — clones panels, fixes canvas + click handlers + reveal observer */
+/* INFINITE SCROLL */
 const sentinel = document.getElementById('infiniteSentinel');
 let appending = false;
 let cloneCounter = 0;
@@ -2014,7 +2081,6 @@ function clonePanels(suffix) {
     clone.dataset.base = panel.id;
     clone.classList.remove('in-view');
 
-    // Re-id the canvas inside the certs panel so each clone has a unique one
     const canvas = clone.querySelector('#certsCanvas');
     if (canvas) {
       canvas.removeAttribute('id');
@@ -2022,28 +2088,20 @@ function clonePanels(suffix) {
       canvas.id = 'certsCanvas-' + (++canvasIdCounter);
     }
 
-    // Re-id work-row / cert-card listeners and cert thumbnails so onerror fallbacks don't double-fire
-    const workRows = clone.querySelectorAll('.work-row[data-project]');
-    workRows.forEach(row => {
-      delete row.dataset.listener;
-    });
-    const certCards = clone.querySelectorAll('.cert-card[data-cert]');
-    certCards.forEach(card => { delete card.dataset.listener; });
-    const tiltEls = clone.querySelectorAll('.tilt');
-    tiltEls.forEach(el => { delete el.dataset.tiltInit; });
-    const revealEls = clone.querySelectorAll('.reveal');
-    revealEls.forEach(el => { el.classList.remove('revealed'); });
+    clone.querySelectorAll('.work-row[data-project]').forEach(row => { delete row.dataset.listener; });
+    clone.querySelectorAll('.cert-card[data-cert]').forEach(card => { delete card.dataset.listener; });
+    clone.querySelectorAll('.tilt').forEach(el => { delete el.dataset.tiltInit; });
+    clone.querySelectorAll('.reveal').forEach(el => { el.classList.remove('revealed'); });
 
     storyEl.insertBefore(clone, sentinel);
     panelIO.observe(clone);
   });
   cloneCounter++;
-  // Re-init everything that needs to bind to new elements
   attachCardListeners();
   initTilt();
   initReveals();
   initAllCertsCanvases();
-  // Force one progress-bar recompute after the new content is in the layout
+  // Force progress bar recompute after layout settles
   requestAnimationFrame(updateSectionProgress);
 }
 const sentinelObs = new IntersectionObserver(entries => {
@@ -2305,8 +2363,10 @@ document.addEventListener('keydown', e => {
 const devtoolsWarning = document.getElementById('devtoolsWarning');
 let devToolsDetected = false;
 function detectDevTools() {
+  // Only check if secret panel is closed (avoids false positives)
+  if (!secretOverlay || secretOverlay.classList.contains('show')) return;
   const wd = window.outerWidth - window.innerWidth, hd = window.outerHeight - window.innerHeight;
-  if ((wd > 160 || hd > 160) && !devToolsDetected) {
+  if ((wd > 200 || hd > 200) && !devToolsDetected) {
     devToolsDetected = true; devtoolsWarning.classList.add('show'); play('error');
     setTimeout(() => { devtoolsWarning.classList.remove('show'); devToolsDetected = false; }, 3000);
   }
@@ -2321,6 +2381,7 @@ document.addEventListener('selectstart', e => {
 
 console.log('%c👋 Hey there!', 'color: #6C63FF; font-size: 24px; font-weight: bold;');
 console.log('%c⚡ Try ↑/↓ keys, swipe on mobile, or Konami code (↑↑↓↓←→←→BA)!', 'color: #FFB454; font-size: 12px;');
+console.log('%c💡 Tip: type "secret" in ⌘K to open the hidden panel without the code.', 'color: #9195A0; font-size: 11px;');
 console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.keys(SOUND_PRESETS));
 
 window.addEventListener('load', () => {
@@ -2328,6 +2389,8 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     initTilt();
     initReveals();
+    // Recompute progress bar once after fonts/layout settle
+    requestAnimationFrame(updateSectionProgress);
   }, 700);
 });
 </script>
