@@ -2122,6 +2122,7 @@ sentinelObs.observe(sentinel);
 /* SOUND ENGINE */
 let audioCtx = null, masterGain = null, musicGain = null, sfxGain = null;
 let soundEnabled = true, musicEnabled = false, musicNodes = [], firstUserGesture = false;
+let musicActive = false, pingTimeoutId = null;
 
 function ensureAudio() {
   if (!audioCtx) {
@@ -2135,10 +2136,14 @@ function ensureAudio() {
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
+
+// Browsers block any Web Audio playback (music AND sfx) until a real user
+// gesture happens - this is unavoidable, not a bug. Once that gesture fires,
+// we start music immediately (no artificial delay) so it feels as instant as sfx.
 function unlockAudio() {
   if (firstUserGesture) return;
   firstUserGesture = true; ensureAudio();
-  if (!musicEnabled && audioCtx) setTimeout(() => { startMusic(); musicEnabled = true; updateBgmToggle(); }, 800);
+  if (!musicEnabled && audioCtx) { startMusic(); musicEnabled = true; updateBgmToggle(); }
 }
 ['click', 'keydown', 'touchstart'].forEach(evt => document.addEventListener(evt, unlockAudio, { once: true, passive: true }));
 
@@ -2155,57 +2160,127 @@ function createSpaceImpulseResponse(ctx, duration = 4, decay = 3) {
 
 function startMusic() {
   if (musicNodes.length || !audioCtx) return;
+  musicActive = true;
   const ctx = audioCtx, dest = musicGain;
+
+  // Long, spacious reverb tail - this is what makes everything else feel "in a void"
   const convolver = ctx.createConvolver();
-  convolver.buffer = createSpaceImpulseResponse(ctx, 5, 2.5);
-  const convGain = ctx.createGain(); convGain.gain.value = 0.6;
+  convolver.buffer = createSpaceImpulseResponse(ctx, 8, 3.2);
+  const convGain = ctx.createGain(); convGain.gain.value = 0.7;
   convolver.connect(convGain); convGain.connect(dest);
   musicNodes.push(convolver, convGain);
-  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+
+  // === Sub-bass void rumble (the "vast emptiness" layer) ===
+  const subOsc = ctx.createOscillator(); subOsc.type = 'sine'; subOsc.frequency.value = 32;
+  const subGain = ctx.createGain(); subGain.gain.value = 0;
+  subGain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 3);
+  const subLFO = ctx.createOscillator(); subLFO.frequency.value = 0.03;
+  const subLFOGain = ctx.createGain(); subLFOGain.gain.value = 0.015;
+  subLFO.connect(subLFOGain); subLFOGain.connect(subGain.gain);
+  subOsc.connect(subGain); subGain.connect(dest);
+  subOsc.start(); subLFO.start();
+  musicNodes.push(subOsc, subGain, subLFO, subLFOGain);
+
+  // === Solar wind noise, slowly panning across the stereo field ===
+  const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
   const noiseData = noiseBuffer.getChannelData(0);
   for (let i = 0; i < noiseData.length; i++) noiseData[i] = Math.random() * 2 - 1;
   const noiseSrc = ctx.createBufferSource(); noiseSrc.buffer = noiseBuffer; noiseSrc.loop = true;
-  const noiseFilter = ctx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 400; noiseFilter.Q.value = 1.2;
+  const noiseFilter = ctx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 350; noiseFilter.Q.value = 0.9;
   const noiseGain = ctx.createGain(); noiseGain.gain.value = 0;
-  noiseGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2);
-  noiseSrc.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(dest); noiseGain.connect(convolver);
-  noiseSrc.start();
-  musicNodes.push(noiseSrc, noiseFilter, noiseGain);
-  const noiseLFO = ctx.createOscillator(); noiseLFO.frequency.value = 0.07;
-  const noiseLFOGain = ctx.createGain(); noiseLFOGain.gain.value = 300;
+  noiseGain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 3);
+  const noisePanner = ctx.createStereoPanner();
+  const panLFO = ctx.createOscillator(); panLFO.frequency.value = 0.025;
+  const panLFOGain = ctx.createGain(); panLFOGain.gain.value = 0.8;
+  panLFO.connect(panLFOGain); panLFOGain.connect(noisePanner.pan);
+  noiseSrc.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(noisePanner);
+  noisePanner.connect(dest); noisePanner.connect(convolver);
+  noiseSrc.start(); panLFO.start();
+  musicNodes.push(noiseSrc, noiseFilter, noiseGain, noisePanner, panLFO, panLFOGain);
+
+  const noiseLFO = ctx.createOscillator(); noiseLFO.frequency.value = 0.05;
+  const noiseLFOGain = ctx.createGain(); noiseLFOGain.gain.value = 250;
   noiseLFO.connect(noiseLFOGain); noiseLFOGain.connect(noiseFilter.frequency);
   noiseLFO.start();
   musicNodes.push(noiseLFO, noiseLFOGain);
-  const droneFreqs = [55, 82.41, 110];
+
+  // === Deep drone voices, spread across the stereo field ===
+  const droneFreqs = [55, 82.41, 110, 146.8];
   droneFreqs.forEach((freq, i) => {
     const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator();
     osc1.type = 'sine'; osc1.frequency.value = freq;
     osc2.type = 'sine'; osc2.frequency.value = freq * 1.0035;
     const g = ctx.createGain(); g.gain.value = 0;
-    g.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 2);
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.15 + i * 0.07;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.4;
+    g.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 3);
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.1 + i * 0.05;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.35;
     lfo.connect(lfoGain); lfoGain.connect(osc1.frequency);
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 800; lp.Q.value = 0.7;
-    osc1.connect(lp); osc2.connect(lp); lp.connect(g); g.connect(dest); g.connect(convolver);
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 750; lp.Q.value = 0.6;
+    const panner = ctx.createStereoPanner(); panner.pan.value = (i % 2 === 0 ? -0.3 : 0.3);
+    osc1.connect(lp); osc2.connect(lp); lp.connect(g); g.connect(panner);
+    panner.connect(dest); panner.connect(convolver);
     osc1.start(); osc2.start(); lfo.start();
-    musicNodes.push(osc1, osc2, g, lfo, lfoGain, lp);
+    musicNodes.push(osc1, osc2, g, lfo, lfoGain, lp, panner);
   });
-  const padFreqs = [440, 660, 880];
+
+  // === High shimmer pad (cosmic radiation sparkle) ===
+  const padFreqs = [440, 659.25, 880, 1318.51];
   padFreqs.forEach((freq, i) => {
     const osc = ctx.createOscillator(); osc.type = 'triangle';
-    osc.frequency.value = freq * (1 + (Math.random() - 0.5) * 0.01);
+    osc.frequency.value = freq * (1 + (Math.random() - 0.5) * 0.008);
     const g = ctx.createGain(); g.gain.value = 0;
-    g.gain.linearRampToValueAtTime(0.008, ctx.currentTime + 4);
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 400;
+    g.gain.linearRampToValueAtTime(0.006, ctx.currentTime + 5);
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 500;
+    const shimmerLFO = ctx.createOscillator(); shimmerLFO.frequency.value = 0.05 + i * 0.02;
+    const shimmerLFOGain = ctx.createGain(); shimmerLFOGain.gain.value = 0.003;
+    shimmerLFO.connect(shimmerLFOGain); shimmerLFOGain.connect(g.gain);
     osc.connect(hp); hp.connect(g); g.connect(dest); g.connect(convolver);
-    osc.start();
-    musicNodes.push(osc, g, hp);
+    osc.start(); shimmerLFO.start();
+    musicNodes.push(osc, g, hp, shimmerLFO, shimmerLFOGain);
   });
+
+  // === Slow overall "breathing" so the mix never feels static ===
+  const breathLFO = ctx.createOscillator(); breathLFO.frequency.value = 0.02;
+  const breathLFOGain = ctx.createGain(); breathLFOGain.gain.value = 0.04;
+  breathLFO.connect(breathLFOGain); breathLFOGain.connect(dest.gain);
+  breathLFO.start();
+  musicNodes.push(breathLFO, breathLFOGain);
+
+  // === Sparse random pulsar / beacon pings ===
+  scheduleSpacePing();
+}
+
+function playSpacePing() {
+  if (!musicActive || !audioCtx) return;
+  const ctx = audioCtx;
+  const freqs = [880, 987.77, 1174.66, 1318.51, 1567.98];
+  const freq = freqs[Math.floor(Math.random() * freqs.length)];
+  const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = freq;
+  const gain = ctx.createGain(); gain.gain.value = 0;
+  const now = ctx.currentTime;
+  gain.gain.linearRampToValueAtTime(0.035, now + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+  const panner = ctx.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1);
+  osc.connect(gain); gain.connect(panner);
+  panner.connect(musicGain);
+  const conv = musicNodes.find(n => n instanceof ConvolverNode);
+  if (conv) panner.connect(conv);
+  osc.start(now); osc.stop(now + 4);
+}
+
+function scheduleSpacePing() {
+  if (!musicActive) return;
+  const delay = 4000 + Math.random() * 9000; // fires every 4-13s, kept irregular on purpose
+  pingTimeoutId = setTimeout(() => {
+    playSpacePing();
+    scheduleSpacePing();
+  }, delay);
 }
 
 function stopMusic() {
   if (!audioCtx) return;
+  musicActive = false;
+  if (pingTimeoutId) { clearTimeout(pingTimeoutId); pingTimeoutId = null; }
   const now = audioCtx.currentTime;
   musicNodes.forEach(n => { if (n.gain) { try { n.gain.cancelScheduledValues(now); n.gain.setValueAtTime(n.gain.value, now); n.gain.linearRampToValueAtTime(0, now + 0.8); } catch(e){} } });
   setTimeout(() => { musicNodes.forEach(n => { try { n.stop && n.stop(); } catch(e){} }); musicNodes = []; }, 900);
