@@ -191,7 +191,7 @@
   .swipe-flash.up { top: 30%; }
   .swipe-flash.down { bottom: 30%; }
 
-  /* ═════ 2-column card grid for Education / Internships ═════ */
+  /* 2-column card grid */
   .cards-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -386,12 +386,10 @@
   .service-item p { color: var(--text-muted); font-size: 0.92rem; }
   @media (max-width: 760px) { .services-list { grid-template-columns: 1fr; } }
 
-  /* ═════ FIXED: cert-card styles now work EVERYWHERE (not just .certs-legend) ═════ */
   .certs-canvas-wrap { position: relative; width: 100%; aspect-ratio: 16/9; max-height: 480px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: rgba(10, 11, 15, 0.4); }
   .certs-canvas-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
   .certs-legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
 
-  /* Universal cert-card — works in .certs-legend AND .cards-2 */
   .cert-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -431,7 +429,7 @@
   .cert-thumb img {
     width: 100%;
     height: 100%;
-    object-fit: contain;        /* ← handles vertical certs without cropping */
+    object-fit: contain;
     display: block;
     padding: 2px;
     background: rgba(20, 22, 27, 0.5);
@@ -580,6 +578,67 @@
   .devtools-warning.show { display: flex; }
   .devtools-warning h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--accent-2); }
 
+  /* ═════ Easter egg: secret panel ═════ */
+  .secret-overlay {
+    position: fixed; inset: 0; z-index: 99998; pointer-events: none;
+    opacity: 0; transition: opacity 0.6s;
+  }
+  .secret-overlay.show { opacity: 1; pointer-events: auto; }
+  .secret-card {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%) scale(0.85) rotate(-2deg);
+    width: min(560px, 92vw);
+    background: linear-gradient(135deg, #14161B 0%, #0A0B0F 100%);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 2.25rem 2.25rem 2rem;
+    box-shadow: 0 40px 100px rgba(108, 99, 255, 0.4), 0 0 0 1px rgba(108, 99, 255, 0.2) inset;
+    transition: transform 0.6s var(--ease-spring);
+  }
+  .secret-overlay.show .secret-card { transform: translate(-50%, -50%) scale(1) rotate(0); }
+  .secret-card::before {
+    content: ''; position: absolute; inset: -2px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+    border-radius: 15px; z-index: -1; opacity: 0.4;
+    filter: blur(20px);
+  }
+  .secret-meta { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-2); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .secret-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2rem); color: var(--text); margin-bottom: 0.5rem; line-height: 1.1; }
+  .secret-title em { font-style: italic; color: var(--accent); font-weight: 200; }
+  .secret-body { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem; }
+  .secret-body b { color: var(--text); font-weight: 500; }
+  .secret-favs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 1.5rem; }
+  .secret-favs span {
+    font-family: var(--font-mono); font-size: 0.7rem;
+    padding: 0.35rem 0.7rem; border: 1px solid var(--border);
+    border-radius: 100px; color: var(--text-muted);
+    background: rgba(20, 22, 27, 0.5);
+    transition: all 0.3s var(--ease-spring);
+  }
+  .secret-favs span:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-2px); }
+  .secret-sig {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent);
+    font-style: italic; margin-top: 1rem;
+    border-top: 1px solid var(--border); padding-top: 1rem;
+  }
+  .secret-close {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    width: 32px; height: 32px; border: 1px solid var(--border);
+    border-radius: 50%; background: rgba(10, 11, 15, 0.5);
+    color: var(--text-muted); font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s var(--ease-spring);
+  }
+  .secret-close:hover { border-color: var(--accent); color: var(--accent); transform: rotate(90deg); }
+  /* typewriter cursor */
+  .secret-typed .cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent); margin-left: 4px; vertical-align: middle; animation: blink 1s step-end infinite; }
+  /* confetti container */
+  .confetti-piece {
+    position: fixed; top: -10px; width: 10px; height: 14px;
+    pointer-events: none; z-index: 99999;
+    will-change: transform, opacity;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .panel[data-from] .panel-inner { transform: none; opacity: 1; }
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
@@ -609,6 +668,25 @@
 <div class="easter-toast" id="easterToast"></div>
 <div class="swipe-flash up" id="swipeFlashUp">↑ Swipe up for next</div>
 <div class="swipe-flash down" id="swipeFlashDown">↓ Swipe down for previous</div>
+
+<div class="secret-overlay" id="secretOverlay">
+  <div class="secret-card">
+    <button class="secret-close" id="secretClose" aria-label="Close secret">✕</button>
+    <div class="secret-meta">// secret_unlocked.txt</div>
+    <h2 class="secret-title">You found <em>the room behind the code</em>.</h2>
+    <p class="secret-body secret-typed" id="secretBody"></p>
+    <div class="secret-favs">
+      <span>🎮 Hollow Knight</span>
+      <span>🌌 Interstellar OST</span>
+      <span>☕ Strong filter coffee</span>
+      <span>🎨 Studio Ghibli frames</span>
+      <span>⌨️ Mechanical keyboards</span>
+      <span>📷 Fujifilm X100V vibes</span>
+      <span>🛠 Vim + a big monitor</span>
+    </div>
+    <p class="secret-sig">— built with caffeine & shaders by Gokula ✨</p>
+  </div>
+</div>
 
 <div class="devtools-warning" id="devtoolsWarning">
   <h2>⚠ Developer Tools Detected</h2>
@@ -737,7 +815,7 @@
         </div>
         <div class="about-visual tilt reveal" data-reveal-delay="300">
           <div class="about-avatar">
-            <img src="images/profile.jpg" alt="Gokula Kumaran" onerror="this.parentElement.innerHTML='<div style=\'font-size:7rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%;\'>👨‍💻</div>'" />
+            <img src="images/profile2.jpg" alt="Gokula Kumaran" onerror="this.parentElement.innerHTML='<div style=\'font-size:7rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%;\'>👨‍💻</div>'" />
           </div>
           <div class="about-visual-float">GK</div>
         </div>
@@ -1146,10 +1224,10 @@
   frame();
 })();
 
-/* ═══ CERTS CANVAS ═══ */
-(function(){
-  const canvas = document.getElementById('certsCanvas');
-  if (!canvas) return;
+/* ═══ CERTS CANVAS — multi-instance, re-init on clone ═══ */
+function startCertsCanvas(canvas) {
+  if (!canvas || canvas.dataset.certsInit === '1') return;
+  canvas.dataset.certsInit = '1';
   const ctx = canvas.getContext('2d');
   const certs = [
     { name: 'C#', icon: '⚙️', x: 0.18, y: 0.32 },
@@ -1160,61 +1238,90 @@
     { name: 'Responsive', icon: '📱', x: 0.85, y: 0.32 },
   ];
   const mouse = {x:0.5, y:0.5, tx:0.5, ty:0.5, active:false};
-  canvas.addEventListener('mousemove', e=>{ const r=canvas.getBoundingClientRect(); mouse.tx=(e.clientX-r.left)/r.width; mouse.ty=(e.clientY-r.top)/r.height; mouse.active=true; });
-  canvas.addEventListener('mouseleave', ()=>mouse.active=false);
-  let W,H,dpr;
+  canvas.addEventListener('mousemove', e=>{
+    const r = canvas.getBoundingClientRect();
+    mouse.tx = (e.clientX - r.left) / r.width;
+    mouse.ty = (e.clientY - r.top) / r.height;
+    mouse.active = true;
+  });
+  canvas.addEventListener('mouseleave', () => mouse.active = false);
+  let W, H, dpr;
   function resize(){
-    const r=canvas.getBoundingClientRect(); W=r.width; H=r.height; dpr=Math.min(window.devicePixelRatio||1,2);
-    canvas.width=W*dpr; canvas.height=H*dpr; canvas.style.width=W+'px'; canvas.style.height=H+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    certs.forEach(c=>{ c.px = c.x*W; c.py = c.y*H; c.vx = (Math.random()-0.5)*0.3; c.vy = (Math.random()-0.5)*0.3; });
+    const r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // only seed positions on first init
+    if (!certs[0].px) {
+      certs.forEach(c => {
+        c.px = c.x * W; c.py = c.y * H;
+        c.vx = (Math.random() - 0.5) * 0.3;
+        c.vy = (Math.random() - 0.5) * 0.3;
+      });
+    } else {
+      certs.forEach(c => { c.px = c.x * W; c.py = c.y * H; });
+    }
   }
-  resize(); window.addEventListener('resize', resize);
+  resize();
+  // re-resize on viewport change (canvas is in a panel, resizing = full layout change)
+  window.addEventListener('resize', resize);
   const t0 = performance.now();
   function frame(){
-    const t = (performance.now()-t0)/1000;
-    mouse.x += (mouse.tx - mouse.x)*0.1; mouse.y += (mouse.ty - mouse.y)*0.1;
+    const t = (performance.now() - t0) / 1000;
+    mouse.x += (mouse.tx - mouse.x) * 0.1;
+    mouse.y += (mouse.ty - mouse.y) * 0.1;
     ctx.fillStyle = 'rgba(10,11,15,0.18)';
-    ctx.fillRect(0,0,W,H);
-    certs.forEach(c=>{
+    ctx.fillRect(0, 0, W, H);
+    certs.forEach(c => {
       c.px += c.vx; c.py += c.vy;
-      if(c.px<40||c.px>W-40) c.vx*=-1;
-      if(c.py<40||c.py>H-40) c.vy*=-1;
-      if(mouse.active){
-        const dx=mouse.x*W-c.px, dy=mouse.y*H-c.py; const d=Math.hypot(dx,dy);
-        if(d<150){ c.px -= dx/d*0.5; c.py -= dy/d*0.5; }
+      if (c.px < 40 || c.px > W - 40) c.vx *= -1;
+      if (c.py < 40 || c.py > H - 40) c.vy *= -1;
+      if (mouse.active) {
+        const dx = mouse.x * W - c.px, dy = mouse.y * H - c.py;
+        const d = Math.hypot(dx, dy);
+        if (d < 150) { c.px -= dx / d * 0.5; c.py -= dy / d * 0.5; }
       }
     });
-    certs.forEach((a,i)=>{
-      for(let j=i+1;j<certs.length;j++){
-        const b=certs[j]; const dx=a.px-b.px, dy=a.py-b.py; const d=Math.hypot(dx,dy);
-        if(d<180){
-          ctx.strokeStyle = `rgba(108,99,255,${(1-d/180)*0.4})`;
+    for (let i = 0; i < certs.length; i++) {
+      for (let j = i + 1; j < certs.length; j++) {
+        const a = certs[i], b = certs[j];
+        const dx = a.px - b.px, dy = a.py - b.py;
+        const d = Math.hypot(dx, dy);
+        if (d < 180) {
+          ctx.strokeStyle = `rgba(108,99,255,${(1 - d/180) * 0.4})`;
           ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(a.px,a.py); ctx.lineTo(b.px,b.py); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(a.px, a.py); ctx.lineTo(b.px, b.py); ctx.stroke();
         }
       }
-    });
-    certs.forEach(c=>{
-      const radius = 20 + Math.sin(t*2 + c.x*10)*3;
-      const grad = ctx.createRadialGradient(c.px,c.py,0,c.px,c.py,radius*2);
+    }
+    certs.forEach(c => {
+      const radius = 20 + Math.sin(t * 2 + c.x * 10) * 3;
+      const grad = ctx.createRadialGradient(c.px, c.py, 0, c.px, c.py, radius * 2);
       grad.addColorStop(0, 'rgba(108,99,255,0.4)');
       grad.addColorStop(1, 'rgba(108,99,255,0)');
       ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(c.px,c.py,radius*2,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(c.px, c.py, radius * 2, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = 'rgba(20,22,27,0.95)';
       ctx.strokeStyle = 'rgba(108,99,255,0.8)';
       ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(c.px,c.py,radius,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(c.px, c.py, radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.font = `${radius}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(c.icon, c.px, c.py);
-      ctx.font = '600 12px "Bricolage Grotesque", sans-serif'; ctx.fillStyle = '#F3F1EA';
+      ctx.font = '600 12px "Bricolage Grotesque", sans-serif';
+      ctx.fillStyle = '#F3F1EA';
       ctx.fillText(c.name, c.px, c.py + radius + 14);
     });
     requestAnimationFrame(frame);
   }
   frame();
-})();
+}
+// Init on every canvas with the class (works for original + clones)
+function initAllCertsCanvases() {
+  document.querySelectorAll('canvas#certsCanvas, canvas[id^="certsCanvas-"]').forEach(startCertsCanvas);
+}
+initAllCertsCanvases();
 </script>
 
 <script>
@@ -1399,7 +1506,7 @@ function spawnParticles(x, y, count = 8) {
   }
 }
 document.addEventListener('click', e => {
-  if (e.target.closest('input, textarea, select, .modal-overlay')) return;
+  if (e.target.closest('input, textarea, select, .modal-overlay, .secret-overlay')) return;
   spawnRipple(e.clientX, e.clientY);
   if (e.target.closest('.main-nav a, .story-progress button, .nav-cta')) {
     spawnParticles(e.clientX, e.clientY, 12);
@@ -1412,6 +1519,8 @@ document.addEventListener('click', e => {
 function initTilt() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   document.querySelectorAll('.tilt').forEach(el => {
+    if (el.dataset.tiltInit === '1') return;
+    el.dataset.tiltInit = '1';
     let raf = null;
     el.addEventListener('mousemove', e => {
       if (raf) cancelAnimationFrame(raf);
@@ -1443,7 +1552,7 @@ const revealObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
 function initReveals() {
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal:not(.revealed)').forEach(el => revealObserver.observe(el));
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1464,7 +1573,7 @@ const tintObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('.panel[data-tint]').forEach(p => tintObserver.observe(p));
 
 /* ═══════════════════════════════════════════════════════════
-   SECTION PROGRESS BAR + COUNTER
+   SECTION PROGRESS BAR + COUNTER — dynamic, works after infinite-scroll
    ═══════════════════════════════════════════════════════════ */
 const sectionProgressEl = document.getElementById('sectionProgress');
 const scNum = document.getElementById('scNum');
@@ -1472,31 +1581,57 @@ const scLabel = document.getElementById('scLabel');
 const PANEL_LABELS = ['Hero', 'Role', 'About', 'Education', 'Work', 'Stats', 'Internships', 'Stack', 'Certs', 'Contact'];
 let currentSection = 0;
 
+/**
+ * Rebuild the list of ORIGINAL (non-cloned) panels every time we need it.
+ * The infinite-scroll clone loop adds extra panels with IDs like p3-1, p5-2.
+ * We only ever use the original 10 for the progress-bar math and the counter,
+ * so the bar always represents progress through the real first-page story.
+ */
+function getOriginalPanels() {
+  return PANEL_IDS.map(id => document.getElementById(id)).filter(Boolean);
+}
+function getActiveOriginalPanel() {
+  const panels = getOriginalPanels();
+  if (!panels.length) return 0;
+  let activeIdx = 0, minDist = Infinity;
+  panels.forEach((el, i) => {
+    const top = el.getBoundingClientRect().top + window.scrollY - 40;
+    const dist = Math.abs(top - window.scrollY);
+    if (dist < minDist) { minDist = dist; activeIdx = i; }
+  });
+  return activeIdx;
+}
 function updateSectionProgress() {
-  const cur = getCurrentPanel();
+  const panels = getOriginalPanels();
+  if (!panels.length) return;
+  const cur = getActiveOriginalPanel();
   if (cur !== currentSection) {
     currentSection = cur;
     scNum.textContent = String(cur + 1).padStart(2, '0');
-    scLabel.textContent = PANEL_LABELS[cur];
+    scLabel.textContent = PANEL_LABELS[cur] || '';
   }
-  const id = PANEL_IDS[cur];
-  const el = document.getElementById(id);
-  if (el) {
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const next = PANEL_IDS[cur + 1] ? panelScrollTop(PANEL_IDS[cur + 1]) : top + el.offsetHeight;
-    const ratio = Math.max(0, Math.min(1, (window.scrollY - top) / (next - top)));
-    sectionProgressEl.style.setProperty('--sec-progress', (ratio * 100) + '%');
-  }
+  const el = panels[cur];
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  // Next "real" panel boundary — wrap to the document end on the last panel
+  const nextEl = panels[cur + 1];
+  const next = nextEl
+    ? nextEl.getBoundingClientRect().top + window.scrollY - 40
+    : top + el.offsetHeight;
+  const range = Math.max(1, next - top);
+  const ratio = Math.max(0, Math.min(1, (window.scrollY - top) / range));
+  sectionProgressEl.style.setProperty('--sec-progress', (ratio * 100) + '%');
 }
 window.addEventListener('scroll', updateSectionProgress, { passive: true });
 updateSectionProgress();
 
 /* ═══════════════════════════════════════════════════════════
-   KONAMI CODE EASTER EGG
+   EASTER EGG — secret panel with confetti + typewriter
    ═══════════════════════════════════════════════════════════ */
 const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let konamiIdx = 0;
 document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === KONAMI[konamiIdx]) {
     konamiIdx++;
     if (konamiIdx === KONAMI.length) {
@@ -1505,16 +1640,81 @@ document.addEventListener('keydown', e => {
     }
   } else { konamiIdx = 0; }
 });
-function activateEasterEgg() {
-  const toast = document.getElementById('easterToast');
-  toast.textContent = '✨ You found the secret. Welcome, friend. — GK';
-  toast.classList.add('show');
-  play('success');
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => spawnParticles(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2, 20), i*200);
-  }
-  setTimeout(() => toast.classList.remove('show'), 4000);
+
+const SECRET_MESSAGE = "Hi! Most people stop scrolling here. You didn't. That's the kind of curiosity that builds the best engineers — and the best games. This site was hand-rolled without a framework, with a hand-tuned raymarched background, a 3D WebGL hero cube, custom shaders, and a stack of niceties I shipped because I wanted the user to feel something. If that resonates with you, we should probably talk.";
+let typeInterval = null;
+function typeSecretMessage(target, text, speed = 22) {
+  target.innerHTML = '<span class="cursor"></span>';
+  let i = 0;
+  clearInterval(typeInterval);
+  typeInterval = setInterval(() => {
+    if (i >= text.length) {
+      clearInterval(typeInterval);
+      const cur = target.querySelector('.cursor');
+      if (cur) cur.remove();
+      return;
+    }
+    const ch = text.charAt(i);
+    const cur = target.querySelector('.cursor');
+    if (cur) {
+      cur.insertAdjacentText('beforebegin', ch);
+    } else {
+      target.appendChild(document.createTextNode(ch));
+      target.appendChild(Object.assign(document.createElement('span'), { className: 'cursor' }));
+    }
+    i++;
+  }, speed);
 }
+function launchConfetti() {
+  const colors = ['#6C63FF', '#FFB454', '#00E5FF', '#3DDC84', '#F3F1EA'];
+  const count = 60;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    piece.style.borderRadius = Math.random() > 0.5 ? '2px' : '50%';
+    document.body.appendChild(piece);
+    const dx = (Math.random() - 0.5) * 200;
+    const dy = window.innerHeight + 80;
+    const rot = (Math.random() - 0.5) * 720;
+    const dur = 1800 + Math.random() * 1400;
+    piece.animate(
+      [
+        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }
+      ],
+      { duration: dur, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)', fill: 'forwards' }
+    );
+    setTimeout(() => piece.remove(), dur + 200);
+  }
+}
+function activateEasterEgg() {
+  const overlay = document.getElementById('secretOverlay');
+  const body = document.getElementById('secretBody');
+  overlay.classList.add('show');
+  typeSecretMessage(body, SECRET_MESSAGE, 20);
+  launchConfetti();
+  play('success');
+  // skip-confetti if user is sensitive
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // center burst
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => spawnParticles(window.innerWidth / 2 + (Math.random() - 0.5) * 300, window.innerHeight / 2, 18), i * 220);
+  }
+}
+function closeSecret() {
+  const overlay = document.getElementById('secretOverlay');
+  overlay.classList.remove('show');
+  clearInterval(typeInterval);
+}
+document.getElementById('secretClose').addEventListener('click', closeSecret);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('secretOverlay').classList.contains('show')) {
+    closeSecret();
+  }
+});
 
 /* HERO NAME — split into spans */
 (function(){
@@ -1547,7 +1747,7 @@ function onScroll(){
 }
 onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-/* PANEL IN-VIEW */
+/* PANEL IN-VIEW — observe originals + clones (clones add their dots, originals are still primary) */
 const storyEl = document.getElementById('story');
 const progressDots = document.querySelectorAll('.story-progress button');
 const dotByPanel = {};
@@ -1689,16 +1889,15 @@ document.getElementById('modalClose').addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal(); });
 
-/* ═══════════════════════════════════════════════════════════
-   FIXED: cert-card click handler works for ALL cert-cards
-   (was scoped to .certs-legend .cert-card, now universal)
-   ═══════════════════════════════════════════════════════════ */
+/* cert/work click listeners — re-runnable for clones */
 function attachCardListeners() {
-  document.querySelectorAll('.work-row[data-project]').forEach(row => {
-    row.onclick = () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} };
+  document.querySelectorAll('.work-row[data-project]:not([data-listener])').forEach(row => {
+    row.dataset.listener = '1';
+    row.addEventListener('click', () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} });
   });
-  document.querySelectorAll('.cert-card[data-cert]').forEach(item => {
-    item.onclick = () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} };
+  document.querySelectorAll('.cert-card[data-cert]:not([data-listener])').forEach(item => {
+    item.dataset.listener = '1';
+    item.addEventListener('click', () => { try { openModal(JSON.parse(item.dataset.cert)); } catch(e){} });
   });
 }
 attachCardListeners();
@@ -1735,6 +1934,7 @@ const commands = [
   { id: 'play-college', title: 'Open: Ramco Institute', sub: 'Education', icon: '🎓', action: () => openCertByTitle('Ramco Institute') },
   { id: 'play-intern-fs', title: 'Open: Python Full-Stack', sub: 'Skiez Digital', icon: '💼', action: () => openCertByTitle('Python Full-Stack') },
   { id: 'play-intern-game', title: 'Open: Unity Game Dev', sub: 'Playxoft Studios', icon: '🎮', action: () => openCertByTitle('Unity Game') },
+  { id: 'secret', title: 'Open the secret panel', sub: '↑↑↓↓←→←→BA', icon: '🔓', action: () => activateEasterEgg() },
   { id: 'konami-hint', title: 'Easter egg: ↑↑↓↓←→←→BA', sub: 'Try it...', icon: '🥚', action: () => activateEasterEgg() },
 ];
 
@@ -1753,7 +1953,7 @@ function renderCommands() {
   const f = commandInput.value.toLowerCase().trim();
   currentFiltered = f ? commands.filter(c => (c.title + ' ' + c.sub).toLowerCase().includes(f)) : commands.slice();
   if (!currentFiltered.length) {
-    commandList.innerHTML = '<div class="command-empty">No commands found. Try "hero", "work", "sound", "music", "email".</div>';
+    commandList.innerHTML = '<div class="command-empty">No commands found. Try "hero", "work", "sound", "music", "email", "secret".</div>';
     return;
   }
   activeCmdIdx = Math.min(Math.max(activeCmdIdx, 0), currentFiltered.length - 1);
@@ -1800,10 +2000,11 @@ progressDots.forEach(d => d.addEventListener('click', () => {
   play('click');
 }));
 
-/* INFINITE SCROLL */
+/* INFINITE SCROLL — clones panels, fixes canvas + click handlers + reveal observer */
 const sentinel = document.getElementById('infiniteSentinel');
 let appending = false;
 let cloneCounter = 0;
+let canvasIdCounter = 0;
 function clonePanels(suffix) {
   const originalPanels = document.querySelectorAll('.panel:not(.cloned)');
   originalPanels.forEach(panel => {
@@ -1812,19 +2013,38 @@ function clonePanels(suffix) {
     clone.id = panel.id + '-' + suffix;
     clone.dataset.base = panel.id;
     clone.classList.remove('in-view');
+
+    // Re-id the canvas inside the certs panel so each clone has a unique one
+    const canvas = clone.querySelector('#certsCanvas');
+    if (canvas) {
+      canvas.removeAttribute('id');
+      canvas.removeAttribute('data-certs-init');
+      canvas.id = 'certsCanvas-' + (++canvasIdCounter);
+    }
+
+    // Re-id work-row / cert-card listeners and cert thumbnails so onerror fallbacks don't double-fire
     const workRows = clone.querySelectorAll('.work-row[data-project]');
     workRows.forEach(row => {
-      row.addEventListener('click', () => { try { openModal(JSON.parse(row.dataset.project)); } catch(e){} });
+      delete row.dataset.listener;
     });
     const certCards = clone.querySelectorAll('.cert-card[data-cert]');
-    certCards.forEach(card => {
-      card.addEventListener('click', () => { try { openModal(JSON.parse(card.dataset.cert)); } catch(e){} });
-    });
+    certCards.forEach(card => { delete card.dataset.listener; });
+    const tiltEls = clone.querySelectorAll('.tilt');
+    tiltEls.forEach(el => { delete el.dataset.tiltInit; });
+    const revealEls = clone.querySelectorAll('.reveal');
+    revealEls.forEach(el => { el.classList.remove('revealed'); });
+
     storyEl.insertBefore(clone, sentinel);
     panelIO.observe(clone);
   });
   cloneCounter++;
-  setTimeout(() => { attachCardListeners(); initTilt(); initReveals(); }, 0);
+  // Re-init everything that needs to bind to new elements
+  attachCardListeners();
+  initTilt();
+  initReveals();
+  initAllCertsCanvases();
+  // Force one progress-bar recompute after the new content is in the layout
+  requestAnimationFrame(updateSectionProgress);
 }
 const sentinelObs = new IntersectionObserver(entries => {
   entries.forEach(entry => {
@@ -2094,13 +2314,13 @@ function detectDevTools() {
 setInterval(detectDevTools, 1000);
 document.addEventListener('selectstart', e => {
   if (e.target.closest('input, textarea, .selectable')) return;
-  if (e.target.closest('.work-row, .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header')) {
+  if (e.target.closest('.work-row, .cert-card, .service-item, .metric-item, .hero-stat, .about-tags span, .wordmark, .nav-cta, .social-row a, .contact-detail, .story-progress button, .modal-box, .command-box, .hero-name, .nav-mobile, .site-header, .secret-overlay')) {
     e.preventDefault();
   }
 });
 
 console.log('%c👋 Hey there!', 'color: #6C63FF; font-size: 24px; font-weight: bold;');
-console.log('%c⚡ New: Try ↑/↓ keys, swipe on mobile, or Konami code (↑↑↓↓←→←→BA)!', 'color: #FFB454; font-size: 12px;');
+console.log('%c⚡ Try ↑/↓ keys, swipe on mobile, or Konami code (↑↑↓↓←→←→BA)!', 'color: #FFB454; font-size: 12px;');
 console.log('%cAvailable sounds:', 'color: #9195A0; font-size: 12px;', Object.keys(SOUND_PRESETS));
 
 window.addEventListener('load', () => {
