@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>cosmos · dev harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/core.css" />
+<style>
+  /* throw-away harness: NOT part of the site. Mock copy stands in for the real sections. */
+  .hero-name { font-size: var(--fs-hero); font-weight: 800; line-height: 0.86; letter-spacing: -0.04em; text-align: center; }
+  .hero-copy { text-align: center; margin: 2rem auto 0; }
+  .mock p { max-width: 56ch; color: var(--ink-2); margin-top: 1rem; }
+  .mock h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.035em; max-width: 16ch; }
+  html.bare #story > * > * { visibility: hidden; }
+  .dbg { position: fixed; left: 12px; bottom: 12px; z-index: 99999; display: flex; flex-wrap: wrap; gap: 6px; max-width: 70vw; }
+  .dbg button { font: 11px/1 ui-monospace, monospace; padding: 7px 9px; border: 1px solid #556; border-radius: 3px; background: rgba(8, 10, 16, 0.8); color: #dde; }
+  #dbgStats { position: fixed; right: 12px; bottom: 12px; z-index: 99999; font: 11px/1.4 ui-monospace, monospace; color: #9aa; text-align: right; white-space: pre; }
+  html.bare .dbg, html.bare #dbgStats { display: none; }
+</style>
+</head>
+<body>
+<canvas id="cosmos" aria-hidden="true"></canvas>
+
+<main id="story">
+  <section class="panel" id="p0" data-sector="0">
+    <div class="panel-inner">
+      <h1 class="hero-name" id="heroName">Gokula<br />Kumaran</h1>
+      <p class="lead hero-copy">Building immersive digital experiences, interactive applications, and high-fidelity game worlds.</p>
+    </div>
+  </section>
+  <section class="panel mock" id="p1" data-sector="1"><div class="panel-inner grid-2"><div><h2>A multi-disciplinary maker working at the seam.</h2><p>I prototype in code when that is faster than Figma, sit in on research when the answer is not obvious, and ship the actual production component instead of handing off a spec and hoping.</p></div><div></div></div></section>
+  <section class="panel mock" id="p2" data-sector="2"><div class="panel-inner grid-2"><div><h2>I make things that feel alive.</h2><p>I am a passionate Game and Full-Stack Developer focused on building immersive digital experiences and modern web solutions using Unity, C#, React, and JavaScript.</p><p>Remote-friendly, based in Tamil Nadu, India, and quietly optimistic about what the next browser can do.</p></div><div></div></div></section>
+  <section class="panel mock" id="p2-edu" data-sector="3"><div class="panel-inner"><h2>Education</h2><p>Where I started, where I am going, and the institutions that shaped how I think about software, design, and systems.</p></div></section>
+  <section class="panel mock" id="p3" data-sector="4"><div class="panel-inner"><h2>Selected work</h2><p>The Back Exit · Zyqra · Forest · Procedural generation · Portfolio v1 · Portfolio v2. Six rows of dense text sit directly on the backdrop here, so this is the legibility worst case.</p><p>Second paragraph of body copy to judge contrast across the full width of the content column, left edge to right edge, top to bottom.</p></div></section>
+  <section class="panel mock" id="p3-5" data-sector="5"><div class="panel-inner"><h2>Telemetry</h2><p>6+ projects shipped · 2 internships · 100% dedication.</p></div></section>
+  <section class="panel mock" id="p3-intern" data-sector="6"><div class="panel-inner"><h2>Internships</h2><p>Real-world exposure to production codebases, deadlines, and the kind of feedback you only get when your work ships to actual users.</p></div></section>
+  <section class="panel mock" id="p4" data-sector="7"><div class="panel-inner"><h2>Technical stack</h2><p>Four disciplines, one orbit each.</p></div></section>
+  <section class="panel mock" id="p5" data-sector="8"><div class="panel-inner"><h2>Certifications</h2><p>Six credentials, drawn as a constellation.</p></div></section>
+  <section class="panel mock" id="p6" data-sector="9"><div class="panel-inner"><h2>Let's build the future.</h2><p>Have something that needs a design eye and someone who can build it? I am currently open to select freelance work and full-time opportunities.</p></div></section>
+  <section id="wormhole" style="height:160vh"></section>
+</main>
+
+<div class="dbg">
+  <button data-do="warp">warp</button>
+  <button data-do="flash">flash</button>
+  <button data-do="shower">shower</button>
+  <button data-do="q0">tier 0</button>
+  <button data-do="q1">tier 1</button>
+  <button data-do="q2">tier 2</button>
+  <button data-do="lose">lose ctx</button>
+  <button data-do="restore">restore ctx</button>
+  <button data-do="bare">bare</button>
+</div>
+<div id="dbgStats"></div>
+
+<script src="../js/core.js"></script>
+<script src="../js/cosmos.js"></script>
+<script src="../js/boot.js"></script>
+<script>
+(function () {
+  'use strict';
+  var GK = window.GK, loseExt = null;
+  if (/[?&]bare\b/.test(location.search)) document.documentElement.classList.add('bare');
+  GK.bus.on('cosmos:ready', function (d) { window.__cosmosReady = d; });
+
+  function ext() {
+    if (loseExt) return loseExt;
+    var c = window.__glCanvas || document.getElementById('cosmos');
+    window.__glCanvas = c;
+    var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    loseExt = gl && gl.getExtension('WEBGL_lose_context');
+    return loseExt;
+  }
+  var actions = {
+    warp: function () { GK.warp(1, 1400); },
+    flash: function () { GK.cosmos && GK.cosmos.flash(0.6); },
+    shower: function () { GK.cosmos && GK.cosmos.shower(3); },
+    q0: function () { GK.cosmos && GK.cosmos.setQuality(0); },
+    q1: function () { GK.cosmos && GK.cosmos.setQuality(1); },
+    q2: function () { GK.cosmos && GK.cosmos.setQuality(2); },
+    lose: function () { var e = ext(); if (e) e.loseContext(); },
+    restore: function () { var e = ext(); if (e) e.restoreContext(); },
+    bare: function () { document.documentElement.classList.toggle('bare'); },
+  };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-do]') : null;
+    if (b && actions[b.dataset.do]) actions[b.dataset.do]();
+  });
+
+  var out = document.getElementById('dbgStats');
+  GK.ready(function () {
+    var n = 0;
+    GK.ticker.add(function (st) {
+      if (n++ % 20 || !GK.cosmos) return;
+      var s = GK.cosmos.stats(), c = document.getElementById('cosmos');
+      out.textContent = 'fps ' + s.fps + ' · tier ' + s.tier + ' · scale ' + s.scale + ' · ' + (s.webgl ? 'webgl' : 'fallback') +
+        '\n' + c.width + '×' + c.height + ' · sectorF ' + st.sectorF.toFixed(2) + ' · worm ' + st.wormhole.toFixed(2);
+    }, 90);
+  });
+
+  /* ── manual driver for a hidden tab (requestAnimationFrame never fires there) ──
+     Mirrors core.js' private scroll/sector bookkeeping, then renders frames by hand.
+       T.at(scrollY, frames = 1, dt = 1/60)  → stats
+       T.luma()                              → { dark, mean, max } of the frame just drawn        */
+  window.T = {
+    sync: function (dt) {
+      var st = GK.state, y = window.scrollY, vh = window.innerHeight, panels = GK.scroll.panels();
+      st.scrollY = y; st.scrollMax = Math.max(1, document.documentElement.scrollHeight - vh);
+      var probe = y + vh / 2, cur = panels[0], next = null;
+      for (var i = 0; i < panels.length; i++) { if (panels[i].top <= probe) { cur = panels[i]; next = panels[i + 1] || null; } else break; }
+      if (cur) {
+        var span = next ? next.top - cur.top : cur.height, t = Math.min(1, Math.max(0, (probe - cur.top) / Math.max(1, span)));
+        st.sector = cur.index; st.sectorT = t; st.sectorF = cur.index + (next ? t : 0);
+      }
+      var wh = document.getElementById('wormhole');
+      if (wh) { var top = wh.getBoundingClientRect().top + y; st.wormhole = Math.min(1, Math.max(0, (y + vh - top) / Math.max(1, wh.offsetHeight))); }
+      var sec = GK.SECTORS[st.sector], k = dt >= 1 ? 1 : 1 - Math.exp(-2.2 * dt);
+      for (var c = 0; c < 3; c++) { st.palette.a[c] += (sec.rgbA[c] - st.palette.a[c]) * k; st.palette.b[c] += (sec.rgbB[c] - st.palette.b[c]) * k; }
+      st.palette.dim += (sec.dim - st.palette.dim) * k;
+      st.time += Math.min(dt, 0.05);
+    },
+    at: function (y, frames, dt) {
+      if (y != null) window.scrollTo(0, y);
+      frames = frames || 1; dt = dt == null ? 1 / 60 : dt;
+      var s = null;
+      for (var i = 0; i < frames; i++) { this.sync(dt); s = GK.cosmos._draw(dt); }
+      return s;
+    },
+    /* drive compile → calibration → first frame → ENGAGE bloom without requestAnimationFrame */
+    boot: async function () {
+      var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+      for (var i = 0; i < 200 && !GK.cosmos.ready; i++) { this.at(0, 1, 1 / 60); await wait(20); }
+      for (var j = 0; j < 40 && !GK.state.entered; j++) await wait(200);
+      this.at(0, 150, 1 / 60);
+      return GK.cosmos.stats();
+    },
+    luma: function () {
+      var c = window.__glCanvas || document.getElementById('cosmos');
+      var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      if (!gl) return null;
+      var w = c.width, h = c.height, px = new Uint8Array(w * h * 4);
+      gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      var dark = 0, sum = 0, max = 0, bright = 0, n = w * h;
+      for (var i = 0; i < px.length; i += 4) {
+        var Y = (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) / 255;
+        if (Y < 0.08) dark++; if (Y > 0.5) bright++; sum += Y; if (Y > max) max = Y;
+      }
+      return { w: w, h: h, dark: +(dark / n).toFixed(3), bright: +(bright / n).toFixed(4), mean: +(sum / n).toFixed(4), max: +max.toFixed(3) };
+    },
+    shot: function (maxW, q) {
+      var c = window.__glCanvas || document.getElementById('cosmos');
+      var s = Math.min(1, (maxW || 720) / c.width), o = document.createElement('canvas');
+      o.width = Math.round(c.width * s); o.height = Math.round(c.height * s);
+      o.getContext('2d').drawImage(c, 0, 0, o.width, o.height);
+      return o.toDataURL('image/jpeg', q || 0.72);
+    },
+  };
+})();
+</script>
+</body>
+</html>
